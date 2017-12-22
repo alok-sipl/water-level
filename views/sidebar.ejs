@@ -1,0 +1,28 @@
+<aside id="menu">
+  <div id="navigation">
+    <div class="profile-picture">
+      <a href="<%= sails.config.base_url %>"><img src="<%= (sails.config.globals.userDetail.image) ? sails.config.globals.userDetail.image: sails.config.base_url+ 'images/profile.png' %>"></a>
+      <div class="stats-label text-color">
+        <span class="font-extra-bold font-uppercase"><%= (sails.config.globals.userDetail.name) ? sails.config.globals.userDetail.name: 'Admin' %></span>
+      </div>
+    </div>
+    <ul class="nav" id="side-menu">
+      <li>
+        <a href="<%= sails.config.base_url %>supplier" title="Manage Supplier"><span
+            class="nav-label">manage Supplier</span></a>
+      </li>
+      <li>
+        <a href="<%= sails.config.base_url %>user" title="Manage User"><span class="nav-label">Manage User</span></a>
+      </li>
+      <li>
+        <a href="<%= sails.config.base_url %>device" title="Manage Device"><span class="nav-label">Manage Device</span></a>
+      </li>
+      <li>
+        <a href="<%= sails.config.base_url %>city" title="Manage City"><span class="nav-label">Manage City</span></a>
+      </li>
+      <li>
+        <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile"><span class="nav-label">Profile</span></a>
+      </li>
+    </ul>
+  </div>
+</aside>

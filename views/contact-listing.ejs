@@ -1,0 +1,59 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="font-light m-b-xs">
+                        User List
+                    </h2>
+                    <div id="hbreadcrumb">
+                        <ol class="hbreadcrumb breadcrumb">
+                            <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+                            <li class="active">
+                                <span>Contact Enqiry List</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="hpanel">
+  <div class="panel-body">
+    <table  id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    var status = false;
+    $("#jqGrid").jqGrid({
+      url: 'http://localhost:1337/contact/contactList',
+      mtype: "GET",
+      datatype: "json",
+      colModel: [
+        { label: 'Name',  name: 'name', width: 150 ,search:true },
+        { label: 'Email', name: 'email', width: 300 ,search:true},
+        { label: 'Query', name:'query', width: 150 },
+        { label: 'Action', name: 'contact_id', search: false, width: 150, align: "center",
+          formatter: function(cellvalue) {
+          var action = '<a href="<%= sails.config.base_url %>contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+            return action;
+          }
+        }
+      ],
+      viewrecords: true,
+      width: 1024,
+      height: 250,
+      rowNum:10,
+      loadonce:true,
+      gridview: true,
+      pager: "#jqGridPager",
+      /*guiStyle: "bootstrap",*/
+    });
+    jQuery("#jqGrid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  });
+
+</script>

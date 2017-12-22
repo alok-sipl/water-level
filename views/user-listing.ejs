@@ -1,0 +1,78 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="font-light m-b-xs">
+                        User List
+                    </h2>
+                    <div id="hbreadcrumb">
+                        <ol class="hbreadcrumb breadcrumb">
+                            <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+                            <li class="active">
+                                <span>user List</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div class="hpanel">
+  <div class="panel-body">
+    <table  id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    var status = false;
+    $("#jqGrid").jqGrid({
+      url: 'http://localhost:1337/user/userlist',
+      mtype: "GET",
+      datatype: "json",
+      colModel: [
+        { label: 'Name',  name: 'name', width: 150 ,search:true },
+        { label: 'Email', name: 'email', width: 300 ,search:true},
+        { label: 'Contact Number', name:'phone', width: 150 },
+        { label: 'Password', name:'password', width: 100 },
+        { label: 'Location', name:'area', width: 250 },
+        { label: 'City', name:'city_name', width: 150 },
+        { label: 'Country', name:'country_name', width: 100 },
+        { label: 'Status', name:'id_deleted', width: 100,
+          formatter: function(cellvalue) {
+            status= cellvalue;
+          return (cellvalue == false) ? "Active" : "In active";
+          }
+        },
+        { label: 'Action', name: 'account_number', key: true, width: 150,search:true },
+        { label: 'Action', name: 'user_id', search: false, width: 150, align: "center",
+          formatter: function(cellvalue) {
+          var action = '<a href="<%= sails.config.base_url %>user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+            action += '<a href="<%= sails.config.base_url %>user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+            if(status){
+            action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+            }else{
+            action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+             }
+            return action;
+          }
+        }
+      ],
+      viewrecords: true,
+      width: 1024,
+      height: 250,
+      rowNum:10,
+      loadonce:true,
+      gridview: true,
+      pager: "#jqGridPager",
+      /*guiStyle: "bootstrap",*/
+    });
+    jQuery("#jqGrid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  });
+
+</script>

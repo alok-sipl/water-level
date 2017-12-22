@@ -1,0 +1,107 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            Device List
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li class="active">
+                <span>Device List</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="col-md-6 text-right m-t-sm">
+          <a class="btn btn-primary" href="<%= sails.config.base_url %>device/create">Add Device</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="hpanel">-->
+  <!--<div class="panel-body">-->
+    <!--<% if (req.session.flash) { %>-->
+    <!--<%- req.flash('flashMessage') %>-->
+    <!--<% } %>-->
+    <!--<table class="table table-striped table-bordered table-hover dataTable no-footer" id="user-table">-->
+      <!--<thead>-->
+      <!--<tr>-->
+        <!--<th class="text-left">Device Id</th>-->
+        <!--<th class="text-left">Device Name</th>-->
+        <!--<th class="text-left">User Name</th>-->
+        <!--<th class="text-left">Tank</th>-->
+        <!--<th class="text-left">Location</th>-->
+        <!--<th class="text-left">last inactive Time</th>-->
+        <!--<th class="th-status">Status</th>-->
+        <!--<th class="th-action">Action</th>-->
+      <!--</tr>-->
+      <!--</thead>-->
+    <!--</table>-->
+  <!--</div>-->
+<!--</div>-->
+<div class="hpanel">
+  <div class="panel-body">
+    <table  id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    var status = false;
+    $("#jqGrid").jqGrid({
+      url: 'http://localhost:1337/device/deviceList',
+      mtype: "GET",
+      datatype: "json",
+      colModel: [
+        { label: 'Device Id',  name: 'device_id', width: 150 ,search:true },
+        { label: 'Device Name', name: 'name', width: 300 ,search:true},
+        { label: 'User Name', name:'phone', width: 150,
+          formatter: function(cellvalue) {
+            status= cellvalue;
+            return (cellvalue == undefined) ? "Not Assigned" : cellvalue;
+          }
+        },
+        { label: 'Location', name:'area', width: 250 },
+        { label: 'Last Inactive Time', name:'city_name', width: 150 ,
+          formatter: function(cellvalue) {
+            status= cellvalue;
+            return (cellvalue == undefined) ? "--" : cellvalue;
+          }
+        },
+        { label: 'Status', name:'id_deleted', width: 100,
+          formatter: function(cellvalue) {
+            status= cellvalue;
+            return (cellvalue == false) ? "Active" : "In active";
+          }
+        },
+        { label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "center",
+          formatter: function(cellvalue) {
+            var action = '<a href="<%= sails.config.base_url %>device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+            action += '<a href="<%= sails.config.base_url %>device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+            if(status){
+              action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+            }else{
+              action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+            }
+            return action;
+          }
+        }
+      ],
+      viewrecords: true,
+      width: 1024,
+      height: 250,
+      rowNum:10,
+      loadonce:true,
+      gridview: true,
+      pager: "#jqGridPager",
+      /*guiStyle: "bootstrap",*/
+    });
+    jQuery("#jqGrid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  });
+
+</script>
