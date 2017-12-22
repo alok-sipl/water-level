@@ -83,8 +83,8 @@ module.exports = {
    // environment: process.env.NODE_ENV || 'development'
 
    app_name: 'Water Level Detector',
-   base_url: 'http://localhost:1337/',
-   admin_url: 'http://localhost:1337/admin',
+   base_url: 'https://water-level.herokuapp.com/',
+   admin_url: 'https://water-level.herokuapp.com/admin',
    google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU" ,
 
   /* Validation message setting */
