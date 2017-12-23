@@ -18,8 +18,7 @@ module.exports = {
   tankReading: function (req, res) {
     var deviceId = req.param('deviceId');
     var timeFilter = req.param('timeFilter');
-    var data = [];
-    if('day'){
+    if(timeFilter =='day'){
       data = [
         [{ "v": 49, "name": "1 PM" },
           { "v": 42, "name": "2 PM" },
@@ -28,7 +27,7 @@ module.exports = {
           { "v": 60, "name": "5 PM" }
         ]
       ];
-    }else if('week'){
+    }else if(timeFilter == 'week'){
       data = [
         [{ "v": 49, "name": "1 Week" },
           { "v": 42, "name": "2 Week" },
@@ -37,7 +36,16 @@ module.exports = {
           { "v": 60, "name": "5 Week" }
         ]
       ];
-    }else if('month'){
+    }else if(timeFilter =='month'){
+      data = [
+        [{ "v": 49, "name": "Aug" },
+          { "v": 42, "name": "Sep" },
+          { "v": 29, "name": "Oct" },
+          { "v": 50, "name": "Nov" },
+          { "v": 60, "name": "Dec" }
+        ]
+      ];
+    }else{
       data = [
         [{ "v": 49, "name": "Aug" },
           { "v": 42, "name": "Sep" },
