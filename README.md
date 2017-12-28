@@ -1,1 +1,3 @@
-# water-level
+# waterLevel
+
+a [Sails](http://sailsjs.org) application
