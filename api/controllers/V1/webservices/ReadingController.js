@@ -172,7 +172,7 @@ module.exports = {
     var favouritesSupplires ="";
     var reflikedSuppliers = db.ref("likes");
 
-    reflikedSuppliers.orderByChild('user_id').equalTo('-L0UbCoAiFk06mBEYfDZ').on("value", function(snapshot) {
+    reflikedSuppliers.orderByChild('user_id').equalTo('-L0UbCoAiFk06mBEYfDZ').once("value", function(snapshot) {
       favouritesSupplires = snapshot.val();
       console.log(favouritesSupplires);
 
@@ -206,6 +206,7 @@ module.exports = {
         supplierWithDistance["longitude"] = suppliers[key].longitude;
         supplierWithDistance["mobile_number"] = suppliers[key].mobile_number;
         supplierWithDistance["name"] = suppliers[key].name;
+        supplierWithDistance["tank_capacity"] = suppliers[key].tank_capacity;
         if(favouritesSuppliresId.indexOf(key)){
           supplierWithDistance["is_fav"] = 1;
         }else{
