@@ -2,7 +2,7 @@
  * Main set common settings of the application
  */
 
-var BASE_URL = 'http://localhost:1337';
+var BASE_URL = 'https://water-level.herokuapp.com';
 
 /* All message will be declared here */
 var CONST = {
