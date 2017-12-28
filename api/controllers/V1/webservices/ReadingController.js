@@ -112,7 +112,7 @@ module.exports = {
 
     var refDeviceReading = db.ref("device_reading");
     var tankReading = [];
-    refDeviceReading.orderByChild('device_id').equalTo('-L0oJuC3wNmUAnuic-or').on("value", function(snapshot) {
+    refDeviceReading.orderByChild('device_id').equalTo('-L0oJuC3wNmUAnuic-or').once("value", function(snapshot) {
       deviceReadings = snapshot.val();
       Object.keys(deviceReadings).forEach(key => {
         var readingDataObject =  {};
