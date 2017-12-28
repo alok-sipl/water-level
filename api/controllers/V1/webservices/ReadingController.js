@@ -111,17 +111,7 @@ module.exports = {
     var pastTimeStamp  =   pastDateTimeString/1000;
 
     var refDeviceReading = db.ref("device_reading");
-
-    // refDeviceReading
-    //   .orderByChild('device_id')
-    //   .startAt('-L0oJuC3wNmUAnuic-or').endAt('-L0oJuC3wNmUAnuic-or')
-    //   .orderByChild('created_date')                  // !!! THIS LINE WILL RAISE AN ERROR !!!
-    //   .startAt(pastTimeStamp).endAt(currentTimeStamp)
-    //   .on('value', function(snapshot) {
-    //       deviceReadings = snapshot.val();
-    //       deviceReadingList.push(deviceReadings)
-    //   });
-
+    var tankReading = [];
     refDeviceReading.orderByChild('device_id').equalTo('-L0oJuC3wNmUAnuic-or').on("value", function(snapshot) {
       deviceReadings = snapshot.val();
       Object.keys(deviceReadings).forEach(key => {
@@ -136,6 +126,7 @@ module.exports = {
         }
 
       });
+      tankReading.push(deviceReadingList);
     });
 
 
@@ -170,7 +161,7 @@ module.exports = {
     console.log("CURRENT "+currentDateTime +" Cureent Timestamp "+ currentTimeStamp);
     console.log("PAST "+pastSixHrsDateTime +" PAST Timestamp "+ pastTimeStamp);
 
-    return res.json(deviceReadingList);
+    return res.json(tankReading);
   },
   supplierListing: function (req, res) {
     var currLat1 = "22.743564";
