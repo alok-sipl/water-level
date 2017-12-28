@@ -2,52 +2,26 @@
 <html>
 <head>
   <title><%= typeof title == 'undefined' ? 'New Sails App' : sails.config.app_name + ' | ' + title %></title>
-
   <!-- Viewport mobile tag for sensible mobile support -->
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
-
-
-  <!--
-      Stylesheets and Preprocessors
-      ==============================
-
-      You can always bring in CSS files manually with `<link>` tags, or asynchronously
-      using a solution like AMD (RequireJS).  Or, if you like, you can take advantage
-      of Sails' conventional asset pipeline (boilerplate Gruntfile).
-
-      By default, stylesheets from your `assets/styles` folder are included
-  <a href="layout.ejs"></a>
-      here automatically (between STYLES and STYLES END). Both CSS (.css) and LESS (.less)
-      are supported. In production, your styles will be minified and concatenated into
-      a single file.
-
-      To customize any part of the built-in behavior, just edit `tasks/pipeline.js`.
-      For example, here are a few things you could do:
-
-          + Change the order of your CSS files
-          + Import stylesheets from other directories
-          + Use a different or additional preprocessor, like SASS, SCSS or Stylus
-      -->
-
   <!--STYLES-->
   
   <!--STYLES END-->
-  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/DataTable.min.css">
-  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/bootstrap-datetimepicker.min.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/sweet-alert.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/summernote.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/style.css">
-  <script
-    src="https://code.jquery.com/jquery-2.2.4.min.js"
-    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-    crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css"/>
+  <!-- The link to the CSS that the grid needs -->
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/css/ui.jqgrid.min.css"/>
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
 </head>
-<% if(typeof sails.config.globals.userDetail !== 'undefined' && sails.config.globals.userDetail.id ){ %>
 <body class="admin-layout">
 <!-- Simple splash screen-->
 <div class="splash">
@@ -100,20 +74,13 @@
   <div class="color-line">
   </div>
   <div id="logo" class="light-version">
-                <span>
-                    <%= sails.config.app_name %>
-                </span>
+    <span><%= sails.config.app_name %></span>
   </div>
   <nav role="navigation">
     <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>
     <div class="small-logo">
       <span class="text-primary"><%= sails.config.app_name %></span>
     </div>
-    <form role="search" class="navbar-form-custom" method="post" action="#">
-      <div class="form-group">
-        <input type="text" placeholder="Search something special" class="form-control" name="search">
-      </div>
-    </form>
     <div class="navbar-right">
       <ul class="nav navbar-nav no-borders">
         <li>
@@ -134,72 +101,10 @@
   <div class="content animate-panel">
     <div class="row">
       <div class="col-lg-12">
-        <div class="server-message">
-          <!--                            @if(Session::get('alert_msg'))
-                                      <span class="server-alert-msg">{!! Session::get('alert_msg') !!}</span>
-                                      @endif
-                                      @if(Session::get('success_msg'))
-                                      <span class="server-success-msg">{!! Session::get('success_msg') !!}</span>
-                                      @endif
-                                      @if(Session::get('error_msg'))
-                                      <span class="server-error-msg">{!! Session::get('error_msg') !!}</span>
-                                      @endif-->
-        </div>
-
         <%- body %>
-        <!--
-            Client-side Templates
-            ========================
-
-            HTML templates are important prerequisites of modern, rich client applications.
-            To work their magic, frameworks like Backbone, Angular, Ember, and Knockout require
-            that you load these templates client-side.
-
-            By default, your Gruntfile is configured to automatically load and precompile
-            client-side JST templates in your `assets/templates` folder, then
-            include them here automatically (between TEMPLATES and TEMPLATES END).
-
-            To customize this behavior to fit your needs, just edit `tasks/pipeline.js`.
-            For example, here are a few things you could do:
-
-                + Import templates from other directories
-                + Use a different template engine (handlebars, jade, dust, etc.)
-                + Internationalize your client-side templates using a server-side
-                  stringfile before they're served.
-              -->
-
-        <!--TEMPLATES-->
-        
-        <!--TEMPLATES END-->
-
-
-        <!--
-
-          Client-side Javascript
-          ========================
-
-          You can always bring in JS files manually with `script` tags, or asynchronously
-          on the client using a solution like AMD (RequireJS).  Or, if you like, you can
-          take advantage of Sails' conventional asset pipeline (boilerplate Gruntfile).
-
-          By default, files in your `assets/js` folder are included here
-          automatically (between SCRIPTS and SCRIPTS END).  Both JavaScript (.js) and
-          CoffeeScript (.coffee) are supported. In production, your scripts will be minified
-          and concatenated into a single file.
-
-          To customize any part of the built-in behavior, just edit `tasks/pipeline.js`.
-          For example, here are a few things you could do:
-
-              + Change the order of your scripts
-              + Import scripts from other directories
-              + Use a different preprocessor, like TypeScript
-
-          -->
       </div>
       <footer class="footer">
-                        <span class="pull-right">
-
-                        </span>
+        <span class="pull-right"></span>
         <%= sails.config.app_name %>
       </footer>
     </div>
@@ -233,60 +138,15 @@
 <script src="<%= sails.config.base_url %>custom/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/vendor/metisMenu/dist/metisMenu.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/bootstrap-datetimepicker.min.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/vendor/sweet-alert.min.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/vendor/parsley.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/notify.min.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/DataTable.min.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/homer.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/bundle.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/summernote.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= sails.config.google_key %>&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="<%= sails.config.base_url %>custom/js/admin.js"></script>
-</body>
-<% }else{ %>
-<body class="blank">
-
-<!-- Simple splash screen-->
-<div class="splash">
-  <div class="color-line"></div>
-  <div class="splash-title"><h1><%= sails.config.app_name %></h1>
-    <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
-    </div>
-  </div>
-</div>
-<!--[if lt IE 7]>
-<p class="alert alert-danger">You are using an <strong>outdated</strong> browser. Please <a
-  href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-<![endif]-->
-<%- body %>
-<!-- Vendor scripts -->
-<script src="<%= sails.config.base_url %>custom/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/metisMenu/dist/metisMenu.min.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/parsley.js"></script>
-<script src="<%= sails.config.base_url %>custom/js/vendor/notify.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= sails.config.google_key %>&libraries=places&callback=initAutocomplete" async defer></script>
-<script src="<%= sails.config.base_url %>custom/js/admin.js"></script>
-
-<!-- App scripts -->
-<script src="<%= sails.config.base_url %>custom/js/homer.js"></script>
-<!-- We support more than 40 localizations -->
-<script type="text/ecmascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
+<script type="text/ecmascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
 <!-- This is the Javascript file of jqGrid -->
-<script type="text/ecmascript" src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/js/jquery.jqgrid.min.js"></script>
-<!-- This is the localization file of the grid controlling messages, labels, etc.
-<!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
-<link rel="stylesheet" type="text/css" media="screen" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css" />
-<!-- The link to the CSS that the grid needs -->
-<link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/css/ui.jqgrid.min.css" />
-<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">-->
-<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css">-->
+<script type="text/ecmascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/js/jquery.jqgrid.min.js"></script>
 </body>
-<% } %>
-
 </html>

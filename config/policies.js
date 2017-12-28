@@ -49,6 +49,15 @@ module.exports.policies = {
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
 
+  // supplier: {
+  //   '*': "firebaseAuth"
+  // },
+
+  // "*": "firebaseAuth",
+  // "LoginController": {
+  //   '*': true
+  // },
+
 
   // "*": "firebaseAuth",
   // "LoginController": {

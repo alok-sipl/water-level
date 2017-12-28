@@ -36,6 +36,8 @@ module.exports = {
         }
         firebase.auth().signInWithEmailAndPassword(req.param('email'), req.param('password'))
           .then(function (user) {
+            req.session.authenticated= true;
+            req.session.user = user;
             return res.redirect(sails.config.base_url+'supplier');
           }).catch(function (error) {
             if(error.code == "auth/invalid-email"){
@@ -50,7 +52,8 @@ module.exports = {
       }
     }
     if(req.method == "GET" || isFormError){
-      return res.view('login', {title: sails.config.title.dashboard, errors: errors});
+      res.locals.layout = 'layout-login';
+      return res.view('login', {title: sails.config.title.login, errors: errors});
     }
   },
 
@@ -87,7 +90,7 @@ module.exports = {
           is_admin: true,
           phone: "9713997998",
           id: user.uid,
-          id_deleted: false,
+          is_deleted: false,
           is_user_notification: true,
           is_device_notification: true,
           created_at: Date.now(),

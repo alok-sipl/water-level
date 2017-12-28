@@ -1,9 +1,9 @@
 <aside id="menu">
   <div id="navigation">
     <div class="profile-picture">
-      <a href="<%= sails.config.base_url %>"><img src="<%= (sails.config.globals.userDetail.image) ? sails.config.globals.userDetail.image: sails.config.base_url+ 'images/profile.png' %>"></a>
+      <a href="<%= sails.config.base_url %>"><img src="<%= (req.session.image) ? req.session.user.image: sails.config.base_url+ 'images/profile.png' %>"></a>
       <div class="stats-label text-color">
-        <span class="font-extra-bold font-uppercase"><%= (sails.config.globals.userDetail.name) ? sails.config.globals.userDetail.name: 'Admin' %></span>
+        <span class="font-extra-bold font-uppercase"><%= (req.session.name) ? req.session.name: 'Admin' %></span>
       </div>
     </div>
     <ul class="nav" id="side-menu">
@@ -19,6 +19,9 @@
       </li>
       <li>
         <a href="<%= sails.config.base_url %>city" title="Manage City"><span class="nav-label">Manage City</span></a>
+      </li>
+      <li>
+        <a href="<%= sails.config.base_url %>contact" title="View Enquiry"><span class="nav-label">View Enquiry</span></a>
       </li>
       <li>
         <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile"><span class="nav-label">Profile</span></a>

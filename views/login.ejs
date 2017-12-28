@@ -6,16 +6,16 @@
           <img src="<%= sails.config.base_url %>images/logo.png" title="<%= sails.config.app_name %>" alt="<%= sails.config.app_name %>">
         </div>
         <h3>Administrator Login</h3>
-        <small>This is the best app ever!</small>
+        <span><%= (sails.config.app_name) ? sails.config.app_name : "New App" %></span>
       </div>
       <div class="hpanel">
         <div class="panel-body">
           <form method="post" action="<%= sails.config.base_url %>login" data-parsley-validate novalidate="" name="loginForm" id="loginForm">
-            <% if (req.session.flash) { %>
+            <% if (req.session.flash) { console.log(req.session.flash) %>
               <%- req.flash('flashMessage') %>
             <% } %>
             <div class="form-group <%= (errors.email != undefined) ? " has-error" : "" %>">
-              <label class="control-label" for="email">Email</label>
+              <label class="control-label" for="email">Email*</label>
               <input type="email" name="email" class="form-control" id="email"
                      required
                      maxlength="<%= sails.config.length.email %>"
@@ -30,21 +30,19 @@
               </span>
             </div>
             <div class="form-group <%= (errors.password != undefined) ? " has-error" : "" %>">
-              <label class="control-label" for="password">Password</label>
+              <label class="control-label" for="password">Password*</label>
               <input type="password" name="password" class="form-control" id="password"
                      required
-                     minlength="<%= sails.config.length.min_password %>"
-                     maxlength="<%= sails.config.length.max_password %>"
+                     data-parsley-length="[<%= sails.config.length.min_password %>, <%= sails.config.length.max_password %>]"
                      data-parsley-required-message="<%= User.message.password_required %>"
-                     data-parsley-minlength-message="<%= User.message.password_minlength %>"
-                     data-parsley-maxlength-message="<%= User.message.password_maxlength %>"
+                     data-parsley-length-message="<%= User.message.password_length %>"
                      placeholder="Password"/>
               <span class="help-block">
                 <strong><%= (errors.password != undefined) ? errors.password.message : '' %>
                 </strong>
               </span>
             </div>
-            <button class="btn btn-default btn-block" title="Login"><span>Login</span></button>
+            <button class="btn btn btn-primary btn-block" title="Login"><span>Login</span></button>
           </form>
         </div>
       </div>

@@ -20,19 +20,19 @@ module.exports = {
     // var subCities = {};
     // /* country listing*/
     // var ref = db.ref("countries");
-    // ref.on("value", function (snapshot) {
+    // ref.once("value", function (snapshot) {
     //   var countries = snapshot.val();
     //   /* city listing*/
     //   var ref = db.ref("cities");
-    //   ref.on("value", function (snapshot) {
+    //   ref.once("value", function (snapshot) {
     //     var cities = snapshot.val();
     //     /* subcities listing*/
     //     var ref = db.ref("subcities");
-    //     ref.on("value", function (snapshot) {
+    //     ref.once("value", function (snapshot) {
     //       var subCities = snapshot.val();
     //       /* subcities listing*/
     //       var ref = db.ref("users");
-    //       ref.on("value", function (snapshot) {
+    //       ref.once("value", function (snapshot) {
     //         var users = snapshot.val();
     //         return res.view('user-listing', {users: users, countries: countries, cities:cities, subCities:subCities});
     //       }, function (errorObject) {
@@ -47,7 +47,9 @@ module.exports = {
     // }, function (errorObject) {
     //   return res.serverError(errorObject.code);
     // });
-    return res.view('user-listing');
+    return res.view('user-listing', {
+      'title' : sails.config.title.user_list
+    });
    },
 
   /*
@@ -61,14 +63,8 @@ module.exports = {
     /* country listing*/
     users = [];
     var ref = db.ref("users");
-    ref.on('value', function (snap) {
+    ref.once('value', function (snap) {
       var userJson     = (Object.keys(snap).length) ? getUserList(snap) : {};
-      //console.log('User Data:---', userJson);
-      /*var records      =  userJson.length;
-      var pages        =  Math.ceil(records/req.query.rows);
-      var page  = req.query.page
-   //   console.log(req.query.rows);
-          return res.json({"records":records,"page":page,"total":pages,'rows':userJson});*/
       return res.json({'rows':userJson});
     });
   },
@@ -85,14 +81,17 @@ module.exports = {
     /* user detail */
     var errors = {};
     var ref = db.ref("users/" + req.params.id);
-    ref.on("value", function (snapshot) {
+    ref.once("value", function (snapshot) {
       var user = snapshot.val();
       /* city listing*/
       var ref = db.ref("countries");
-      ref.on("value", function (snapshot) {
+      ref.once("value", function (snapshot) {
         var countries = snapshot.val();
         return res.view('view-edit-user', {
-          'user': user, errors: errors,countries: countries, isEdit: false,
+          'title': sails.config.title.view_user,
+          'user': user, errors: errors,
+          'countries': countries,
+          'isEdit': false,
         });
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -114,14 +113,18 @@ module.exports = {
     /* user detail */
     var errors = {};
     var ref = db.ref("users/" + req.params.id);
-    ref.on("value", function (snapshot) {
+    ref.once("value", function (snapshot) {
       var user = snapshot.val();
       /* city listing*/
       var ref = db.ref("countries");
-      ref.on("value", function (snapshot) {
+      ref.once("value", function (snapshot) {
         var countries = snapshot.val();
         return res.view('view-edit-user', {
-          'user': user, errors: errors,countries: countries, isEdit: true,
+          'title': sails.config.title.edit_user,
+          'user': user,
+          'errors': errors,
+          'countries': countries,
+          'isEdit': true,
         });
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -129,6 +132,43 @@ module.exports = {
 
     }, function (errorObject) {
       return res.serverError(errorObject.code);
+    });
+  },
+
+  /*
+   * Name: updateStatus
+   * Created By: A-SIPL
+   * Created Date: 26-dec-2017
+   * Purpose: UPdate
+   * @param  req
+   */
+  updateStatus:function(req, res){
+    var id = req.body.id;
+    var status = req.body.is_active;
+    var ref = db.ref('/users/'+ id);
+    ref.once("value", function (snapshot) {
+      if(snapshot.val()){
+        db.ref('/users/'+ id)
+          .update({
+            'is_deleted': status
+          })
+          .then(function (res) {
+            userinfo = snapshot.val();
+            MailerService.sendWelcomeMail({
+              name: userinfo.name,
+              email: userinfo.email,
+              subject: (status) ? sails.config.email_message.user_activated : sails.config.email_message.user_deactivated
+            });
+            return true;
+          })
+          .catch(function (err) {
+            return false;
+          });
+      }else{
+        return false;
+      }
+    }, function (errorObject) {
+      return false;
     });
   },
 };

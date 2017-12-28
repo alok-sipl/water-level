@@ -15,7 +15,7 @@ module.exports = {
      * @param  int  $id
      */
   index: function (req, res) {
-    return res.view('device-listing');
+    return res.view('device-listing', {title: sails.config.title.device_list,});
   },
 
   /*
@@ -29,7 +29,7 @@ module.exports = {
     /* device listing*/
     devices = [];
     var ref = db.ref("devices");
-    ref.on('value', function (snap) {
+    ref.once('value', function (snap) {
       var deviceJson = (Object.keys(snap).length) ? getDeviceList(snap) : {};
       return res.json({'rows': deviceJson});
     });
@@ -37,20 +37,20 @@ module.exports = {
 
 
   /*
-     * Name: create
+     * Name: add
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
      * Purpose: add new device
      * @param  req
      */
-  create: function (req, res) {
+  add: function (req, res) {
     var device = {};
     var errors = {};
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         isFormError = true;
-        return res.view('add-update-device', {'device': device, "errors": errors, req: req});
+        return res.view('add-update-device', {title: sails.config.title.device_list,'device': device, "errors": errors, req: req});
       } else {
         var ref = db.ref("/devices");
         ref.orderByChild("device_id").equalTo(req.param('device_id')).once('value')
@@ -80,12 +80,12 @@ module.exports = {
           })
       }
     } else {
-      return res.view('add-update-device', {'device': device, errors: errors});
+      return res.view('add-update-device', {title: sails.config.title.edit_device,'device': device, errors: errors});
     }
   },
 
   /*
-     * Name: addSupplier
+     * Name: edit
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
      * Purpose: add new supplier
@@ -113,10 +113,10 @@ module.exports = {
     if (req.method == "GET") {
       /* supplier detail */
       var ref = db.ref("devices/" + req.params.id);
-      ref.on("value", function (snapshot) {
+      ref.once("value", function (snapshot) {
         var device = snapshot.val();
         return res.view('view-edit-device', {
-          'device': device, errors: errors, isEdit: true,
+          title: sails.config.title.edit_device,'device': device, errors: errors, isEdit: true,
         });
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -135,13 +135,50 @@ module.exports = {
     /* device detail */
     var errors = {};
     var ref = db.ref("devices/" + req.params.id);
-    ref.on("value", function (snapshot) {
+    ref.once("value", function (snapshot) {
       var device = snapshot.val();
       return res.view('view-edit-device', {
-        'device': device, errors: errors, isEdit: false,
+        title: sails.config.title.view_device,'device': device, errors: errors, isEdit: false,
       });
     }, function (errorObject) {
       return res.serverError(errorObject.code);
+    });
+  },
+
+  /*
+ * Name: updateStatus
+ * Created By: A-SIPL
+ * Created Date: 26-dec-2017
+ * Purpose: Update status of device
+ * @param  req
+ */
+  updateStatus:function(req, res){
+    var id = req.body.id;
+    var status = req.body.is_active;
+    var ref = db.ref('/users/'+ id);
+    ref.once("value", function (snapshot) {
+      if(snapshot.val()){
+        db.ref('/devices/'+ id)
+          .update({
+            'is_deleted': status
+          })
+          .then(function (res) {
+            userinfo = snapshot.val();
+            MailerService.sendWelcomeMail({
+              name: userinfo.name,
+              email: userinfo.email,
+              subject: (status) ? sails.config.email_message.device_activated : sails.config.email_message.device_deactivated
+            });
+            return true;
+          })
+          .catch(function (err) {
+            return false;
+          });
+      }else{
+        return false;
+      }
+    }, function (errorObject) {
+      return false;
     });
   },
 };

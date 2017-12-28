@@ -32,6 +32,7 @@
         <% if (req.session.flash) { %>
         <%- req.flash('flashMessage') %>
         <% } %>
+            <% console.log("User Model:- ", User);%>
           <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
             <label for="first_name" class="col-md-4 control-label">Device Id*</label>
             <div class="col-md-6">

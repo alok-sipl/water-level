@@ -4,90 +4,27 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="font-light m-b-xs">
-                        City, Location List
+                        City List
                     </h2>
                     <div id="hbreadcrumb">
                         <ol class="hbreadcrumb breadcrumb">
                             <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
                             <li class="active">
-                                <span>City, Location List</span>
+                                <span>City List</span>
                             </li>
                         </ol>
                     </div>
                 </div>
                 <div class="col-md-6 text-right m-t-sm">
-                    <!--<a class="btn btn-primary modal-popup-iframe" data-toggle="modal" href="#" data-url="<%= sails.config.base_url %>city/addCity" data-target=".iframe-modal-wrapper" data-modalheight="400px" data-modaltitle="Add Location"><i class="icon icon-user"></i>Add Location</a>-->
-                    <!--<a class="btn btn-primary modal-popup-iframe" data-toggle="modal" href="#" data-url="<%= sails.config.base_url %>city/addCity" data-target=".iframe-modal-wrapper" data-modalheight="400px" data-modaltitle="Add City"><i class="icon icon-user"></i>Add City</a>-->
-                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addCity/0"><i class="icon icon-user"></i>Add Location</a>
                   <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addCity/1"><i class="icon icon-user"></i>Add City</a>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>
-<!--<div class="hpanel">-->
-    <!--<div class="panel-body">-->
-        <!--<table class="table table-striped table-bordered table-hover dataTable no-footer" id="city-table">-->
-            <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th class="text-left">Location</th>-->
-                    <!--<th class="text-left">City</th>-->
-                    <!--<th class="text-left">Country</th>-->
-                    <!--<th class="th-status">Status</th>-->
-                    <!--<th class="th-action">Action</th>-->
-                <!--</tr>-->
-            <!--</thead>-->
-        <!--</table>-->
-    <!--</div>-->
-<!--</div>-->
 <div class="hpanel">
   <div class="panel-body">
-    <table  id="jqGrid"></table>
-    <div id="jqGridPager"></div>
-
+    <table  id="city-grid"></table>
+    <div id="city-grid-pager"></div>
   </div>
 </div>
-<script type="text/javascript">
-  $(document).ready(function () {
-    var status = false;
-    $("#jqGrid").jqGrid({
-      url: 'http://localhost:1337/city/cityList',
-      mtype: "GET",
-      datatype: "json",
-      colModel: [
-        { label: 'City', name: 'name', width: 300 ,search:true},
-        { label: 'Country', name:'country_name', width: 150 },
-        { label: 'Status', name:'is_deleted', width: 100,
-          formatter: function(cellvalue) {
-            status= cellvalue;
-            return (cellvalue == false) ? "Active" : "In active";
-          }
-        },
-        { label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
-          formatter: function(cellvalue) {
-            var action = '<a title="View Sub City" href="<%= sails.config.base_url %>city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-            action += '<a href="<%= sails.config.base_url %>city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-            if(status){
-              action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-            }else{
-              action += '<a data-tooltip="" title="" data-status="1" data-url="<%= sails.config.base_url %>user/view/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
-            }
-            return action;
-          }
-        }
-      ],
-      viewrecords: true,
-      width: 1024,
-      height: 250,
-      rowNum:10,
-      loadonce:true,
-      gridview: true,
-      pager: "#jqGridPager",
-      /*guiStyle: "bootstrap",*/
-    });
-    jQuery("#jqGrid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
-  });
-
-</script>

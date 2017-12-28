@@ -15,7 +15,7 @@ module.exports = {
      * @param  int  $id
      */
   index: function (req, res) {
-    return res.view('contact-listing');
+    return res.view('contact-listing', {'title': sails.config.title.enquiry_list,});
   },
 
   /*
@@ -29,7 +29,7 @@ module.exports = {
     /* contact listing*/
     contacts = [];
     var ref = db.ref("queries");
-    ref.on('value', function (snap) {
+    ref.once('value', function (snap) {
       var contactJson = (Object.keys(snap).length) ? getContactList(snap) : {};
       return res.json({'rows': contactJson});
     });
@@ -46,10 +46,13 @@ module.exports = {
     /* contact detail */
     var errors = {};
     var ref = db.ref("queries/" + req.params.id);
-    ref.on("value", function (snapshot) {
+    ref.once("value", function (snapshot) {
       var contact = snapshot.val();
       return res.view('view-edit-contact', {
-        'contact': contact, errors: errors, isEdit: false,
+        'title': sails.config.title.view_enquiry,
+        'contact': contact,
+        'errors': errors,
+        'isEdit': false,
       });
     }, function (errorObject) {
       return res.serverError(errorObject.code);

@@ -1,0 +1,26 @@
+<% if(Object.keys(suppliers).length){
+  for (var key in suppliers) { %>
+<div class="col-lg-4">
+  <div class="hpanel hgreen contact-panel">
+    <div class="panel-body">
+      <img alt="<%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %>" class="img-circle m-b"
+           src="<%= (suppliers[key]['compnay_image'] != undefined) ? suppliers[key]['compnay_image'] : sails.config.base_url + 'images/profile.png' %>">
+      <h3><%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %></h3>
+      <div
+        class="text-muted font-bold m-b-xs"><%= (suppliers[key]['city_name'] != undefined) ? ((suppliers[key]['area'] != undefined) ? suppliers[key]['area'] + ', ' : '') + suppliers[key]['city_name'] + ', ' + suppliers[key]['country_name'] : '' %></div>
+      <p><%= (suppliers[key]['mobile_number'] != undefined) ? suppliers[key]['mobile_number'] : '' %></p>
+      <p><%= (suppliers[key]['email'] != undefined) ? suppliers[key]['email'] : '' %></p>
+    </div>
+    <div class="panel-footer contact-footer">
+      <div class="row">
+        <div class="col-md-12 border-right">
+          <div class="contact-stat"><a href="<%= sails.config.base_url %>supplier/edit/<%= key %>"
+                                       title="<%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %>">Edit
+              Supplier</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% }
+} %>

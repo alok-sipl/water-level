@@ -82,7 +82,7 @@
           <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Country*</label>
             <div class="col-md-6">
-              <select name="country" id="country" class="form-control" required
+              <select name="country" onchange="getCity(this.value)" id="country" class="form-control" required
                       data-parsley-required-message="<%= User.message.country_required %>">
                 <option value="">Select Country</option>
                 <%

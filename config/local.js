@@ -83,23 +83,28 @@ module.exports = {
    // environment: process.env.NODE_ENV || 'development'
 
    app_name: 'Water Level Detector',
-   base_url: 'https://water-level.herokuapp.com/',
-   admin_url: 'https://water-level.herokuapp.com/admin',
+   base_url: 'http://localhost:1337/',
+   admin_url: 'http://localhost:1337/admin',
    google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU" ,
+  admin_email : 'ravi_sipl@systematixindia.com',
+  authentication_email : 'ravi_sipl@systematixindia.com',
+  authentication_password : 'target@2015',
+  per_page_data : 3,
 
   /* Validation message setting */
   length:{
     name: 65,
     company_name: 125,
     account_number: 10,
-    min_mobile_number: 1,
+    min_mobile_number: 10,
     max_mobile_number: 13,
     address: 125,
     email: 125,
     min_password: 6,
     max_password: 16,
     device_id: 32,
-    max_file_upload: 4000000
+    max_file_upload: 4000000,
+    max_file_upload_kb: 40
   },
 
   regex:{
@@ -110,11 +115,32 @@ module.exports = {
   },
 
   title:{
+    login: 'Admin Login',
     dashboard: 'Dashboard',
     profile: 'Profile',
+    edit_profile: 'Edit Profile',
+    change_password: 'Change password',
+    supplier_list: 'Supplier List',
+    add_supplier: 'Add Supplier',
+    edit_supplier: 'Edit Supplier',
+    view_supplier: 'View Supplier',
+    user_list: 'User List',
+    edit_user: 'Edit User',
+    view_user: 'View User',
+    device_list: 'Device List',
+    add_device: 'Add Device',
+    edit_device: 'Edit Device',
+    view_device: 'View Device',
     add_country: 'Add Country',
+    edit_country: 'Edit Country',
+    city_list: 'City List',
     add_city: 'Add City',
+    edit_city: 'Edit City',
+    location_list: 'Location List',
     add_location: 'Add Location',
+    edit_location: 'Edit Location',
+    enquiry_list: 'Contact Enqiry List',
+    view_enquiry: 'View Enquiry',
     notification_setting: 'Notification Setting'
   },
 
@@ -127,5 +153,14 @@ module.exports = {
     password_change_error: "Error in changed password",
     old_password_unmatch: "Incorrect current password",
     something_went_wronge: "Something went wronge",
+    supplier_add_success: "Supplier added successfully",
+    supplier_add_error: "Error in adding supplier",
   },
+
+  email_message:{
+    user_activated : "Your account has been activated by admin",
+    user_deactivated : "Your account has been deactivated by admin",
+    device_activated : "Your device has been activated by admin",
+    device_deactivated : "Your device has been deactivated by admin",
+  }
 };

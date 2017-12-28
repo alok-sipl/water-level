@@ -17,7 +17,8 @@ module.exports = {
      * @param  int  $id
      */
   index: function (req, res) {
-    return res.view('dashboard', {title: local.title.dashboard});
+    return res.view('dashboard', {
+    });
   },
 
   /*
@@ -44,17 +45,21 @@ module.exports = {
       var cities = {};
       /* user detail */
       var ref = db.ref("users/-L0UbCoAiFk06mBEYfDZ");
-      ref.on("value", function (snapshot) {
+      ref.once("value", function (snapshot) {
         var user = snapshot.val();
         /* country listing*/
         var ref = db.ref("countries");
-        ref.on("value", function (snapshot) {
+        ref.once("value", function (snapshot) {
           var countries = snapshot.val();
           /* city listing*/
           var ref = db.ref("cities");
-          ref.on("value", function (snapshot) {
+          ref.once("value", function (snapshot) {
             var cities = snapshot.val();
-            return res.view('profile', {'user': user, "countries": countries, "cities": cities, "errors": errors});
+            return res.view('profile', {
+              'title': sails.config.title.edit_profile,
+              'user': user, "countries": countries,
+              'cities': cities,
+              'errors': errors});
           }, function (errorObject) {
             return res.serverError(errorObject.code);
           });
@@ -81,7 +86,11 @@ module.exports = {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        return res.view('profile', {'user': user, "errors": errors});
+        return res.view('profile', {
+          'title': sails.config.title.change_password,
+          'user': user,
+          'errors': errors
+        });
       }else{
         var user = firebaseAuth.auth().currentUser;
         if(user){
@@ -107,7 +116,7 @@ module.exports = {
         }
       }
     }else{
-      return res.view('change-password', {"errors": errors});
+      return res.view('change-password', {title: sails.config.title.change_password, "errors": errors});
     }
   },
 
@@ -120,15 +129,30 @@ module.exports = {
      * @param  req
      */
   logout: function (req, res) {
-    firebaseAuth.auth().signOut()
-      .then(function () {
-        return res.redirect(sails.config.base_url + 'login');
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    // firebaseAuth.auth().signOut()
+    //   .then(function () {
+    //     return res.redirect(sails.config.base_url + 'login');
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    req.session.user = {};
+    req.session.authenticated= false;
+    req.session.destroy(function(err) {
+        return res.redirect('/');
+    });
   },
 
+  /*
+     * Name: sendMail
+     * Created By: A-SIPL
+     * Created Date: 26-dec-2017
+     * Purpose: send mail
+     * @param  req
+     */
+  sendMail: function (req, res) {
+    MailerService.sendWelcomeMail({name: "Alok", email:"alok.bichhwe@systematixindia.com", subject: "User is deactiveated by admin"});
+  },
 
   /*
      * Name: setting
@@ -141,10 +165,10 @@ module.exports = {
     //if(sails.config.globals.userDetail !== undefined){
       /* admin detail */
       var ref = db.ref("users/-L0nFNJX_yF-PdNw5MnD");
-      ref.on("value", function (snapshot) {
-        var userDetail = snapshot.val();
+      ref.once("value", function (snapshot) {
+        var userDetailuserDetail = snapshot.val();
         if(userDetail){
-          return res.view('notification-setting', {userDetail: userDetail});
+          return res.view('notification-setting', {title: sails.config.title.notification_setting, userDetail: userDetail});
         }else{
           req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'dashboard/setting');
@@ -166,8 +190,6 @@ module.exports = {
      * @param  req
      */
   updateSetting: function (req, res){
-    console.log("param:-", req.body.value, req.body.type);return false;
-
     if(req.body.type != undefined && req.body.value != undefined && (req.body.value === true || req.body.value === false)) {
       var index = (req.body.type == 'is_device_notification') ? "is_device_notification" : "is_user_notification";
       db.ref('users/-L0nFNJX_yF-PdNw5MnD')

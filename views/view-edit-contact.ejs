@@ -9,7 +9,7 @@
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
               <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
-              View Contact Enquiry
+              <li class="active">View Contact Enquiry</li>
               </li>
             </ol>
           </div>
@@ -28,7 +28,7 @@
           <%- req.flash('flashMessage') %>
           <% } %>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
-            <label for="name" class="col-md-4 control-label">Name*</label>
+            <label for="name" class="col-md-4 control-label">Name</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="name" class="form-control" id="name"
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="email" class="col-md-4 control-label">Email*</label>
+            <label for="email" class="col-md-4 control-label">Email</label>
             <div class="col-md-6">
               <% if(isEdit){%>
               <input type="email" name="email" class="form-control" id="email"
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="query" class="col-md-4 control-label">Message*</label>
+            <label for="query" class="col-md-4 control-label">Message</label>
             <div class="col-md-6">
               <% if(isEdit){%>
               <input type="text" name="query" class="form-control" id="query"
