@@ -161,7 +161,7 @@ module.exports = {
     console.log("CURRENT "+currentDateTime +" Cureent Timestamp "+ currentTimeStamp);
     console.log("PAST "+pastSixHrsDateTime +" PAST Timestamp "+ pastTimeStamp);
 
-    return res.json(tankReading);
+    return res.json(data);
   },
   supplierListing: function (req, res) {
     var currLat1 = "22.743564";
