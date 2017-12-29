@@ -130,6 +130,9 @@ module.exports = {
     });
 
 
+    var deviceId = req.param('deviceId');
+    var timeFilter = req.param('timeFilter');
+    var data = [];
     if('day'){
       data = [
         [{ "v": 49, "name": "1 PM" },
@@ -158,9 +161,6 @@ module.exports = {
         ]
       ];
     }
-    console.log("CURRENT "+currentDateTime +" Cureent Timestamp "+ currentTimeStamp);
-    console.log("PAST "+pastSixHrsDateTime +" PAST Timestamp "+ pastTimeStamp);
-
     return res.json(data);
   },
   supplierListing: function (req, res) {
