@@ -90,6 +90,7 @@ module.exports = {
   authentication_email : 'ravi_sipl@systematixindia.com',
   authentication_password : 'target@2015',
   per_page_data : 3,
+  supplier_range : 80,
 
   /* Validation message setting */
   length:{
