@@ -62,8 +62,8 @@ module.exports = {
     var userId = req.param('userId');
     var latitude = req.param('latitude');
     var longitude = req.param('longitude');
-    if(userId != '' && userId != undefined && latitude != '' && longitude != ''){
-      var tankCapacity = (req.param('tankCapacity')) ? req.param('tankCapacity') : 0;
+    if(userId != '' && userId != undefined && latitude != '' && latitude != undefined && longitude != '' && longitude != undefined){
+      var tankCapacity = (req.param('tankCapacity') && req.param('tankCapacity') != undefined) ? req.param('tankCapacity') : 0;
       var jsonData = [];
       var favouritesSuppliresId = [];
       var array = [];
@@ -82,7 +82,7 @@ module.exports = {
       refSuppliers.once("value", function (snapshot) {
         var suppliers = snapshot.val();
         for (key in suppliers) {
-          if( suppliers[key].tank_capacity >= tankcapacity){
+          if(suppliers[key].tank_capacity != undefined &&  suppliers[key].tank_capacity >= tankCapacity){
             var supplierWithDistance = {};
             distance =   ValidationService.getDistanceFromLatLonInKm(latitude,longitude,suppliers[key].latitude,suppliers[key].longitude);
             supplierWithDistance["supplier_id"] = key;
