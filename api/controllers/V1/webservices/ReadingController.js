@@ -59,7 +59,7 @@ module.exports = {
      * @param  req
      */
   supplierListing: function (req, res) {
-    console.log('red Data->',req);return true;
+    console.log('red Data->',req.body);return true;
     var userId = req.param('userId');
     var latitude = req.param('latitude');
     var longitude = req.param('longitude');
