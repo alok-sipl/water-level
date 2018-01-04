@@ -19,8 +19,8 @@ module.exports = {
      * @param  req
      */
   tankReading: function (req, res) {
-    console.log('Post param:--', req.body);
-    if(req.body != undefined && req.body.deviceId != undefined && req.body.timeFilter && req.body.type) {
+    console.log('Post param-->',req.body);
+    if(req.body != undefined && req.body.deviceId != undefined && req.body.timeFilter != undefined && req.body.type != undefined && req.body.deviceId != '' && req.body.timeFilter != '' && req.body.type != '') {
       var deviceId = req.body.deviceId;
       var timeFilter = req.body.timeFilter;
       var type = req.body.type;
@@ -370,10 +370,10 @@ module.exports = {
      * @param  req
      */
   supplierListing: function (req, res) {
-    var userId = req.body.userId;
-    var latitude = req.body.latitude;
-    var longitude = req.body.longitude;
-    if (userId != '' && userId != undefined && latitude != '' && latitude != undefined && longitude != '' && longitude != undefined) {
+    if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.latitude != '' && req.body.latitude != undefined && req.body.longitude != '' && req.body.longitude != undefined) {
+      var userId = req.body.userId;
+      var latitude = req.body.latitude;
+      var longitude = req.body.longitude;
       var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
       var jsonData = [];
       var favouritesSuppliresId = [];
