@@ -16,8 +16,8 @@ module.exports = {
      * @param  req
      */
   tankReading: function (req, res) {
-    var deviceId = req.param('deviceId');
-    var timeFilter = req.param('timeFilter');
+    var deviceId = req.body.deviceId;
+    var timeFilter = req.body.timeFilter;
     var data = [];
     if('day'){
       data = [
@@ -59,15 +59,11 @@ module.exports = {
      * @param  req
      */
   supplierListing: function (req, res) {
-    console.log('red Data->',req.body);
-    console.log('red Data->',req.body.userId);
-    console.log('red Data->',req.body('userId'));
-    return true;
-    var userId = req.param('userId');
-    var latitude = req.param('latitude');
-    var longitude = req.param('longitude');
+    var userId = req.body.userId;
+    var latitude = req.body.latitude;
+    var longitude = req.body.longitude;
     if(userId != '' && userId != undefined && latitude != '' && latitude != undefined && longitude != '' && longitude != undefined){
-      var tankCapacity = (req.param('tankCapacity') && req.param('tankCapacity') != undefined) ? req.param('tankCapacity') : 0;
+      var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
       var jsonData = [];
       var favouritesSuppliresId = [];
       var array = [];
