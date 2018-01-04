@@ -6,7 +6,6 @@
  */
 var validator = require('validator');
 var firebase = require("firebase");
-var firebaseAuth = sails.config.globals.firebaseAuth();
 var db = sails.config.globals.firebasedb();
 
 module.exports = {
@@ -17,13 +16,13 @@ module.exports = {
      * Purpose: login page for admin
      */
   index: function (req, res) {
-    var isFormError = false;
     var errors = {};
     /* Checking validation if form post */
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        isFormError = true;
+        res.locals.layout = 'layout-login';
+        return res.view('login', {title: sails.config.title.login, errors: errors});
       }else{
         var config = {
           apiKey: "AIzaSyBvVFWJVMh6F76cm4aY-qmIs4u1ksS-I9E",
@@ -36,9 +35,21 @@ module.exports = {
         }
         firebase.auth().signInWithEmailAndPassword(req.param('email'), req.param('password'))
           .then(function (user) {
-            req.session.authenticated= true;
-            req.session.user = user;
-            return res.redirect(sails.config.base_url+'supplier');
+            var ref = db.ref("users").orderByChild('id').equalTo(user.uid);
+            ref.once("value", function (snapshot) {
+              var adminDetail = snapshot.val();
+              if(adminDetail){
+                req.session.authenticated= true;
+                req.session.user = user;
+                req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
+                return res.redirect(sails.config.base_url+'supplier');
+              }else{
+                req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                return res.redirect(sails.config.base_url);
+              }
+            }, function (errorObject) {
+              return res.serverError(errorObject.code);
+            });
           }).catch(function (error) {
             if(error.code == "auth/invalid-email"){
               req.flash('flashMessage', '<div class="alert alert-danger">'+ User.message.email_valid +'</div>');
@@ -51,7 +62,7 @@ module.exports = {
         });
       }
     }
-    if(req.method == "GET" || isFormError){
+    if(req.method == "GET"){
       res.locals.layout = 'layout-login';
       return res.view('login', {title: sails.config.title.login, errors: errors});
     }
@@ -98,7 +109,7 @@ module.exports = {
         }
         console.log('Created');
 
-      ref.push(data).then(function (ref) {//use 'child' and 'set' combination to save data in your own generated key
+      ref.push(data).then(function () {//use 'child' and 'set' combination to save data in your own generated key
           req.flash('flashMessage', '<div class="alert alert-success">Admin Created Successfully.</div>');
           return res.redirect(sails.config.base_url+'login');
         }, function (error) {

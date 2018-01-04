@@ -14,39 +14,6 @@ module.exports = {
      * @param  req
      */
    index: function (req, res) {
-    // var users = {};
-    // var countries = {};
-    // var cities = {};
-    // var subCities = {};
-    // /* country listing*/
-    // var ref = db.ref("countries");
-    // ref.once("value", function (snapshot) {
-    //   var countries = snapshot.val();
-    //   /* city listing*/
-    //   var ref = db.ref("cities");
-    //   ref.once("value", function (snapshot) {
-    //     var cities = snapshot.val();
-    //     /* subcities listing*/
-    //     var ref = db.ref("subcities");
-    //     ref.once("value", function (snapshot) {
-    //       var subCities = snapshot.val();
-    //       /* subcities listing*/
-    //       var ref = db.ref("users");
-    //       ref.once("value", function (snapshot) {
-    //         var users = snapshot.val();
-    //         return res.view('user-listing', {users: users, countries: countries, cities:cities, subCities:subCities});
-    //       }, function (errorObject) {
-    //         return res.serverError(errorObject.code);
-    //       });
-    //     }, function (errorObject) {
-    //       return res.serverError(errorObject.code);
-    //     });
-    //   }, function (errorObject) {
-    //     return res.serverError(errorObject.code);
-    //   });
-    // }, function (errorObject) {
-    //   return res.serverError(errorObject.code);
-    // });
     return res.view('user-listing', {
       'title' : sails.config.title.user_list
     });

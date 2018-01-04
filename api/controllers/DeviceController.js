@@ -53,8 +53,8 @@ module.exports = {
         return res.view('add-update-device', {title: sails.config.title.device_list,'device': device, "errors": errors, req: req});
       } else {
         var ref = db.ref("/devices");
-        ref.orderByChild("device_id").equalTo(req.param('device_id')).once('value')
-          .then(function (snapshot) {
+        ref.orderByChild("device_id").equalTo(req.param('device_id'))
+        ref.once("value", function (snapshot) {
             if (snapshot.val()) {
               req.flash('flashMessage', '<div class="alert alert-danger">' + req.param('device_id') + sails.config.flash.email_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/addDevice');
@@ -66,7 +66,7 @@ module.exports = {
                 created_date: Date.now(),
                 modified_date: Date.now(),
               }
-              ref.push(data).then(function (ref) {
+              ref.push(data).then(function () {
                 req.flash('flashMessage', '<div class="alert alert-success">Device Added Successfully.</div>');
                 return res.redirect(sails.config.base_url + 'device');
               }, function (error) {
@@ -100,14 +100,10 @@ module.exports = {
         .update({
           device_id: req.param('device_id'),
           modified_date: Date.now(),
-        }).then(function (ref) {
+        }).then(function () {
         console.log('Success');
       }, function (error) {
         console.log('error');
-      }).then(function (error) {
-        console.log('error11');
-      }, function (error) {
-        console.log('error11');
       });
     }
     if (req.method == "GET") {
@@ -162,7 +158,7 @@ module.exports = {
           .update({
             'is_deleted': status
           })
-          .then(function (res) {
+          .then(function () {
             userinfo = snapshot.val();
             MailerService.sendWelcomeMail({
               name: userinfo.name,

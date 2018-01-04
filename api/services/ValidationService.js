@@ -119,6 +119,14 @@ module.exports = {
     }
     return errors;
   },
+
+  /*
+     * Name: getDistanceFromLatLonInKm
+     * Created By: A-SIPL
+     * Created Date: 02-jan-2018
+     * Purpose: get distance from 2 lat long
+     * @param  req
+     */
   getDistanceFromLatLonInKm : function (lat1,lon1,lat2,lon2) {
     var R = 6371; // Radius of the earth in km
     var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
@@ -127,13 +135,39 @@ module.exports = {
       Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
       Math.sin(dLon/2) * Math.sin(dLon/2)
-      ;
+    ;
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = R * c; // Distance in km
     return d;
   },
+  /*
+     * Name: deg2rad
+     * Created By: A-SIPL
+     * Created Date: 02-jan-2018
+     * Purpose: meth fucntion
+     * @param  req
+     */
   deg2rad : function (deg) {
     return deg * (Math.PI/180)
   },
-
+  /*
+     * Name: dateOnly
+     * Created By: A-SIPL
+     * Created Date: 02-jan-2018
+     * Purpose: get date only froom date
+     * @param  req
+     */
+  dateOnly : function(newDate){
+    var  date = new Date(newDate);
+    year = date.getFullYear();
+    month = date.getMonth()+1;
+    dt = date.getDate();
+    if (dt < 10) {
+      dt = '0' + dt;
+    }
+    if (month < 10) {
+      month = '0' + month;
+    }
+    return year+'-' + month + '-'+dt;
+  }
 }

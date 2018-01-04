@@ -11,6 +11,8 @@
     </div>
   </div>
 </div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
 <div class="row">
   <div class="col-md-8">
     <div class="hpanel">
@@ -19,19 +21,20 @@
           <ul class="list-group">
             <li class="list-group-item">
             <span class="badge">
-            <div class="btn-group btn-toggle is-user-notification">
-              <button class="btn btn-lg <%= (userDetail.is_user_notification != undefined && userDetail.is_user_notification != true) ? 'btn-primary active' : 'btn-default' %> btn-yes" data-value="true">Yes</button>
-              <button class="btn btn-lg btn-primary <%= (userDetail.is_user_notification != undefined && userDetail.is_user_notification != false) ? 'btn-primary active' : 'btn-default' %>" data-value="false">No</button>
+            <div class="btn-group btn-toggle change-notification is-user-notification">
+              <button class="btn btn-lg <%= (userDetail.is_user_notification_enable == 'true' || userDetail.is_user_notification_enable == true) ? "btn-primary active" : "btn-default" %>" data-value="true">Yes</button>
+              <button class="btn btn-lg <%= (userDetail.is_user_notification_enable == 'false' || userDetail.is_user_notification_enable == 'false') ? "btn-primary active" : "btn-default" %>" data-value="false">No</button>
             </div>
-            </span> Notification for Users
+            </span>
+              <h6>Notification for Users</h6>
             </li>
             <li class="list-group-item">
-            <span class="badge">
-            <div class="btn-group btn-toggle is-device-notification">
-              <button class="btn btn-lg btn-default <%= (userDetail.is_device_notification != undefined && userDetail.is_device_notification != true) ? 'btn-primary active' : 'btn-default' %>" data-value="1">Yes</button>
-              <button class="btn btn-lg btn-primary <%= (userDetail.is_device_notification != undefined && userDetail.is_device_notification != false) ? 'btn-primary active' : 'btn-default' %>" data-value="0">No</button>
+            <span class="badge"><% console.log(userDetail.is_device_notification_enable);%>
+            <div class="btn-group btn-toggle change-notification is-device-notification">
+              <button class="btn btn-lg <%= (userDetail.is_device_notification_enable == true || userDetail.is_device_notification_enable == 'true') ? 'btn-primary active' : 'btn-default' %>" data-value="true">Yes</button>
+              <button class="btn btn-lg <%= (userDetail.is_device_notification_enable == false || userDetail.is_device_notification_enable == 'false') ? 'btn-primary active' : 'btn-default' %>" data-value="false">No</button>
             </div>
-            </span> Notification for Devices
+            </span><h6> Notification for Devices</h6>
             </li>
           </ul>
         </div>

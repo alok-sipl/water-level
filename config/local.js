@@ -83,12 +83,10 @@ module.exports = {
    // environment: process.env.NODE_ENV || 'development'
 
    app_name: 'Water Level Detector',
-   base_url: 'https://water-level.herokuapp.com/',
-   admin_url: 'https://water-level.herokuapp.com/admin',
+   base_url: 'https://dashboard.heroku.com/',
+   admin_url: 'https://dashboard.heroku.com/admin',
    google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU" ,
   admin_email : 'ravi_sipl@systematixindia.com',
-  authentication_email : 'ravi_sipl@systematixindia.com',
-  authentication_password : 'target@2015',
   per_page_data : 3,
   supplier_range : 80,
 
@@ -154,8 +152,12 @@ module.exports = {
     password_change_error: "Error in changed password",
     old_password_unmatch: "Incorrect current password",
     something_went_wronge: "Something went wronge",
+    update_successfully: "Status updated successfully",
     supplier_add_success: "Supplier added successfully",
     supplier_add_error: "Error in adding supplier",
+    profile_update_success: "Profile update successfully",
+    profile_update_error: "Error in updating profile",
+    paramter_missing: "Required parameter is mising",
   },
 
   email_message:{

@@ -25,7 +25,7 @@
     <div class="hpanel">
       <div class="panel-body">
         <% if(!(Object.keys(supplier).length)){ %>
-        <form action="<%= sails.config.base_url %>supplier/update" method="post" enctype="multipart/form-data"
+        <form action="<%= sails.config.base_url %>supplier/add" method="post" enctype="multipart/form-data"
               id="add-supplier" class='form-horizontal' data-parsley-validate='true'>
           <% }else{ %>
           <form action="<%= sails.config.base_url %>supplier/edit/<%= req.params.id %>" method="post"
@@ -151,7 +151,7 @@
                     <% }
                     } %>
                   </select>
-                  <input type="hidden" name="country_name" id="country_name"/>
+                  <input type="hidden" name="country_name" id="country_name" value="<%= (supplier.country_name) ? (supplier.country_name) : '' %>"/>
                   <span class="help-block">
                 <strong><%= (errors.country != undefined) ? errors.country.message : '' %>
                 </strong>
@@ -165,11 +165,14 @@
                           data-parsley-required-message="<%= WaterSupplier.message.city_required %>">
                     <option value="">Select City</option>
                     <%
-                    if(supplier.city_id){ %>
-                    <option selected value="<%= supplier.city_id %>"><%= supplier.city_name %></option>
-                    <% } %>
+                    if(Object.keys(cities).length){
+                      for(var key in cities) { %>
+                    <option <%= (supplier.city_id && supplier.city_id == key) ? "selected" : (req.param('city') && req.param('city') == key) ? "selected" : '' %>
+                      value="<%= key %>"><%= cities[key].name %></option>
+                    <% }
+                    } %>
                   </select>
-                  <input type="hidden" name="city_name" id="city_name"/>
+                  <input type="hidden" name="city_name" id="city_name" value="<%= (supplier.city_name) ? (supplier.city_name) : '' %>"/>
                   <span class="help-block">
                 <strong><%= (errors.city != undefined) ? errors.cityId.message : '' %>
                 </strong>

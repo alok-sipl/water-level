@@ -2,7 +2,7 @@
  * Main set common settings of the application
  */
 
-var BASE_URL = 'https://water-level.herokuapp.com';
+var BASE_URL = 'http://10.10.100.19:1337';
 
 /* All message will be declared here */
 var CONST = {
@@ -11,9 +11,10 @@ var CONST = {
 
 $(document).ready(function () {
   /* Hide server side header messages */
-  setTimeout(function () {
-    //  $(".server-message").fadeOut(1600);
-  }, CONST.MSGTIMEOUT);
+  setTimeout(function(){
+    $('div').removeClass('has-error');
+    $('.form-group').find('.help-block').hide();
+  },6000);
 
 })
 /*
@@ -53,24 +54,30 @@ $(document).ready(function () {
   /* Search supplier */
   $('.search-supplier').click(function () {
     var text = $(".search").val();
-    if(text != ''){
+    if (text != '') {
       $('#smallGlobalLoader').css('display', 'block');
       $('.seeMoreFollowList').css('display', 'none');
       $.ajax({
         url: BASE_URL + '/supplier/moreSupplier',
         type: 'POST',
-        data: {offset: $('#offset').val(), limit: $('#limit').val(), count: $('#count').val(), text: $('.search').val()},
+        data: {
+          offset: $('#offset').val(),
+          limit: $('#limit').val(),
+          count: $('#count').val(),
+          text: $('.search').val()
+        },
         success: function (response) {
           $('#offset').val(parseInt($('#offset').val()) + parseInt($('#limit').val()));
           $('#smallGlobalLoader').css('display', 'none');
-          if(parseInt($('#offset').val()) >= parseInt($('#count').val())){
+          if (parseInt($('#offset').val()) >= parseInt($('#count').val())) {
             $('.pagination').html();
-          }else{
+          } else {
             $('.seeMoreFollowList').css('display', 'block');
           }
           $('div.supplier-block').append(response);
         }, error: function (jqXHR, exception) {
-          alert(jqXHR);alert(exception);
+          alert(jqXHR);
+          alert(exception);
         }
       });
     }
@@ -111,32 +118,31 @@ function getSubCity(cityId) {
 }
 
 /* Admin notification setting on off activity */
-$('.btn-toggle').click(function () {
+$('.change-notification').click(function () {
+  $(".alert-danger").css("display", "none");
+  $(".alert-success").css("display", "none");
+  helper.showLoader();
   $(this).find('.btn').toggleClass('active');
-  // if ($(this).find('.btn-primary').size() > 0) {
-  //   var action = ($(this).hasClass("is-user-notification")) ? "is-user-notification" : "is-device-notification";
-  //   alert($(this).find('.btn').attr('data-value'));
-  //   $.ajax({
-  //     url: BASE_URL + '/dashboard/updateSetting',
-  //     data: {type: action, value: $(this).find('.btn-primary').attr('data-value')},
-  //     type: 'POST',
-  //     success: function (result) {
-  //       console.log("Status value:-", $(this).find('.btn-primary').attr('data-value'));
-  //       $(this).find('.btn').toggleClass('btn-primary');
-  //     },
-  //     error: function (textStatus, errorThrown) {
-  //       alert('Something went wronge', textStatus, errorThrown);
-  //       //location.reload();
-  //     }
-  //   });
-  //   $(this).find('.btn').toggleClass('btn-default');
-  // }
-  $(this).find('.btn').toggleClass('active');
-  if ($(this).find('.btn-primary').size()>0) {
+  if ($(this).find('.btn-primary').size() > 0) {
     $(this).find('.btn').toggleClass('btn-primary');
   }
   $(this).find('.btn').toggleClass('btn-default');
-
+  var action = ($(this).hasClass("is-user-notification")) ? "is_user_notification" : "is_device_notification";
+  $.ajax({
+    url: BASE_URL + '/dashboard/updateSetting',
+    data: {type: action, value: $(this).find('.btn-primary').attr('data-value')},
+    type: 'POST',
+    success: function (result) {
+      helper.hideLoader();
+      $(".alert-success").css("display", "block");
+      $(".alert-success").html(result.message);
+    },
+    error: function (textStatus, errorThrown) {
+      helper.hideLoader();
+      $(".alert-danger").css("display", "block");
+      $(".alert-danger").html(result.message);
+    }
+  });
 });
 
 
@@ -180,13 +186,13 @@ function geolocate() {
 
 /* parsley file upload velidation */
 window.Parsley.addValidator('maxFileSize', {
-  validateString: function(_value, maxSize, parsleyInstance) {
+  validateString: function (_value, maxSize, parsleyInstance) {
     if (!window.FormData) {
       alert('You are making all developpers in the world cringe. Upgrade your browser!');
       return true;
     }
     var files = parsleyInstance.$element[0].files;
-    return files.length != 1  || files[0].size <= maxSize * 1024;
+    return files.length != 1 || files[0].size <= maxSize * 1024;
   },
   requirementType: 'integer',
   messages: {
@@ -249,20 +255,24 @@ var helper = {
   }
 
 
-
 }
 
 /* Make activate/deactivate a record */
 $("body").on("click", ".status-action", function () {
   var id = $(this).attr('data-id');
-  var status = $(this).attr('data-status');
+
+  if ($(this).attr('data-status') == true) {
+    var status = false;
+  } else {
+    var status = true;
+  }
   var url = $(this).attr('data-url');
-  var customStatus = (status == 1) ? 0 : 1;
   if (id != '' && url != '') {
     var formData = {
       id: id,
-      is_active: customStatus
+      is_active: status
     };
+    console.log(formData);
     helper.showLoader();
     $.ajax({
       type: "POST",
@@ -270,11 +280,12 @@ $("body").on("click", ".status-action", function () {
       data: formData,
       success: function (result) {
         helper.hideLoader();
-        var response = helper.checkResponse(result);
-        if (response.status == true) {
-          $('#grid').trigger( 'reloadGrid' );
-          $.notify(CONST.RECORD_SUCCESSFULLY_UPDATED, "success");
+        if (result.status == true) {
+          $('#city-grid').trigger('reloadGrid');
         }
+      },
+      error: function (textStatus, errorThrown) {
+        helper.hideLoader();
       }
     });
   }
@@ -292,14 +303,15 @@ function showMyTrips() {
     success: function (response) {
       $('#offset').val(parseInt($('#offset').val()) + parseInt($('#limit').val()));
       $('#smallGlobalLoader').css('display', 'none');
-      if(parseInt($('#offset').val()) >= parseInt($('#count').val())){
+      if (parseInt($('#offset').val()) >= parseInt($('#count').val())) {
         $('.pagination').html();
-      }else{
+      } else {
         $('.seeMoreFollowList').css('display', 'block');
       }
       $('div.supplier-block').append(response);
     }, error: function (jqXHR, exception) {
-      alert(jqXHR);alert(exception);
+      alert(jqXHR);
+      alert(exception);
     }
   });
 }
@@ -308,212 +320,223 @@ function showMyTrips() {
 $(document).ready(function () {
   var status = false;
   $("#city-grid").jqGrid({
-    url: BASE_URL+'/city/cityList',
+    url: BASE_URL + '/city/cityList',
     mtype: "GET",
     datatype: "json",
     colModel: [
-      { label: 'City', name: 'name', width: 300 ,search:true},
-      { label: 'Country', name:'country_name', width: 150 },
-      { label: 'Status', name:'is_deleted', width: 100, search:false,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {label: 'City', name: 'name', width: 300, search: true},
+      {label: 'Country', name: 'country_name', width: 150},
+      {
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
         }
       },
-      { label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
-        formatter: function(cellvalue) {
-          var action = '<a title="View Location" href="<%= sails.config.base_url %>city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit City" href="<%= sails.config.base_url %>city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if(status){
-            action += '<a data-tooltip="" title="" data-status="true" data-url="<%= sails.config.base_url %>city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-          }else{
-            action += '<a data-tooltip="" title="" data-status="false" data-url="<%= sails.config.base_url %>city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+      {
+        label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
+        formatter: function (cellvalue) {
+          var action = '<a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+          action += '<a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+          if (status) {
+            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          } else {
+            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
           }
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1024,
+    width: 945,
     height: 250,
-    rowNum:10,
-    loadonce:true,
+    rowNum: 10,
+    loadonce: true,
     gridview: true,
     pager: "#city-grid-pager",
   });
-  jQuery("#city-grid").jqGrid('filterToolbar',{
-    searchOperators : true, stringResult:true, searchOnEnter:false
+  jQuery("#city-grid").jqGrid('filterToolbar', {
+    searchOperators: true, stringResult: true, searchOnEnter: false
   });
 
   /* Contact page grid */
   $("#contact-grid").jqGrid({
-    url: BASE_URL+ '/contact/contactList',
+    url: BASE_URL + '/contact/contactList',
     mtype: "GET",
     datatype: "json",
     colModel: [
-      { label: 'Name',  name: 'name', width: 150 ,search:true },
-      { label: 'Email', name: 'email', width: 300 ,search:true},
-      { label: 'Query', name:'query', width: 150 },
-      { label: 'Action', name: 'contact_id', search: false, width: 150, align: "center",
-        formatter: function(cellvalue) {
-          var action = '<a href="<%= sails.config.base_url %>contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+      {label: 'Name', name: 'name', width: 250, search: true},
+      {label: 'Email', name: 'email', width: 300, search: true},
+      {label: 'Query', name: 'query', width: 450},
+      {
+        label: 'Action', name: 'contact_id', search: false, width: 150, align: "center",
+        formatter: function (cellvalue) {
+          var action = '<a href="' + BASE_URL + 'contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1024,
+    width: 945,
     height: 250,
-    rowNum:10,
-    loadonce:true,
+    rowNum: 10,
+    loadonce: true,
     gridview: true,
     pager: "#contact-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
-  jQuery("#contact-grid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  jQuery("#contact-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
   /* Devide page grid */
 
   var status = false;
   $("#device-grid").jqGrid({
-    url: BASE_URL+'/device/deviceList',
+    url: BASE_URL + '/device/deviceList',
     mtype: "GET",
     datatype: "json",
     colModel: [
-      { label: 'Device Id',  name: 'device_id', width: 150 ,search:true },
-      { label: 'Device Name', name: 'name', width: 300 ,search:true,
-        formatter: function(cellvalue) {
+      {label: 'Device Id', name: 'device_id', width: 150, search: true},
+      {
+        label: 'Device Name', name: 'name', width: 300, search: true,
+        formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "--" : cellvalue;
         }
       },
-      { label: 'User Name', name:'phone', width: 150,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {
+        label: 'User Name', name: 'phone', width: 150,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == undefined) ? "Not Assigned" : cellvalue;
         }
       },
-      { label: 'Location', name:'area', width: 250,
-        formatter: function(cellvalue) {
+      {
+        label: 'Location', name: 'area', width: 250,
+        formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "--" : cellvalue;
         }
       },
-      { label: 'Last Inactive Time', name:'city_name', width: 150 , search: false,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {
+        label: 'Last Inactive Time', name: 'city_name', width: 150, search: false,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == undefined) ? "--" : cellvalue;
         }
       },
-      { label: 'Status', name:'id_deleted', width: 100, search: false,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {
+        label: 'Status', name: 'id_deleted', width: 100, search: false,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
         }
       },
-      { label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "center",
-        formatter: function(cellvalue) {
-          var action = '<a title="View Device Detail" href="<%= sails.config.base_url %>device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit Device Detail" href="<%= sails.config.base_url %>device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if(status){
-            action += '<a data-tooltip="" title="Active" data-status="true" data-url="<%= sails.config.base_url %>device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-          }else{
-            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="<%= sails.config.base_url %>device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+      {
+        label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "center",
+        formatter: function (cellvalue) {
+          var action = '<a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+          action += '<a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+          if (status) {
+            action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          } else {
+            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
           }
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1024,
+    width: 945,
     height: 250,
-    rowNum:10,
-    loadonce:true,
+    rowNum: 10,
+    loadonce: true,
     gridview: true,
     pager: "#device-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
-  jQuery("#device-grid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  jQuery("#device-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
   /* Location page grid */
   var status = false;
   $("#location-grid").jqGrid({
-    url: BASE_URL+'/city/subCityList',
-    postData: {cityId : $("#city_id").val()},
+    url: BASE_URL + '/city/subCityList',
+    postData: {cityId: $("#city_id").val()},
     mtype: "GET",
     datatype: "json",
     colModel: [
-      { label: 'Sub City', name: 'name', width: 300 ,search:true},
-      { label: 'City', name:'city_name', width: 150 },
-      { label: 'Status', name:'is_deleted', width: 100,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {label: 'Sub City', name: 'name', width: 300, search: true},
+      {label: 'City', name: 'city_name', width: 150},
+      {
+        label: 'Status', name: 'is_deleted', width: 100,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
         }
       },
-      { label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
-        formatter: function(cellvalue) {
-          var action = '<a href="<%= sails.config.base_url %>city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if(status){
-            action += '<a data-tooltip="" title="" data-status="true" data-url="<%= sails.config.base_url %>city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-          }else{
-            action += '<a data-tooltip="" title="" data-status="false" data-url="<%= sails.config.base_url %>city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+      {
+        label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
+        formatter: function (cellvalue) {
+          var action = '<a href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+          if (status) {
+            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          } else {
+            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
           }
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1024,
+    width: 945,
     height: 250,
-    rowNum:10,
-    loadonce:true,
+    rowNum: 10,
+    loadonce: true,
     gridview: true,
     pager: "#location-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
-  jQuery("#location-grid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  jQuery("#location-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
   /* User listing grid */
   $("#user-grid").jqGrid({
-    url: BASE_URL+'/user/userlist',
+    url: BASE_URL + '/user/userlist',
     mtype: "GET",
     datatype: "json",
     colModel: [
-      { label: 'Name',  name: 'name', width: 150 ,search:true },
-      { label: 'Email', name: 'email', width: 300 ,search:true},
-      { label: 'Contact Number', name:'phone', width: 150 },
-      { label: 'Password', name:'password', width: 100, search: false },
-      { label: 'Location', name:'area', width: 250 },
-      { label: 'City', name:'city_name', width: 150 },
-      { label: 'Country', name:'country_name', width: 100 },
-      { label: 'Status', name:'id_deleted', width: 100, search: false,
-        formatter: function(cellvalue) {
-          status= cellvalue;
+      {label: 'Name', name: 'name', width: 200, search: true},
+      {label: 'Email', name: 'email', width: 320, search: true},
+      {label: 'Contact Number', name: 'phone', width: 150, align: "right"},
+      {label: 'Location', name: 'area', width: 250},
+      {label: 'City', name: 'city_name', width: 150},
+      {label: 'Country', name: 'country_name', width: 130},
+      {
+        label: 'Status', name: 'id_deleted', width: 100, search: false,
+        formatter: function (cellvalue) {
+          status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
         }
       },
-      { label: 'Account Number', name: 'account_number', key: true, width: 160,search:true },
-      { label: 'Action', name: 'user_id', search: false, width: 150, align: "center",
-        formatter: function(cellvalue) {
-          var action = '<a title="View User Detail" href="<%= sails.config.base_url %>user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit User Detail" href="<%= sails.config.base_url %>user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if(status){
-            action += '<a data-tooltip="" title="Active" data-status="true" data-url="<%= sails.config.base_url %>user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-          }else{
-            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="<%= sails.config.base_url %>user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+      {
+        label: 'Action', name: 'user_id', search: false, width: 150, align: "center",
+        formatter: function (cellvalue) {
+          var action = '<a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+          action += '<a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
+          if (status) {
+            action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          } else {
+            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
           }
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1024,
+    width: 945,
     height: 250,
-    rowNum:10,
-    loadonce:true,
+    rowNum: 10,
+    loadonce: true,
     gridview: true,
     pager: "#user-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
-  jQuery("#user-grid").jqGrid('filterToolbar',{searchOperators : true, stringResult:true, searchOnEnter:false});
+  jQuery("#user-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
 });

@@ -29,8 +29,8 @@ module.exports = {
       countries = snapshot.val();
       var ref = db.ref("cities");
       ref.once('value', function (snap) {
-        var cityJson     = (Object.keys(snap).length) ? getCityList(snap, countries) : {};
-        return res.json({'rows':cityJson});
+        var cityJson = (Object.keys(snap).length) ? getCityList(snap, countries) : {};
+        return res.json({'rows': cityJson});
       });
     });
   },
@@ -51,7 +51,11 @@ module.exports = {
           var ref = db.ref('countries');
           ref.once("value", function (snapshot) {
             country = snapshot.val();
-            return res.view('add-update-city', {title: sails.config.title.add_city, 'country': country, type: req.params.id});
+            return res.view('add-update-city', {
+              title: sails.config.title.add_city,
+              'country': country,
+              type: req.params.id
+            });
           });
         } else {
           var ref = db.ref();
@@ -75,7 +79,7 @@ module.exports = {
     */
   updateCity: function (req, res) {
     async.waterfall([
-      function(cb) {
+      function (cb) {
         var ref = db.ref();
         var postsRef = ref.child("countries/-L0E-tknbeJKkXDSQHzr/");
         var newPostRef = postsRef.push();
@@ -150,7 +154,7 @@ module.exports = {
   */
   addCities: function (req, res) {
     async.waterfall([
-      function(cb) {
+      function (cb) {
         var ref = db.ref();
         var cities = ref.child("cities");
         var newCities = cities.push();
@@ -209,7 +213,7 @@ module.exports = {
   */
   addSubCities: function (req, res) {
     async.waterfall([
-      function(cb) {
+      function (cb) {
         var ref = db.ref();
         var subcities = ref.child("subcities");
         var newSubCities = subcities.push();
@@ -390,14 +394,14 @@ module.exports = {
   * @param  type
   */
   getCityByCountry: function (req, res) {
-    if(req.body.id) {
-        const ref = db.ref('cities');
-        ref.orderByChild('country_id')
-          .equalTo(req.body.id)
-          .once("value",function (snapshot) {
-            return res.json(snapshot.val());
-          });
-    }else{
+    if (req.body.id) {
+      const ref = db.ref('cities');
+      ref.orderByChild('country_id')
+        .equalTo(req.body.id)
+        .once("value", function (snapshot) {
+          return res.json(snapshot.val());
+        });
+    } else {
       return res.json({});
     }
   },
@@ -412,7 +416,7 @@ module.exports = {
   */
   addUser: function (req, res) {
     async.waterfall([
-      function(cb) {
+      function (cb) {
         var ref = db.ref();
         var subcities = ref.child("users");
         var newSubCities = subcities.push();
@@ -425,8 +429,8 @@ module.exports = {
           email: "abc@gmail.com",
           isOnline: true,
           name: "SS",
-          password:"123456",
-          phone:"99999922222"
+          password: "123456",
+          phone: "99999922222"
         });
       }
     ])
@@ -442,7 +446,7 @@ module.exports = {
   */
   addSupplier: function (req, res) {
     async.waterfall([
-      function(cb) {
+      function (cb) {
         var ref = db.ref();
         var subcities = ref.child("suppliers");
         subcities.push({
@@ -458,7 +462,7 @@ module.exports = {
           email: "himalay@gmail.com",
           is_deleted: false,
           name: "Himalay",
-          mobile_number:"9713997998"
+          mobile_number: "9713997998"
         });
       }
     ])
@@ -484,9 +488,9 @@ module.exports = {
         var countries = snapshot.val();
         return res.view('location-listing', {
           title: sails.config.title.location_list,
-          cityId : req.params.id,
-          cities : cities,
-          countries : countries
+          cityId: req.params.id,
+          cities: cities,
+          countries: countries
         });
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -504,16 +508,16 @@ module.exports = {
    * Purpose: show grid with data
    * @param  req
    */
-  edit:function(req, res){
+  edit: function (req, res) {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         isFormError = true;
         console.log("In error");
       } else {
-        console.log("City id" , req.param('city_id'));
+        console.log("City id", req.param('city_id'));
         var ref = db.ref();
-        var usersRef  = ref.child('cities/'+ req.param('city_id'));
+        var usersRef = ref.child('cities/' + req.param('city_id'));
         usersRef.update({
           'country_id': req.param('country'),
           'is_deleted': req.param('status'),
@@ -521,7 +525,7 @@ module.exports = {
         });
         return res.redirect('/city');
       }
-    }else {
+    } else {
       var errors = {};
       var ref = db.ref("cities");
       ref.once("value", function (snapshot) {
@@ -552,16 +556,16 @@ module.exports = {
    * Purpose: Edit location
    * @param  req
    */
-  editLocation:function(req, res){
+  editLocation: function (req, res) {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         isFormError = true;
         console.log("In error");
       } else {
-        console.log("City id" , req.param('city_id'));
+        console.log("City id", req.param('city_id'));
         var ref = db.ref();
-        var usersRef  = ref.child('cities/'+ req.param('city_id'));
+        var usersRef = ref.child('cities/' + req.param('city_id'));
         usersRef.update({
           'country_id': req.param('country'),
           'is_deleted': req.param('status'),
@@ -569,7 +573,7 @@ module.exports = {
         });
         return res.redirect('/city');
       }
-    }else {
+    } else {
       var errors = {};
       var ref = db.ref("subcities/" + req.params.id);
       ref.once("value", function (snapshot) {
@@ -621,13 +625,13 @@ module.exports = {
     subCities = [];
     cities = [];
     var cityId = (req.query.cityId != undefined) ? req.params.id : '';
-    var ref = db.ref('cities/'+ req.query.cityId);
+    var ref = db.ref('cities/' + req.query.cityId);
     ref.once("value", function (snapshot) {
       cities = snapshot.val();
       var ref = db.ref("subcities");
-      ref.orderByChild("city_id").equalTo(req.query.cityId).once("value", function(snap) {
-        var cityJson     = (Object.keys(snap).length) ? getSubCityList(snap, cities) : {};
-        return res.json({'rows':cityJson});
+      ref.orderByChild("city_id").equalTo(req.query.cityId).once("value", function (snap) {
+        var cityJson = (Object.keys(snap).length) ? getSubCityList(snap, cities) : {};
+        return res.json({'rows': cityJson});
       });
     });
   },
@@ -642,19 +646,67 @@ module.exports = {
   updateStatus: function (req, res) {
     var id = req.body.id;
     var status = req.body.is_active;
-    db.ref('/cities/' + id)
-      .update({
-        'is_deleted': status
-      })
-      .then(function (res) {
-        return true;
-      })
-      .catch(function (err) {
-        return false;
+    if (id != '') {
+      db.ref('/cities/' + id)
+        .update({
+          'is_deleted': status
+        })
+        .then(function () {
+          return res.json({'status': true});
+        })
+        .catch(function (err) {
+          res.json({'status': false, 'message': err});
+        });
+    } else {
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+    }
+  },
+
+  /*
+ * Name: paggination
+ * Created By: A-SIPL
+ * Created Date: 26-dec-2017
+ * Purpose: Update status of city
+ * @param  req
+ */
+  paggination: function (req, res) {
+    const adminNew = require('firebase-admin');
+    var serviceAccount = require("./../../serviceAccountKey.json");
+    if (!adminNew.apps.length) {
+      adminNew.initializeApp({
+        credential: adminNew.credential.cert(serviceAccount),
+        databaseURL: "https://water-level-detector.firebaseio.com"
       });
+    }
+    var db = adminNew.firestore();
+    //return db;
+
+
+    var first = db.collection('suppliers')
+      .orderBy('company_name')
+      .limit(3);
+    console.log('Response->', first.get());
+
+
+    // var paginate = first.get()
+    //   .then(function (snapshot) {
+    //     // ...
+    //     // Get the last document
+    //     var last = snapshot.docs[snapshot.docs.length - 1];
+    //     console.log('last.data->', last.data());
+    //     // Construct a new query starting at this document.
+    //     // Note: this will not have the desired effect if multiple
+    //     // cities have the exact same population value.
+    //     var next = db.collection('suppliers')
+    //       .orderBy('company_name')
+    //       .startAfter(last.data().company_name)
+    //       .limit(3);
+    //     console.log('Next Response->', next);
+    //     // Use the query for pagination
+    //     // ...
+    //   });
   },
 };
-
 
 
 /*
@@ -664,25 +716,24 @@ module.exports = {
    * Purpose: sget the user grid dat
    * @param  req
    */
-function getCityList(snap, countries){
-  if(Object.keys(snap).length){
+function getCityList(snap, countries) {
+  if (Object.keys(snap).length) {
     snap.forEach(function (childSnap) {
       city = childSnap.val();
       updateCity = city;
       country_id = city.country_id;
       //console.log("id is-->", country_id);
       //console.log("Country id is-->", countries[country_id]['name']);
-      updateCity.city_id =  childSnap.key;
-      updateCity.country_name =  countries[country_id]['name'];
+      updateCity.city_id = childSnap.key;
+      updateCity.country_name = countries[country_id]['name'];
       cities.push(updateCity);
     });
     return cities;
-  }else{
-    cities ={}
+  } else {
+    cities = {}
     return cities;
   }
 }
-
 
 
 /*
@@ -692,19 +743,19 @@ function getCityList(snap, countries){
    * Purpose: sget the user grid data
    * @param  req
    */
-function getSubCityList(snap, cities){
-  if(Object.keys(snap).length){
+function getSubCityList(snap, cities) {
+  if (Object.keys(snap).length) {
     snap.forEach(function (childSnap) {
       subCity = childSnap.val();
       updateSubCity = subCity;
       city_id = subCity.city_id;
-      updateSubCity.city_id =  childSnap.key;
-      updateSubCity.city_name =  cities['name'];
+      updateSubCity.city_id = childSnap.key;
+      updateSubCity.city_name = cities['name'];
       subCities.push(updateSubCity);
     });
     return subCities;
-  }else{
-    subCities ={}
+  } else {
+    subCities = {}
     return subCities;
   }
 }
