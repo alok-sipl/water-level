@@ -56,7 +56,7 @@ module.exports = {
             var date = new Date();
             var oneHourDate = date.setHours(date.getHours() - 195);
 
-            if (Object.keys(deviceReadings).length) {
+            if (deviceReadings != undefined && deviceReadings != '' && Object.keys(deviceReadings).length) {
               for (key in deviceReadings) {
                 var readingDataObject = {};
                 if (deviceReadings[key].created_date >= sixHourDate && deviceReadings[key].created_date <= currentdate) {
@@ -169,7 +169,7 @@ module.exports = {
             var date = new Date();
             var oneDayDate = date.setHours(date.getHours() - 36);
 
-            if (Object.keys(deviceReadings).length) {
+            if (deviceReadings != undefined && deviceReadings != '' && Object.keys(deviceReadings).length) {
               for (key in deviceReadings) {
                 var readingDataObject = {};
                 if (deviceReadings[key].created_date >= eigthDayDate && deviceReadings[key].created_date <= currentdate) {
@@ -280,7 +280,7 @@ module.exports = {
             var date = new Date();
             var oneWeekDate = date.setHours(date.getHours() - 168);
 
-            if (Object.keys(deviceReadings).length) {
+            if (Object.keys(deviceReadings).length && deviceReadings != undefined && deviceReadings != '') {
               for (key in deviceReadings) {
                 var readingDataObject = {};
                 if (deviceReadings[key].created_date >= fiveWeekDate && deviceReadings[key].created_date <= currentdate) {
