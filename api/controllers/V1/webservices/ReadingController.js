@@ -19,6 +19,7 @@ module.exports = {
      * @param  req
      */
   tankReading: function (req, res) {
+    console.log('Post param:--', req.body);
     if(req.body != undefined && req.body.deviceId != undefined && req.body.timeFilter && req.body.type) {
       var deviceId = req.body.deviceId;
       var timeFilter = req.body.timeFilter;
