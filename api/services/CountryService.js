@@ -1,5 +1,7 @@
 module.exports = {
-  cityData: function (countryId, cityId) {
-    return 'sipl'
-  },
+    sorting: function (object, index) {
+        object.sort(function (a, b) {
+            return b.index - a.index;
+        })
+    },
 }

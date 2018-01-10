@@ -29,7 +29,7 @@
               <h6>Notification for Users</h6>
             </li>
             <li class="list-group-item">
-            <span class="badge"><% console.log(userDetail.is_device_notification_enable);%>
+            <span class="badge">
             <div class="btn-group btn-toggle change-notification is-device-notification">
               <button class="btn btn-lg <%= (userDetail.is_device_notification_enable == true || userDetail.is_device_notification_enable == 'true') ? 'btn-primary active' : 'btn-default' %>" data-value="true">Yes</button>
               <button class="btn btn-lg <%= (userDetail.is_device_notification_enable == false || userDetail.is_device_notification_enable == 'false') ? 'btn-primary active' : 'btn-default' %>" data-value="false">No</button>

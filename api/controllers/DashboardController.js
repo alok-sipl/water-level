@@ -42,11 +42,13 @@ module.exports = {
           var user = snapshot.val();
           /* country listing*/
           var ref = db.ref("countries");
-          ref.once("value", function (snapshot) {
+          ref.orderByChild("is_deleted").equalTo(false)
+                  .once("value", function (snapshot) {
             var countries = snapshot.val();
             /* city listing*/
             var ref = db.ref("cities");
-            ref.once("value", function (snapshot) {
+            ref.orderByChild("is_deleted").equalTo(false)
+                    .once("value", function (snapshot) {
               var cities = snapshot.val();
               return res.view('profile', {
                 'title': sails.config.title.edit_profile,
@@ -86,7 +88,7 @@ module.exports = {
               req.session.user.displayName = req.param('name');
               req.session.user.photoURL = sails.config.base_url+"images/profile.png";
             })
-          .then(function (res) {
+          .then(function () {
             req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.profile_update_success + '</div>');
             return res.redirect(sails.config.base_url + 'dashboard/profile');
           })
@@ -104,11 +106,13 @@ module.exports = {
           var user = snapshot.val();
           /* country listing*/
           var ref = db.ref("countries");
-          ref.once("value", function (snapshot) {
+          ref.orderByChild("is_deleted").equalTo(false)
+                  .once("value", function (snapshot) {
             var countries = snapshot.val();
             /* city listing*/
             var ref = db.ref("cities");
-            ref.once("value", function (snapshot) {
+                    ref.orderByChild("is_deleted").equalTo(false)
+                            .once("value", function (snapshot) {
               var cities = snapshot.val();
               return res.view('profile', {
                 'title': sails.config.title.edit_profile,
@@ -171,7 +175,7 @@ module.exports = {
             return res.redirect(sails.config.base_url + 'dashboard/changePassword');
           });
         } else {
-          return res.redirect(sails.config.base_url + 'login');
+          return res.redirect(sails.config.base_url + 'dashboard/changePassword');
         }
       }
     } else {

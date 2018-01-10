@@ -6,6 +6,7 @@
  */
 
 var db = sails.config.globals.firebasedb();
+const googleStorage = require('@google-cloud/storage');
 module.exports = {
   /**
    * CommentController.create()
@@ -49,46 +50,80 @@ module.exports = {
           var country = {};
           var city = {};
           var ref = db.ref('countries');
-          ref.once("value", function (snapshot) {
+          ref.orderByChild("is_deleted").equalTo(false)
+          .once("value", function (snapshot) {
             country = snapshot.val();
             return res.view('add-update-city', {
               title: sails.config.title.add_city,
               'country': country,
-              type: req.params.id
+              'type': true
             });
           });
         } else {
-          var ref = db.ref();
-          var postsRef = db.ref('countries/' + req.param('country'));
-          postsRef.push({
+          var ref = db.ref("cities");
+          ref.push({
+            country_id: req.param('country'),
             name: req.param('city'),
-            is_deleted: 0
+            created_date: Date.now(),
+            modified_date: Date.now(),
+            is_deleted: false
+          }).then(function () {
+            req.flash('flashMessage', '<div class="alert alert-success">'+ sails.config.flash.city_add_success+'</div>');
+            return res.redirect('city');
+          }, function (error) {
+            req.flash('flashMessage', '<div class="alert alert-danger">'+ sails.config.flash.city_add_error+'</div>');
+            return res.redirect('city');
           });
-          return res.redirect('city');
         }
       }
     ])
   },
 
+
   /*
-    * Name: updateCity
+    * Name: addLocation
     * Created By: A-SIPL
-    * Created Date: 13-dec-2017
-    * Purpose: add new city location
+    * Created Date: 05-jan-2018
+    * Purpose: add new location
     * @param  type
     */
-  updateCity: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        var ref = db.ref();
-        var postsRef = ref.child("countries/-L0E-tknbeJKkXDSQHzr/");
-        var newPostRef = postsRef.push();
-        newPostRef.set({
-          name: 'Alok ',
-          is_deleted: 0,
+  addLocation: function (req, res) {
+    if (req.method == 'GET') {
+      var country = {};
+      var cities = {};
+      var ref = db.ref('cities/'+ req.params.id);
+      ref.once("value", function (snapshot) {
+        cities = snapshot.val();
+        var ref = db.ref('countries');
+        ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
+          country = snapshot.val();
+          return res.view('add-update-city', {
+            title: sails.config.title.add_city,
+            'countryId': cities.country_id,
+            'cityId': req.params.id,
+            'country': country,
+            'cities': cities,
+            'type': false
+          });
         });
-      }
-    ])
+      });
+    } else {
+      var ref = db.ref("locations");
+      ref.push({
+        name: req.param('area'),
+        city_id: req.param('city'),
+        created_date: Date.now(),
+        modified_date: Date.now(),
+        is_deleted: false
+      }).then(function () {
+        req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.location_add_success + '</div>');
+        return res.redirect('city');
+      }, function (error) {
+        req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.location_add_error + '</div>');
+        return res.redirect('city');
+      });
+    }
   },
 
 
@@ -107,283 +142,6 @@ module.exports = {
       name: 'France',
       is_deleted: false
     });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'China',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Spain',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Singapore',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Switzerland',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Belgium',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'India',
-      is_deleted: false
-    });
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Japan',
-      is_deleted: false
-    });
-  },
-
-
-  /*
-  * Name: addCity
-  * Created By: A-SIPL
-  * Created Date: 13-dec-2017
-  * Purpose: add new city location
-  * @param  type
-  */
-  addCities: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        var ref = db.ref();
-        var cities = ref.child("cities");
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Indore',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Mumbai',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Delhi',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Pune',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Baroda',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Raipur',
-          is_deleted: false
-        });
-        var newCities = cities.push();
-        newCities.set({
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Bhapal',
-          is_deleted: false
-        });
-      }
-    ])
-  },
-
-
-  /*
-  * Name: addSubCities
-  * Created By: A-SIPL
-  * Created Date: 13-dec-2017
-  * Purpose: add new city location
-  * @param  type
-  */
-  addSubCities: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        var ref = db.ref();
-        var subcities = ref.child("subcities");
-        var newSubCities = subcities.push();
-        newSubCities.set({
-          city_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Dewas',
-          is_deleted: false
-        });
-        var newSubCities = subcities.push();
-        newSubCities.set({
-          city_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Ujjain',
-          is_deleted: false
-        });
-        var newSubCities = subcities.push();
-        newSubCities.set({
-          city_id: "-L0xTMeRAbBDb1DZhwpc",
-          name: 'Pithampur',
-          is_deleted: false
-        });
-      }
-    ])
-  },
-
-
-  /*
-* Name: addLikes
-* Created By: A-SIPL
-* Created Date: 27-dec-2017
-* Purpose: add likes on supplier
-* @param  type
-*/
-  addLikes: function (req, res) {
-    var ref = db.ref();
-    var likes = ref.child("likes");
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0UbCoAiFk06mBEYfDZ",
-      supplier_id: "-L12NuoTcIk4d7WfNa6k"
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0UbCoAiFk06mBEYfDZ",
-      supplier_id: "-L12ON6YsFBFRd29plTr"
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "-L12Qr3gWN1bqsLjis6S"
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L11mL6iWoNEfcwGf3m4",
-      supplier_id: "-L12NuoTcIk4d7WfNa6k"
-    });
-  },
-
-
-  /*
-* Name: deviceReading
-* Created By: A-SIPL
-* Created Date: 28-dec-2017
-* Purpose: add reading data
-* @param  type
-*/
-  deviceReading: function (req, res) {
-    var ref = db.ref();
-    var likes = ref.child("device_reading");
-    var newSubCities = likes.push();
-    newSubCities.set({
-      device_id: "-L0oJuC3wNmUAnuic-or",
-      reading: "20",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "12",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "13",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "13",
-      created_date: Date.now()
-    });
-
-    newSubCities.set({
-      device_id: "-L0oJuC3wNmUAnuic-or",
-      reading: "40",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "42",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "42",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "13",
-      created_date: Date.now()
-    });
-
-    newSubCities.set({
-      device_id: "-L0oJuC3wNmUAnuic-or",
-      reading: "20",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "12",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "13",
-      created_date: Date.now()
-    });
-    var newSubCities = likes.push();
-    newSubCities.set({
-      user_id: "-L0oJuC3wNmUAnuic-or",
-      supplier_id: "90",
-      created_date: Date.now()
-    });
-  },
-
-
-  like: function (req, res) {
-    db.ref('/users').orderByChild('name')
-      .startAt('Alok')
-      .endAt("Alok\uf8ff")
-      .once('value')
-      .then(function (snapshot) {
-        console.log(snapshot.val());
-      });
-  },
-
-
-  orderBy: function (req, res) {
-    db.ref('/countries')
-      .orderByChild("name")
-      .limitToFirst(2)
-      .once('value')
-      .then(function (snapshot) {
-        console.log(snapshot.val());
-      });
-  },
-
-  count: function (req, res) {
-    db.ref('/countries')
-      .once('value')
-      .then(function (snapshot) {
-        console.log(snapshot.numChildren());
-      });
   },
 
   /*
@@ -406,69 +164,6 @@ module.exports = {
     }
   },
 
-
-  /*
-  * Name: addSubCities
-  * Created By: A-SIPL
-  * Created Date: 13-dec-2017
-  * Purpose: add new city location
-  * @param  type
-  */
-  addUser: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        var ref = db.ref();
-        var subcities = ref.child("users");
-        var newSubCities = subcities.push();
-        newSubCities.push({
-          account_number: "2234522586",
-          area: 'Dewas',
-          city_id: "-L0Ik_goeeUdNOKTJ_DB",
-          country_id: "-L0E-tknbeJKkXDSQHzr",
-          createdAt: 1512749459933,
-          email: "abc@gmail.com",
-          isOnline: true,
-          name: "SS",
-          password: "123456",
-          phone: "99999922222"
-        });
-      }
-    ])
-  },
-
-
-  /*
-  * Name: addSupplier
-  * Created By: A-SIPL
-  * Created Date: 13-dec-2017
-  * Purpose: add new city location
-  * @param  type
-  */
-  addSupplier: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        var ref = db.ref();
-        var subcities = ref.child("suppliers");
-        subcities.push({
-          account_number: "2234522586",
-          area: 'Dewas',
-          country_name: "India",
-          city_name: "Indore",
-          city_id: "-L0xTMeRAbBDb1DZhwpc",
-          country_id: "-L0xTMeRAbBDb1DZhwpc",
-          created_date: 1513774149199,
-          modified_date: 1513774149199,
-          company_name: "Himalay",
-          email: "himalay@gmail.com",
-          is_deleted: false,
-          name: "Himalay",
-          mobile_number: "9713997998"
-        });
-      }
-    ])
-  },
-
-
   /*
    * Name: view
    * Created By: A-SIPL
@@ -484,7 +179,8 @@ module.exports = {
       var cities = snapshot.val();
       /* countries listing*/
       var ref = db.ref("countries");
-      ref.once("value", function (snapshot) {
+      ref.orderByChild("is_deleted").equalTo(false)
+      .once("value", function (snapshot) {
         var countries = snapshot.val();
         return res.view('location-listing', {
           title: sails.config.title.location_list,
@@ -509,34 +205,64 @@ module.exports = {
    * @param  req
    */
   edit: function (req, res) {
+    var errors = {};
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        isFormError = true;
-        console.log("In error");
-      } else {
-        console.log("City id", req.param('city_id'));
-        var ref = db.ref();
-        var usersRef = ref.child('cities/' + req.param('city_id'));
-        usersRef.update({
-          'country_id': req.param('country'),
-          'is_deleted': req.param('status'),
-          'name': req.param('city'),
+        var ref = db.ref("cities");
+        ref.once("value", function (snapshot) {
+          var cities = snapshot.val();
+          /* city listing*/
+          var ref = db.ref("countries");
+          ref.once("value", function (snapshot) {
+            var countries = snapshot.val();
+            return res.view('view-edit-city', {
+              title: sails.config.title.edit_city,
+              'city': cities[req.params.id],
+              'cities': cities,
+              'countries': countries,
+              'errors': errors,
+              'isEdit': true,
+            });
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
+          });
+
+        }, function (errorObject) {
+          return res.serverError(errorObject.code);
         });
-        return res.redirect('/city');
+      } else {
+        var status = (req.param('status') == false || req.param('status') == "false") ? false : true;
+        db.ref('cities/' + req.param('city_id'))
+          .update({
+          'country_id': req.param('country'),
+          'is_deleted': status,
+          'name': req.param('city'),
+        }).then(function () {
+          req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_edit_success + '</div>');
+          return res.redirect('city');
+        })
+          .catch(function (err) {
+            req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.city_edit_error + '</div>');
+            return res.redirect('city');
+          });
       }
     } else {
-      var errors = {};
       var ref = db.ref("cities");
       ref.once("value", function (snapshot) {
         var cities = snapshot.val();
         /* city listing*/
         var ref = db.ref("countries");
-        ref.once("value", function (snapshot) {
+        ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
           var countries = snapshot.val();
           return res.view('view-edit-city', {
             title: sails.config.title.edit_city,
-            'city': cities[req.params.id], 'cities': cities, countries: countries, errors: errors, isEdit: true,
+            'city': cities[req.params.id],
+            'cities': cities,
+            'countries': countries,
+            'errors': errors,
+            'isEdit': true,
           });
         }, function (errorObject) {
           return res.serverError(errorObject.code);
@@ -561,33 +287,34 @@ module.exports = {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         isFormError = true;
-        console.log("In error");
       } else {
-        console.log("City id", req.param('city_id'));
+        var status = (req.param('status') == "false") ? false : true
         var ref = db.ref();
         var usersRef = ref.child('cities/' + req.param('city_id'));
         usersRef.update({
           'country_id': req.param('country'),
-          'is_deleted': req.param('status'),
+          'is_deleted': status,
           'name': req.param('city'),
         });
         return res.redirect('/city');
       }
     } else {
       var errors = {};
-      var ref = db.ref("subcities/" + req.params.id);
+      var ref = db.ref("locations/" + req.params.id);
       ref.once("value", function (snapshot) {
-        var subcities = snapshot.val();
+        var locations = snapshot.val();
         var ref = db.ref("cities");
-        ref.once("value", function (snapshot) {
+        ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
           var cities = snapshot.val();
           /* city listing*/
           var ref = db.ref("countries");
-          ref.once("value", function (snapshot) {
+          ref.orderByChild("is_deleted").equalTo(false)
+          .once("value", function (snapshot) {
             var countries = snapshot.val();
             return res.view('view-edit-location', {
               title: sails.config.title.edit_location,
-              'subcities': subcities, 'cities': cities, countries: countries, errors: errors, isEdit: true,
+              'locations': locations, 'cities': cities, countries: countries, errors: errors, isEdit: true,
             });
           }, function (errorObject) {
             return res.serverError(errorObject.code);
@@ -603,14 +330,14 @@ module.exports = {
   },
 
   /*
-   * Name: subCities
+   * Name: locations
    * Created By: A-SIPL
    * Created Date: 22-dec-2017
    * Purpose: show grid with data
    * @param  req
    */
-  subCity: function (req, res) {
-    return res.view('subcity-listing', {title: sails.config.title.view_location});
+  location: function (req, res) {
+    return res.view('location-listing', {title: sails.config.title.view_location});
   },
 
 
@@ -621,16 +348,16 @@ module.exports = {
     * Purpose: get all city data
     * @param  type
     */
-  subCityList: function (req, res) {
-    subCities = [];
+  locationList: function (req, res) {
+    locations = [];
     cities = [];
     var cityId = (req.query.cityId != undefined) ? req.params.id : '';
     var ref = db.ref('cities/' + req.query.cityId);
     ref.once("value", function (snapshot) {
       cities = snapshot.val();
-      var ref = db.ref("subcities");
+      var ref = db.ref("locations");
       ref.orderByChild("city_id").equalTo(req.query.cityId).once("value", function (snap) {
-        var cityJson = (Object.keys(snap).length) ? getSubCityList(snap, cities) : {};
+        var cityJson = (Object.keys(snap).length) ? getLocationList(snap, cities) : {};
         return res.json({'rows': cityJson});
       });
     });
@@ -649,13 +376,14 @@ module.exports = {
     if (id != '') {
       db.ref('/cities/' + id)
         .update({
-          'is_deleted': status
+          'is_deleted': status,
+          'modified_date': Date.now(),
         })
         .then(function () {
-          return res.json({'status': true});
+          return res.json({'status': true, message: sails.config.flash.update_successfully});
         })
         .catch(function (err) {
-          res.json({'status': false, 'message': err});
+          res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
         });
     } else {
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
@@ -663,49 +391,43 @@ module.exports = {
   },
 
   /*
- * Name: paggination
- * Created By: A-SIPL
- * Created Date: 26-dec-2017
- * Purpose: Update status of city
- * @param  req
- */
-  paggination: function (req, res) {
-    const adminNew = require('firebase-admin');
-    var serviceAccount = require("./../../serviceAccountKey.json");
-    if (!adminNew.apps.length) {
-      adminNew.initializeApp({
-        credential: adminNew.credential.cert(serviceAccount),
-        databaseURL: "https://water-level-detector.firebaseio.com"
-      });
+* Name: updateLocationStatus
+* Created By: A-SIPL
+* Created Date: 07-jan-2018
+* Purpose: Update status of location
+* @param  req
+*/
+  updateLocationStatus: function (req, res) {
+    var id = req.body.id;
+    var status = req.body.is_active;
+    if (id != '') {
+      db.ref('/locations/' + id)
+        .update({
+          'is_deleted': status,
+          'modified_date': Date.now(),
+        })
+        .then(function () {
+          return res.json({'status': true, message: sails.config.flash.update_successfully});
+        })
+        .catch(function (err) {
+          res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
+        });
+    } else {
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
-    var db = adminNew.firestore();
-    //return db;
-
-
-    var first = db.collection('suppliers')
-      .orderBy('company_name')
-      .limit(3);
-    console.log('Response->', first.get());
-
-
-    // var paginate = first.get()
-    //   .then(function (snapshot) {
-    //     // ...
-    //     // Get the last document
-    //     var last = snapshot.docs[snapshot.docs.length - 1];
-    //     console.log('last.data->', last.data());
-    //     // Construct a new query starting at this document.
-    //     // Note: this will not have the desired effect if multiple
-    //     // cities have the exact same population value.
-    //     var next = db.collection('suppliers')
-    //       .orderBy('company_name')
-    //       .startAfter(last.data().company_name)
-    //       .limit(3);
-    //     console.log('Next Response->', next);
-    //     // Use the query for pagination
-    //     // ...
-    //   });
   },
+  
+  moveFbRecord: function() {   
+      var oldRef = db.ref('users/-L241aMXvbCuJhGpV-Hy');
+     oldRef.once('value', function(snap)  {
+         var newRef = db.ref('users/siplindia');
+          newRef.set( snap.val(), function(error) {
+               if( !error ) {  oldRef.remove(); }
+               else if( typeof(console) !== 'undefined' && console.error ) {  console.error(error); }
+          });
+     });
+}
+
 };
 
 
@@ -728,6 +450,9 @@ function getCityList(snap, countries) {
       updateCity.country_name = countries[country_id]['name'];
       cities.push(updateCity);
     });
+    cities.sort(function (a, b) {
+            return b.created_at - a.created_at;
+        })
     return cities;
   } else {
     cities = {}
@@ -737,26 +462,29 @@ function getCityList(snap, countries) {
 
 
 /*
-   * Name: getSubCityList
+   * Name: getLocationList
    * Created By: A-SIPL
    * Created Date: 22-dec-2017
    * Purpose: sget the user grid data
    * @param  req
    */
-function getSubCityList(snap, cities) {
+function getLocationList(snap, cities) {
   if (Object.keys(snap).length) {
     snap.forEach(function (childSnap) {
-      subCity = childSnap.val();
-      updateSubCity = subCity;
-      city_id = subCity.city_id;
-      updateSubCity.city_id = childSnap.key;
-      updateSubCity.city_name = cities['name'];
-      subCities.push(updateSubCity);
+      location = childSnap.val();
+      updateLocation = location;
+      city_id = location.city_id;
+      updateLocation.city_id = childSnap.key;
+      updateLocation.city_name = cities['name'];
+      locations.push(updateLocation);
     });
-    return subCities;
+    locations.sort(function (a, b) {
+            return b.created_at - a.created_at;
+        })
+    return locations;
   } else {
-    subCities = {}
-    return subCities;
+    locations = {}
+    return locations;
   }
 }
 

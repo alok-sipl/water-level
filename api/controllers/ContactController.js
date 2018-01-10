@@ -76,6 +76,9 @@ function getContactList(snap) {
       updateContact.contact_id = childSnap.key;
       contacts.push(updateContact);
     });
+    contacts.sort(function (a, b) {
+            return b.created_at - a.created_at;
+        })
     return contacts;
   } else {
     contacts = {}

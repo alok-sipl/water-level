@@ -1,12 +1,240 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Email</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/>
+  <meta name="viewport" content="width=device-width"/>
+  <title><%= typeof title == 'undefined' ? 'New Sails App' : sails.config.app_name + ' | ' + title %></title>
+  <style type="text/css">
+    .MBemail a, a.MBemail, .grn {
+      color: #789A1D;
+      text-decoration: none;
+    }
+
+    .MBemail a:hover, a.MBemail:hover {
+      color: #789A1D;
+      text-decoration: underline;
+    }
+
+    @media only screen and (max-width: 900px) {
+      td[class=headerBG] {
+        width: 100%;
+      }
+    }
+
+    @media only screen and (max-width: 640px) {
+      body {
+        width: auto;
+      }
+
+      .BoxWrap, td[class=hero], img[class=heroImg] {
+        width: 440px !important;
+      }
+
+      div.h2-center, div.h3-center {
+        text-align: center;
+      }
+
+      /* Show/Hide  */
+      .RespoHideMedium {
+        display: none;
+      }
+
+      .RespoShowMedium {
+        display: block;
+      }
+
+      .RespoCenterMedium {
+        text-align: center;
+      }
+
+      td[class=headerBG] {
+        width: 100%;
+      }
+
+      img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
+        max-width: 440px !important;
+        height: 212px !important;
+      }
+
+      img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
+        max-width: 440px !important;
+        height: 335px !important;
+      }
+    }
+
+    @media only screen and (max-width: 479px) {
+      body {
+        width: auto;
+      }
+
+      .BoxWrap, td[class=hero], img[class=heroImg] {
+        max-width: 280px !important;
+        width: 95%;
+      }
+
+      /* Hide  */
+      .RespoHideSmall, .BoxHeadRight {
+        display: none;
+      }
+
+      .RespoCenterSmall {
+        text-align: center;
+      }
+
+      img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
+        max-width: 280px !important;
+        height: 135px !important;
+      }
+
+      img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
+        max-width: 280px !important;
+        height: 213px !important;
+      }
+    }
+
+    @media only screen and (max-width: 319px) {
+      body {
+        width: auto;
+      }
+
+      .BoxWrap, td[class=hero], img[class=heroImg] {
+        max-width: 230px !important;
+      }
+
+      div#em-hd {
+        font-size: 28px;
+      }
+
+      /* Hide  */
+      .RespoHideSmall, .BoxHeadRight {
+        display: none;
+      }
+
+      .RespoCenterSmall {
+        text-align: center;
+      }
+
+      img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
+        max-width: 230px !important;
+        height: 135px !important;
+      }
+
+      img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
+        max-width: 230px !important;
+        height: 213px !important;
+      }
+    }
+  </style>
 </head>
-<body>
-  <div class="header"><img src="<%= sails.config.base_url %>images/logo.png"></div>
-  <div class="content">
-    This is the mail bodya <%= name %>
-  </div>
-  <div class="footer">Copy rigth by <%= sails.config.app_name %></div>
+<body
+  style="width: 100%;background-color: #ffffff;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;mso-margin-top-alt: 0px;mso-margin-bottom-alt: 0px;mso-padding-alt: 0px 0px 0px 0px;">
+<table width="100%" bgcolor="#e2e5e5" cellpadding="0" cellspacing="0" align="center">
+  <tbody>
+  <tr>
+    <td bgcolor="#337ab7">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" style="clear:both;">
+        <tbody>
+        <tr>
+          <td width="100%" valign="top" style="background-size: 100% auto;">
+            <table class="BoxWrap" width="600" align="center" cellpadding="0" cellspacing="0">
+              <tbody>
+              <tr>
+                <td class="hero"><img class="heroImg"
+                                      src="https://static.wixstatic.com/media/469cbf_1ceb0496ecab4fc5b242db8365ac32dc~mv2.png/v1/fill/w_250,h_130,al_c/469cbf_1ceb0496ecab4fc5b242db8365ac32dc~mv2.png">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr>
+
+
+    <td valign="top" style="-webkit-text-size-adjust: none;">
+      <table width="600" class="BoxWrap" align="center" cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+        <tr mc:repeatable="zigzag" mc:variant="ltr">
+          <td class="Content_Color01" bgcolor="#ffffff" style="-webkit-text-size-adjust: none;">
+            <table class="BoxWrap" width="401" align="left" cellpadding="20" cellspacing="0">
+              <tbody>
+              <tr>
+                <td width="100%" style="-webkit-text-size-adjust: none;">
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    Hello <%= name%>, </p>
+                </td>
+              </tr>
+              <tr>
+                <td width="100%" style="-webkit-text-size-adjust: none;"><h2 mc:edit
+                                                                             style="font-size: 18px;margin: 10px 0 10px 0;color: #151516;text-align: left;font-weight: bold;line-height: 20px;text-decoration: none;font-family: Helvetica, Arial, sans-serif;">
+                    Your membership email is: <br/>
+                    <span style="color:#337ab7;font-weight:bold;text-decoration:none;"><%= email %></span></h2>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    &nbsp;</p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 10px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    <b>If you forget your login password:</b></p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    Use the <b><em>Forgotten Password</em></b> link on the on App
+                  </p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    &nbsp;</p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    &nbsp;</p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    Enjoy!</p>
+                  <p mc:edit
+                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
+                    warm regards<br/>
+                    <%= sails.config.app_name %> (Team)</p></td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" style="-webkit-text-size-adjust: none;">
+      <table class="BoxWrap" width="600" align="center" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
+        </tr>
+        <tr>
+          <td width="100%" height="1" bgcolor="#799a1d" style="-webkit-text-size-adjust: none;"></td>
+        </tr>
+        <tr>
+          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
+        </tr>
+        <tr>
+          <td style="-webkit-text-size-adjust: none;"><h3 mc:edit="footer_txt01"
+                                                          style="font-size: 11px;margin: 5px 0 5px 0;color: #a19f9f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 14px;">
+              You've received this email as part of your <strong><%= sails.config.base_url %></strong> membership.<br/>
+              <br/>
+              If you want to chat just drop us a line using the contact form on the site.</h3></td>
+        </tr>
+        <tr>
+          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  </tbody>
+</table>
 </body>
 </html>

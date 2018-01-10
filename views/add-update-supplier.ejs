@@ -144,7 +144,7 @@
                           data-parsley-required-message="<%= WaterSupplier.message.country_required %>">
                     <option value="">Select Country</option>
                     <%
-                    if(Object.keys(countries).length){
+                    if(countries != undefined && Object.keys(countries).length){
                       for(var key in countries) { %>
                     <option <%= (supplier.country_id && supplier.country_id == key) ? "selected" : (req.param('country') && req.param('country') == key) ? "selected" : '' %>
                       value="<%= key %>"><%= countries[key].name %></option>
@@ -165,7 +165,7 @@
                           data-parsley-required-message="<%= WaterSupplier.message.city_required %>">
                     <option value="">Select City</option>
                     <%
-                    if(Object.keys(cities).length){
+                    if(cities != undefined && Object.keys(cities).length){
                       for(var key in cities) { %>
                     <option <%= (supplier.city_id && supplier.city_id == key) ? "selected" : (req.param('city') && req.param('city') == key) ? "selected" : '' %>
                       value="<%= key %>"><%= cities[key].name %></option>
@@ -206,7 +206,7 @@
                        alt="<%= (supplier.name) ? supplier.name : '' %>">
                   <% } %>
                   <input type="file" class="form-control" name="company_image" id="company_image"
-                    <% if(!Object.keys(supplier).length){ %>
+                    <% if(supplier != undefined && !Object.keys(supplier).length){ %>
                          required
                          data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"
                     <% } %>
@@ -220,7 +220,7 @@
               <div class="form-group <%= (errors.account_number != undefined) ? " has-error" : "" %>">
                 <div class="col-md-8 col-md-offset-4">
                   <button type="submit" class="btn btn-primary">
-                    <%= (Object.keys(supplier).length) ? 'Update' : 'Add' %> Supplier
+                    <%= (supplier != undefined && Object.keys(supplier).length) ? 'Update' : 'Add' %> Supplier
                   </button>
                   <a class="btn btn-primary" href="<%= sails.config.base_url %>supplier">Cancel</a>
                 </div>

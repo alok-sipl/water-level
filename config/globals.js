@@ -69,6 +69,7 @@ module.exports.globals = {
    ****************************************************************************/
   firebasedb: firebasedb,
   firebaseAuth: firebaseAuth,
+  storageBucket: storageBucket,
 };
 
 /*
@@ -83,7 +84,7 @@ function firebasedb() {
   if (!waterLevelApp.apps.length) {
     waterLevelApp.initializeApp({
       credential: waterLevelApp.credential.cert(serviceAccount),
-      databaseURL: "https://water-level-detector.firebaseio.com"
+      databaseURL: "https://waterleveldetector-db2b3.firebaseio.com"
     });
   }
   var db = waterLevelApp.database();
@@ -100,13 +101,28 @@ function firebasedb() {
 function firebaseAuth() {
   var firebaseAuth = require("firebase");
   var config = {
-    apiKey: "AIzaSyBvVFWJVMh6F76cm4aY-qmIs4u1ksS-I9E",
-    authDomain: "water-level-detector.firebaseapp.com",
-    databaseURL: "https://water-level-detector.firebaseio.com",
-    storageBucket: "firebase.storage.appspot.com",
+    apiKey: "AIzaSyCf8FWItY_h43oS9KfJdvcDrvULZ3xLx0E",
+    authDomain: "waterleveldetector-db2b3.firebaseapp.com",
+    databaseURL: "https://waterleveldetector-db2b3.firebaseio.com",
+    storageBucket: "waterleveldetector-db2b3.appspot.com",
   };
   if (!firebaseAuth.apps.length) {
     firebaseAuth.initializeApp(config);
   }
   return firebaseAuth;
+}
+
+/*
+     * Name: storageBucket
+     * Created By: A-SIPL
+     * Created Date: 04-jan-2018
+     * Purpose: create a firebase authentication and access it to globally
+     */
+function storageBucket() {
+  const googleStorage = require('@google-cloud/storage');
+  const storage = googleStorage({
+    projectId: "waterleveldetector-db2b3",
+    keyFilename: "serviceAccountKey.json"
+  });
+  return bucket = storage.bucket("waterleveldetector-db2b3.appspot.com");
 }

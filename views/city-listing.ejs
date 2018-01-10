@@ -16,13 +16,18 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-right m-t-sm">
-                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addCity/1"><i class="icon icon-user"></i>Add City</a>
+                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addCity"><i class="icon icon-user"></i>Add City</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
 <div class="hpanel">
+  <% if (req.session.flash) { %>
+  <%- req.flash('flashMessage') %>
+  <% } %>
   <div class="panel-body">
     <table  id="city-grid"></table>
     <div id="city-grid-pager"></div>

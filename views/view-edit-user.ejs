@@ -22,7 +22,7 @@
   <div class="col-md-8">
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>dashboard/profile" method="post" enctype="multipart/form-data"
+        <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <% if (req.session.flash) { %>
           <%- req.flash('flashMessage') %>
@@ -82,7 +82,7 @@
               <input type="text" name="account_number" class="form-control" id="account_number"
                      value="<%= user.account_number %>"
                      data-parsley-type="alphanum"
-                     data-parsley-length="<%= sails.config.length.account_number %>"
+                     data-parsley-length="[<%= sails.config.length.account_number %>, <%= sails.config.length.account_number %>]"
                      data-parsley-length-message="<%= User.message.account_number_length %>"
                      data-parsley-type-message="<%= User.message.account_number_alphanumeric %>"
                      placeholder="Account Number"/>
@@ -118,6 +118,7 @@
                 <span class=""><%= (user.country_name != undefined) ? user.country_name : "" %></span>
                 <% } %>
             </div>
+            <input type="hidden" name="country_name" id="country_name" value="<%= (user.country_name) ? (user.country_name) : '' %>"/>
           </div>
           <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">City*</label>
@@ -140,6 +141,7 @@
               <span class=""><%= (user.city_name != undefined) ? user.city_name : "" %></span>
               <% } %>
             </div>
+            <input type="hidden" name="city_name" id="city_name" value="<%= (user.city_name) ? (user.city_name) : '' %>"/>
           </div>
           <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Area*</label>
@@ -158,23 +160,25 @@
               <span class=""><%= (user.area != undefined) ? user.area : "" %></span>
               <% } %>
             </div>
+            <input type="hidden" name="latitude" id="latitude" value="<%= (user.latitude) ? (user.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>
+            <input type="hidden" name="longitude" id="longitude" value="<%= (user.longitude) ? (user.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>
           </div>
           <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Profile Picture</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <span class=""><img width="100"
-                                  src="<%= (user.compnay_image) ? user.compnay_image : sails.config.base_url + 'images/profile.png' %>"
+                                  src="<%= (user.image) ? user.image : sails.config.base_url + 'images/profile.png' %>"
                                   title="<%= (user.name) ? user.name : '' %>" alt="<%= (user.name) ? user.name : '' %>"></span>
               <input type="file" class="form-control" name="image" id="image"
-                     data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"/>/>
+                     data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"/>
               <span class="help-block">
-                <strong><%= (errors.area != undefined) ? errors.image.message : '' %>
+                <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
                 </strong>
               </span>
               <% }else{ %>
               <span class=""><img width="100"
-                                  src="<%= (user.compnay_image) ? user.compnay_image : sails.config.base_url + 'images/profile.png' %>"
+                                  src="<%= (user.image) ? user.image : sails.config.base_url + 'images/profile.png' %>"
                                   title="<%= (user.name) ? user.name : '' %>" alt="<%= (user.name) ? user.name : '' %>"></span>
               <% } %>
             </div>
@@ -186,8 +190,8 @@
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
                 <option <%= (user.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
-                <option <%= (user.is_deleted == false) ? "selected" : "" %> value="true">Active</option>
-                <option <%= (user.is_deleted == true) ? "selected" : "" %> value="false">In Active</option>
+                <option <%= (user.is_deleted == false || user.is_deleted == "false") ? "selected" : "" %> value="false">Active</option>
+                <option <%= (user.is_deleted == true || user.is_deleted == "true") ? "selected" : "" %> value="true">In Active</option>
               </select>
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>

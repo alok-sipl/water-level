@@ -9,7 +9,7 @@
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
               <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
-              <li><a href="<%= sails.config.base_url %>device">City, Location List</a></li>
+              <li><a href="<%= sails.config.base_url %>device">City List</a></li>
               <li class="active">
                 <%= (type) ? 'Add City' : 'Add Location' %>
               </li>
@@ -24,24 +24,37 @@
   <div class="col-md-8">
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>city/addCountry" method="post"
+        <% if(type == true){ %>
+        <form action="<%= sails.config.base_url %>city/addCity" method="post"
               id="add-city" class='form-horizontal' data-parsley-validate='true'>
+        <% }else{ %>
+          <form action="<%= sails.config.base_url %>city/addLocation" method="post"
+                id="add-location" class='form-horizontal' data-parsley-validate='true'>
+        <%}%>
           <div class="form-group">
             <label for="first_name" class="col-md-4 control-label">Country*</label>
             <div class="col-md-6">
               <select name="country" id="country" class="form-control" required
                       data-parsley-required-message="<%= City.message.country_required %>">
                 <option value="">Select Country</option>
-                <%
-                if(Object.keys(country).length){
-                  for(var key in country) { %>
-                <option value="<%= key %>"><%= country[key].name %></option>
-                <% }
+                <% if(country != undefined && Object.keys(country).length){ %>
+                  <% if(!type){ %>
+                      <% for(var key in country) { %>
+                        <% if(key == cities.country_id){ %>
+                          <option <%= (!type) ? ((countryId == key) ?  'selected': '' ) :''%> value="<%= key %>"><%= country[key].name %></option>
+                        <% } %>
+
+                      <%  } %>
+                  <% }else{ %>
+                      <% for(var key in country) { %>
+                        <option <%= (!type) ? ((countryId == key) ?  'selected': '' ) :''%> value="<%= key %>"><%= country[key].name %></option>
+                      <% } %>
+                  <% }
                 } %>
               </select>
             </div>
           </div>
-          <% if(type){ %>
+          <% if(type == true){ %>
           <div class="form-group">
             <label for="is_active" class="col-md-4 control-label">City*</label>
             <div class="col-md-6">
@@ -58,26 +71,31 @@
               <select name="city" id="city" class="form-control" required
                       data-parsley-required-message="<%= City.message.city_required %>">
                 <option value="">Select City</option>
+                <%
+                if(cities != undefined && Object.keys(cities).length){ %>
+                <option selected  value="<%= cityId %>"><%= cities.name %></option>
+                <%
+                } %>
               </select>
             </div>
           </div>
           <% } %>
           <input type="hidden" name="type" value="<%= type %>"/>
-          <% if(type == 1){ %>
+          <% if(!type){ %>
           <div class="form-group">
-            <label for="is_active" class="col-md-4 control-label">Area*</label>
+            <label for="is_active" class="col-md-4 control-label">Location*</label>
             <div class="col-md-6">
               <input type="text" name="area" class="form-control" required id="area" value=""
                      data-parsley-required-message="<%= City.message.area_required %>"
                      data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
-                     placeholder="Area"/>
+                     placeholder="Location"/>
             </div>
           </div>
           <% } %>
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <button type="submit" class="btn btn-primary">
-                <%= (type) ? 'Save City' : 'Update City' %>
+                <%= (type) ? 'Save City' : 'Add Location' %>
               </button>
               <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
             </div>

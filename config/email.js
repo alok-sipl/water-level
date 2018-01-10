@@ -4,7 +4,7 @@ module.exports.email = {
   service: "Gmail",
   auth: {
     user: 'ravi_sipl@systematixindia.com',
-    pass: '********'
+    pass: 'target@2015'
   },
   templateDir: "views/email-template",
   from: 'ravi_sipl@systematixindia.com',

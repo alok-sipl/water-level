@@ -140,7 +140,7 @@ $('.change-notification').click(function () {
     error: function (textStatus, errorThrown) {
       helper.hideLoader();
       $(".alert-danger").css("display", "block");
-      $(".alert-danger").html(result.message);
+      $(".alert-danger").html(textStatus);
     }
   });
 });
@@ -259,11 +259,13 @@ var helper = {
 
 /* Make activate/deactivate a record */
 $("body").on("click", ".status-action", function () {
+  $(".alert-danger").css("display", "none");
+  $(".alert-success").css("display", "none");
+  helper.showLoader();
   var id = $(this).attr('data-id');
-
-  if ($(this).attr('data-status') == true) {
+  if ($(this).attr('data-status') == 'true') {
     var status = false;
-  } else {
+  } else if ($(this).attr('data-status') == 'false') {
     var status = true;
   }
   var url = $(this).attr('data-url');
@@ -272,20 +274,22 @@ $("body").on("click", ".status-action", function () {
       id: id,
       is_active: status
     };
-    console.log(formData);
-    helper.showLoader();
     $.ajax({
       type: "POST",
       url: url,
       data: formData,
       success: function (result) {
+        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('clearGridData');
+        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('setGridParam', {datatype:'json'});
+        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').trigger('reloadGrid');
         helper.hideLoader();
-        if (result.status == true) {
-          $('#city-grid').trigger('reloadGrid');
-        }
+        $(".alert-success").css("display", "block");
+        $(".alert-success").html(result.message);
       },
       error: function (textStatus, errorThrown) {
         helper.hideLoader();
+        $(".alert-danger").css("display", "block");
+        $(".alert-danger").html(textStatus);
       }
     });
   }
@@ -301,6 +305,9 @@ function showMyTrips() {
     type: 'POST',
     data: {offset: $('#offset').val(), limit: $('#limit').val(), count: $('#count').val()},
     success: function (response) {
+      helper.hideLoader();
+      $(".alert-success").css("display", "block");
+      $(".alert-success").html(result.message);
       $('#offset').val(parseInt($('#offset').val()) + parseInt($('#limit').val()));
       $('#smallGlobalLoader').css('display', 'none');
       if (parseInt($('#offset').val()) >= parseInt($('#count').val())) {
@@ -310,8 +317,9 @@ function showMyTrips() {
       }
       $('div.supplier-block').append(response);
     }, error: function (jqXHR, exception) {
-      alert(jqXHR);
-      alert(exception);
+      helper.hideLoader();
+      $(".alert-danger").css("display", "block");
+      $(".alert-danger").html(textStatus);
     }
   });
 }
@@ -338,7 +346,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           action += '<a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status) {
+          if (status == 'true' || status == true) {
             action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
           } else {
             action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
@@ -348,7 +356,7 @@ $(document).ready(function () {
       }
     ],
     viewrecords: true,
-    width: 945,
+    width: 1110,
     height: 250,
     rowNum: 10,
     loadonce: true,
@@ -371,13 +379,13 @@ $(document).ready(function () {
       {
         label: 'Action', name: 'contact_id', search: false, width: 150, align: "center",
         formatter: function (cellvalue) {
-          var action = '<a href="' + BASE_URL + 'contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+          var action = '<a href="' + BASE_URL + '/contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 945,
+    width: 1110,
     height: 250,
     rowNum: 10,
     loadonce: true,
@@ -405,7 +413,6 @@ $(document).ready(function () {
       {
         label: 'User Name', name: 'phone', width: 150,
         formatter: function (cellvalue) {
-          status = cellvalue;
           return (cellvalue == undefined) ? "Not Assigned" : cellvalue;
         }
       },
@@ -418,12 +425,11 @@ $(document).ready(function () {
       {
         label: 'Last Inactive Time', name: 'city_name', width: 150, search: false,
         formatter: function (cellvalue) {
-          status = cellvalue;
           return (cellvalue == undefined) ? "--" : cellvalue;
         }
       },
       {
-        label: 'Status', name: 'id_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
           status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
@@ -434,7 +440,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           action += '<a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status) {
+          if (status == 'true' || status == true) {
             action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
           } else {
             action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
@@ -444,7 +450,7 @@ $(document).ready(function () {
       }
     ],
     viewrecords: true,
-    width: 945,
+    width: 1110,
     height: 250,
     rowNum: 10,
     loadonce: true,
@@ -457,7 +463,7 @@ $(document).ready(function () {
   /* Location page grid */
   var status = false;
   $("#location-grid").jqGrid({
-    url: BASE_URL + '/city/subCityList',
+    url: BASE_URL + '/city/locationList',
     postData: {cityId: $("#city_id").val()},
     mtype: "GET",
     datatype: "json",
@@ -475,17 +481,17 @@ $(document).ready(function () {
         label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
         formatter: function (cellvalue) {
           var action = '<a href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status) {
-            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          if (status == 'true' || status == true) {
+            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateLocationStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
           } else {
-            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateLocation/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateLocationStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
           }
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 945,
+    width: 1110,
     height: 250,
     rowNum: 10,
     loadonce: true,
@@ -508,7 +514,7 @@ $(document).ready(function () {
       {label: 'City', name: 'city_name', width: 150},
       {label: 'Country', name: 'country_name', width: 130},
       {
-        label: 'Status', name: 'id_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
           status = cellvalue;
           return (cellvalue == false) ? "Active" : "In active";
@@ -519,7 +525,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           action += '<a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status) {
+          if (status == 'true' || status == true) {
             action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
           } else {
             action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
@@ -529,7 +535,7 @@ $(document).ready(function () {
       }
     ],
     viewrecords: true,
-    width: 945,
+    width: 1110,
     height: 250,
     rowNum: 10,
     loadonce: true,

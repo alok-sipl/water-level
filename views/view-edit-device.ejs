@@ -22,7 +22,7 @@
   <div class="col-md-8">
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>dashboard/profile" method="post" enctype="multipart/form-data"
+        <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <% if (req.session.flash) { %>
           <%- req.flash('flashMessage') %>
@@ -78,7 +78,7 @@
             <label for="area" class="col-md-4 control-label">Tank Location</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
-              <input type="text" onFocus="geolocate()" name="area" class="form-control" required id="area"
+              <input type="text" onFocus="geolocate()" name="area" class="form-control" id="area" disabled
                      value="<%= (device.area) ? (device.area) : '' %>"
                      maxlength="<%= sails.config.length.address %>"
                      data-parsley-required-message="<%= WaterSupplier.message.area_required %>"

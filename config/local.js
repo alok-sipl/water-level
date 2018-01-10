@@ -29,141 +29,163 @@
 
 module.exports = {
 
-  /***************************************************************************
-   * Your SSL certificate and key, if you want to be able to serve HTTP      *
-   * responses over https:// and/or use websockets over the wss:// protocol  *
-   * (recommended for HTTP, strongly encouraged for WebSockets)              *
-   *                                                                         *
-   * In this example, we'll assume you created a folder in your project,     *
-   * `config/ssl` and dumped your certificate/key files there:               *
-   ***************************************************************************/
+    /***************************************************************************
+     * Your SSL certificate and key, if you want to be able to serve HTTP      *
+     * responses over https:// and/or use websockets over the wss:// protocol  *
+     * (recommended for HTTP, strongly encouraged for WebSockets)              *
+     *                                                                         *
+     * In this example, we'll assume you created a folder in your project,     *
+     * `config/ssl` and dumped your certificate/key files there:               *
+     ***************************************************************************/
 
-  // ssl: {
-  //   ca: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl_gd_bundle.crt'),
-  //   key: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl.key'),
-  //   cert: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl.crt')
-  // },
+    // ssl: {
+    //   ca: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl_gd_bundle.crt'),
+    //   key: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl.key'),
+    //   cert: require('fs').readFileSync(__dirname + './ssl/my_apps_ssl.crt')
+    // },
 
-  /***************************************************************************
-   * The `port` setting determines which TCP port your app will be           *
-   * deployed on.                                                            *
-   *                                                                         *
-   * Ports are a transport-layer concept designed to allow many different    *
-   * networking applications run at the same time on a single computer.      *
-   * More about ports:                                                       *
-   * http://en.wikipedia.org/wiki/Port_(computer_networking)                 *
-   *                                                                         *
-   * By default, if it's set, Sails uses the `PORT` environment variable.    *
-   * Otherwise it falls back to port 1337.                                   *
-   *                                                                         *
-   * In env/production.js, you'll probably want to change this setting       *
-   * to 80 (http://) or 443 (https://) if you have an SSL certificate        *
-   ***************************************************************************/
+    /***************************************************************************
+     * The `port` setting determines which TCP port your app will be           *
+     * deployed on.                                                            *
+     *                                                                         *
+     * Ports are a transport-layer concept designed to allow many different    *
+     * networking applications run at the same time on a single computer.      *
+     * More about ports:                                                       *
+     * http://en.wikipedia.org/wiki/Port_(computer_networking)                 *
+     *                                                                         *
+     * By default, if it's set, Sails uses the `PORT` environment variable.    *
+     * Otherwise it falls back to port 1337.                                   *
+     *                                                                         *
+     * In env/production.js, you'll probably want to change this setting       *
+     * to 80 (http://) or 443 (https://) if you have an SSL certificate        *
+     ***************************************************************************/
 
-  // port: process.env.PORT || 1337,
+    // port: process.env.PORT || 1337,
 
-  /***************************************************************************
-   * The runtime "environment" of your Sails app is either typically         *
-   * 'development' or 'production'.                                          *
-   *                                                                         *
-   * In development, your Sails app will go out of its way to help you       *
-   * (for instance you will receive more descriptive error and               *
-   * debugging output)                                                       *
-   *                                                                         *
-   * In production, Sails configures itself (and its dependencies) to        *
-   * optimize performance. You should always put your app in production mode *
-   * before you deploy it to a server.  This helps ensure that your Sails    *
-   * app remains stable, performant, and scalable.                           *
-   *                                                                         *
-   * By default, Sails sets its environment using the `NODE_ENV` environment *
-   * variable.  If NODE_ENV is not set, Sails will run in the                *
-   * 'development' environment.                                              *
-   ***************************************************************************/
+    /***************************************************************************
+     * The runtime "environment" of your Sails app is either typically         *
+     * 'development' or 'production'.                                          *
+     *                                                                         *
+     * In development, your Sails app will go out of its way to help you       *
+     * (for instance you will receive more descriptive error and               *
+     * debugging output)                                                       *
+     *                                                                         *
+     * In production, Sails configures itself (and its dependencies) to        *
+     * optimize performance. You should always put your app in production mode *
+     * before you deploy it to a server.  This helps ensure that your Sails    *
+     * app remains stable, performant, and scalable.                           *
+     *                                                                         *
+     * By default, Sails sets its environment using the `NODE_ENV` environment *
+     * variable.  If NODE_ENV is not set, Sails will run in the                *
+     * 'development' environment.                                              *
+     ***************************************************************************/
 
-   // environment: process.env.NODE_ENV || 'development'
+    // environment: process.env.NODE_ENV || 'development'
 
-   app_name: 'Water Level Detector',
-   base_url: 'https://dashboard.heroku.com/',
-   admin_url: 'https://dashboard.heroku.com/admin',
-   google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU" ,
-  admin_email : 'ravi_sipl@systematixindia.com',
-  per_page_data : 3,
-  supplier_range : 80,
+    app_name: 'Water Level Detector',
+    base_url: 'http://10.10.100.19:1337/',
+    admin_url: 'http://10.10.100.19:1337/admin',
+    google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
+    admin_email: 'ravi_sipl@systematixindia.com',
+    authentication_email: 'ravi_sipl@systematixindia.com',
+    authentication_password: 'target@2015',
+    per_page_data: 3,
+    supplier_range: 80,
+    min_battery_level: 16,
+    min_device_battery_level: 10,
 
-  /* Validation message setting */
-  length:{
-    name: 65,
-    company_name: 125,
-    account_number: 10,
-    min_mobile_number: 10,
-    max_mobile_number: 13,
-    address: 125,
-    email: 125,
-    min_password: 6,
-    max_password: 16,
-    device_id: 32,
-    max_file_upload: 4000000,
-    max_file_upload_kb: 40
-  },
+    /* Validation message setting */
+    length: {
+        name: 65,
+        company_name: 125,
+        account_number: 10,
+        min_mobile_number: 10,
+        max_mobile_number: 13,
+        address: 125,
+        email: 125,
+        min_password: 6,
+        max_password: 16,
+        device_id: 32,
+        max_file_upload: 4000000,
+        max_file_upload_kb: 40
+    },
 
-  regex:{
-    name: /^([ \\'-.A-Za-z\u0600-\u06FF]{1,50})$/,
-    alpha_numeric: "^[a-zA-Z0-9]*$",
-    mobile_number: /^(\+\d{1,3}[- ]?)?\d{10}$/,
-    device_id: /^[a-zA-Z0-9_]*$/
-  },
+    regex: {
+        name: /^([ \\'-.A-Za-z\u0600-\u06FF]{1,50})$/,
+        alpha_numeric: "^[a-zA-Z0-9]*$",
+        mobile_number: /^(\+\d{1,3}[- ]?)?\d{10}$/,
+        device_id: /^[a-zA-Z0-9_]*$/
+    },
 
-  title:{
-    login: 'Admin Login',
-    dashboard: 'Dashboard',
-    profile: 'Profile',
-    edit_profile: 'Edit Profile',
-    change_password: 'Change password',
-    supplier_list: 'Supplier List',
-    add_supplier: 'Add Supplier',
-    edit_supplier: 'Edit Supplier',
-    view_supplier: 'View Supplier',
-    user_list: 'User List',
-    edit_user: 'Edit User',
-    view_user: 'View User',
-    device_list: 'Device List',
-    add_device: 'Add Device',
-    edit_device: 'Edit Device',
-    view_device: 'View Device',
-    add_country: 'Add Country',
-    edit_country: 'Edit Country',
-    city_list: 'City List',
-    add_city: 'Add City',
-    edit_city: 'Edit City',
-    location_list: 'Location List',
-    add_location: 'Add Location',
-    edit_location: 'Edit Location',
-    enquiry_list: 'Contact Enqiry List',
-    view_enquiry: 'View Enquiry',
-    notification_setting: 'Notification Setting'
-  },
+    title: {
+        login: 'Admin Login',
+        dashboard: 'Dashboard',
+        profile: 'Profile',
+        edit_profile: 'Edit Profile',
+        change_password: 'Change password',
+        supplier_list: 'Supplier List',
+        add_supplier: 'Add Supplier',
+        edit_supplier: 'Edit Supplier',
+        view_supplier: 'View Supplier',
+        user_list: 'User List',
+        edit_user: 'Edit User',
+        view_user: 'View User',
+        device_list: 'Device List',
+        add_device: 'Add Device',
+        edit_device: 'Edit Device',
+        view_device: 'View Device',
+        add_country: 'Add Country',
+        edit_country: 'Edit Country',
+        city_list: 'City List',
+        add_city: 'Add City',
+        edit_city: 'Edit City',
+        location_list: 'Location List',
+        add_location: 'Add Location',
+        edit_location: 'Edit Location',
+        enquiry_list: 'Contact Enqiry List',
+        view_enquiry: 'View Enquiry',
+        notification_setting: 'Notification Setting'
+    },
 
-  flash:{
-    invalid_email_password:"Invalid email or/and password",
-    image_not_upload : "No file was uploaded",
-    incorrect_file_format : "File type is not supported!",
-    email_already_exist: " email already registered",
-    password_change_success: "Password changed successfully",
-    password_change_error: "Error in changed password",
-    old_password_unmatch: "Incorrect current password",
-    something_went_wronge: "Something went wronge",
-    update_successfully: "Status updated successfully",
-    supplier_add_success: "Supplier added successfully",
-    supplier_add_error: "Error in adding supplier",
-    profile_update_success: "Profile update successfully",
-    profile_update_error: "Error in updating profile",
-    paramter_missing: "Required parameter is mising",
-  },
+    flash: {
+        invalid_email_password: "Invalid email or/and password",
+        image_not_upload: "No file was uploaded",
+        incorrect_file_format: "File type is not supported!",
+        email_already_exist: " email already registered",
+        password_change_success: "Password changed successfully",
+        password_change_error: "Error in changed password",
+        old_password_unmatch: "Incorrect current password",
+        something_went_wronge: "Something went wronge",
+        update_successfully: "Status updated successfully",
+        supplier_add_success: "Supplier added successfully",
+        supplier_add_error: "Error in adding supplier",
+        supplier_edit_success: "Supplier edit successfully",
+        supplier_edit_error: "Error in edit supplier",
+        device_add_success: "Device added successfully",
+        device_add_error: "Error in adding device",
+        device_edit_success: "Device edit successfully",
+        device_edit_error: "Error in edit device",
+        device_already_exist: " device already registered",
+        city_add_success: "City added successfully",
+        city_add_error: "Error in adding city",
+        city_edit_success: "City edit successfully",
+        city_edit_error: "Error in edit city",
+        location_add_success: "Location added successfully",
+        location_add_error: "Error in adding location",
+        location_edit_success: "Location edit successfully",
+        location_edit_error: "Error in edit location",
+        user_edit_success: "User edit successfully",
+        user_edit_error: "Error in edit user",
+        profile_update_success: "Profile update successfully",
+        profile_update_error: "Error in updating profile",
+        paramter_missing: "Required parameter is mising",
+    },
 
-  email_message:{
-    user_activated : "Your account has been activated by admin",
-    user_deactivated : "Your account has been deactivated by admin",
-    device_activated : "Your device has been activated by admin",
-    device_deactivated : "Your device has been deactivated by admin",
-  }
+    email_message: {
+        user_activated: "Your account has been activated by admin",
+        user_deactivated: "Your account has been deactivated by admin",
+        device_activated: "Your device has been activated by admin",
+        device_deactivated: "Your device has been deactivated by admin",
+    }
+
 };

@@ -6,6 +6,7 @@
  */
 var db = sails.config.globals.firebasedb();
 var firebaseAuth = sails.config.globals.firebaseAuth();
+var storageBucket = sails.config.globals.storageBucket();
 
 module.exports = {
   /*
@@ -32,8 +33,8 @@ module.exports = {
           return res.serverError(errorObject.code);
         });
       }).catch(function (err) {
-        req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
-        return res.redirect('supplier');
+      req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+      return res.redirect('supplier');
     });
   },
 
@@ -109,7 +110,8 @@ module.exports = {
 
         /* country listing*/
         var ref = db.ref("countries");
-        ref.once("value", function (snapshot) {
+        ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
           var countries = snapshot.val();
           return res.view('add-update-supplier', {
             'title': sails.config.title.add_supplier,
@@ -136,7 +138,8 @@ module.exports = {
                 errors['company_image'] = {message: err}
                 /* country listing*/
                 var ref = db.ref("countries");
-                ref.once("value", function (snapshot) {
+                ref.orderByChild("is_deleted").equalTo(false)
+                .once("value", function (snapshot) {
                   var countries = snapshot.val();
                   return res.view('add-update-supplier', {
                     'title': sails.config.title.add_supplier,
@@ -154,7 +157,8 @@ module.exports = {
                   errors['company_image'] = {message: WaterSupplier.message.company_image_required}
                   /* country listing*/
                   var ref = db.ref("countries");
-                  ref.once("value", function (snapshot) {
+                  ref.orderByChild("is_deleted").equalTo(false)
+                  .once("value", function (snapshot) {
                     var countries = snapshot.val();
                     return res.view('add-update-supplier', {
                       'title': sails.config.title.add_supplier,
@@ -171,7 +175,8 @@ module.exports = {
                   errors['company_image'] = {message: WaterSupplier.message.invalid_file}
                   /* country listing*/
                   var ref = db.ref("countries");
-                  ref.once("value", function (snapshot) {
+                  ref.orderByChild("is_deleted").equalTo(false)
+                  .once("value", function (snapshot) {
                     var countries = snapshot.val();
                     return res.view('add-update-supplier', {
                       'title': sails.config.title.add_supplier,
@@ -188,32 +193,39 @@ module.exports = {
                   req.flash('flashMessage', '<div class="alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist + '</div>');
                   return res.redirect(sails.config.base_url + 'supplier/add');
                 } else {
-                  var ref = db.ref("suppliers");
-                  var data = {
-                    company_name: req.param('company_name'),
-                    name: req.param('name'),
-                    email: req.param('email'),
-                    mobile_number: req.param('mobile_number'),
-                    account_number: req.param('account_number'),
-                    tank_size: req.param('tank_size'),
-                    country_id: req.param('country'),
-                    country_name: req.param('country_name'),
-                    city_id: req.param('city'),
-                    city_name: req.param('city_name'),
-                    area: req.param('area'),
-                    latitude: req.param('latitude'),
-                    longitude: req.param('longitude'),
-                    is_deleted: false,
-                    created_date: Date.now(),
-                    modified_date: Date.now(),
-                    /*compnay_image: req.param('company_image'),*/
-                  }
-                  ref.push(data).then(function (ref) {
-                    req.flash('flashMessage', '<div class="alert alert-success">Supplier Added Successfully.</div>');
-                    return res.redirect(sails.config.base_url + 'supplier');
-                  }, function (error) {
-                    req.flash('flashMessage', '<div class="alert alert-danger">Error In Adding Supplier.</div>');
-                    return res.redirect(sails.config.base_url + 'supplier');
+                  storageBucket.upload(uploadedFiles[0].fd, function (err, file) {
+                    if (!err) {
+                      var ref = db.ref("suppliers");
+                      var data = {
+                        company_name: req.param('company_name'),
+                        name: req.param('name'),
+                        email: req.param('email'),
+                        mobile_number: req.param('mobile_number'),
+                        account_number: req.param('account_number'),
+                        tank_size: req.param('tank_size'),
+                        country_id: req.param('country'),
+                        country_name: req.param('country_name'),
+                        city_id: req.param('city'),
+                        city_name: req.param('city_name'),
+                        area: req.param('area'),
+                        latitude: req.param('latitude'),
+                        longitude: req.param('longitude'),
+                        is_deleted: false,
+                        created_date: Date.now(),
+                        modified_date: Date.now(),
+                        /*compnay_image: req.param('company_image'),*/
+                      }
+                      ref.push(data).then(function (ref) {
+                        req.flash('flashMessage', '<div class="alert alert-success">'+ sails.config.flash.supplier_add_success+'</div>');
+                        return res.redirect(sails.config.base_url + 'supplier');
+                      }, function (error) {
+                        req.flash('flashMessage', '<div class="alert alert-danger">'+ sails.config.flash.supplier_add_error+'</div>');
+                        return res.redirect(sails.config.base_url + 'supplier');
+                      });
+                    } else {
+                      req.flash('flashMessage', '<div class="alert alert-danger">'+ err +'</div>');
+                      return res.redirect(sails.config.base_url + 'supplier');
+                    }
                   });
                 }
               }
@@ -226,7 +238,8 @@ module.exports = {
     } else {
       /* country listing*/
       var ref = db.ref("countries");
-      ref.once("value", function (snapshot) {
+      ref.orderByChild("is_deleted").equalTo(false)
+      .once("value", function (snapshot) {
         var countries = snapshot.val();
         return res.view('add-update-supplier', {
           'title': sails.config.title.add_supplier,
@@ -259,7 +272,8 @@ module.exports = {
       if (Object.keys(errors).length) {
         /* country listing*/
         var ref = db.ref("countries");
-        ref.once("value", function (snapshot) {
+        ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
           var countries = snapshot.val();
           /* supplier detail */
           var ref = db.ref("suppliers/" + req.params.id);
@@ -296,7 +310,8 @@ module.exports = {
             errors['company_image'] = {message: err}
             /* country listing*/
             var ref = db.ref("countries");
-            ref.once("value", function (snapshot) {
+            ref.orderByChild("is_deleted").equalTo(false)
+            .once("value", function (snapshot) {
               var countries = snapshot.val();
               /* supplier detail */
               var ref = db.ref("suppliers/" + req.params.id);
@@ -328,7 +343,8 @@ module.exports = {
               errors['company_image'] = {message: WaterSupplier.message.invalid_file}
               /* country listing*/
               var ref = db.ref("countries");
-              ref.once("value", function (snapshot) {
+              ref.orderByChild("is_deleted").equalTo(false)
+              .once("value", function (snapshot) {
                 var countries = snapshot.val();
                 /* supplier detail */
                 var ref = db.ref("suppliers/" + req.params.id);
@@ -373,11 +389,11 @@ module.exports = {
                   'longitude': req.param('longitude')
                 })
                 .then(function (res) {
-                  req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
+                  req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
                   return res.redirect(sails.config.base_url + 'supplier');
                 })
                 .catch(function (err) {
-                  req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.supplier_add_error + '</div>');
+                  req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.supplier_edit_error + '</div>');
                   return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
                 });
             }
@@ -387,7 +403,8 @@ module.exports = {
     } else {
       /* country listing*/
       var ref = db.ref("countries");
-      ref.once("value", function (snapshot) {
+      ref.orderByChild("is_deleted").equalTo(false)
+      .once("value", function (snapshot) {
         var countries = snapshot.val();
         /* supplier detail */
         var ref = db.ref("suppliers/" + req.params.id);
@@ -427,19 +444,19 @@ module.exports = {
   updateStatus: function (req, res) {
     var id = req.body.id;
     var status = req.body.is_active;
-    if(id != ''){
-      db.ref('/supplier/' + id)
+    if (id != '') {
+      db.ref('/suppliers/' + id)
         .update({
           'is_deleted': status
         })
         .then(function () {
-          return res.json({'status':true});
+          return res.json({'status': true, message: sails.config.flash.update_successfully});
         })
         .catch(function (err) {
-          res.json({'status':false, 'message': err});
+          res.json({'status': false, message: sails.config.flash.something_went_wronge});
         });
-    }else{
-      return res.json({'status':false, message: sails.config.flash.something_went_wronge});
+    } else {
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
 
   }

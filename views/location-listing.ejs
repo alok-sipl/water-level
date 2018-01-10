@@ -16,14 +16,19 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-right m-t-sm">
-                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addCity/0"><i class="icon icon-user"></i>Add Location</a>
+                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addLocation/<%=  cityId %>"><i class="icon icon-user"></i>Add Location</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <input type="hidden" id="city_id" name="city_id" value="<%= (cityId != undefined) ? cityId : '' %>">
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
 <div class="hpanel">
+  <% if (req.session.flash) { %>
+  <%- req.flash('flashMessage') %>
+  <% } %>
   <div class="panel-body">
     <table  id="location-grid"></table>
     <div id="location-grid-pager"></div>

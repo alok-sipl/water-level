@@ -33,6 +33,7 @@ module.exports = {
     "area_required": "Area is required",
     "area_maxlength": "Area can not be max 125 characters long",
     "area_selection": "Please select are from the suggetion list",
+    "status_required": "Please select status"
   },
 };
 

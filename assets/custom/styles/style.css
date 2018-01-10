@@ -3537,8 +3537,9 @@ span.badge{background-color:white;}
 /*Add by Sipl 3-1-2018*/
 
 .navbar-nav > li > a {padding: 25px 10px;font-size: 14px;height: 72px !important;}
-.navbar-nav > li > a:hover{background-color:#3196c7 !important;color:white !important;}
+.navbar-nav > li > a:hover, .navbar-nav > li.active > a{background-color:#3196c7 !important;color:white !important;}
 .navbar-nav > li > a.logout {font-size: 25px;padding: 25px 20px;}
+.navbar-nav li .active {color:#3196c7 !important; background-color:#3196c7 !important;}
 
 #header{height: 80px;}
 #header #logo{width: 250px!important;padding: 14px 10px 0px 18px !important;height: 56px !important;border-bottom: 0 !important;}

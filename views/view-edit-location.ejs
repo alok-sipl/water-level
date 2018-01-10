@@ -4,8 +4,7 @@
       <div class="row">
         <div class="col-md-6">
           <h2 class="font-light m-b-xs">
-            <% console.log("Subcities id:- ", subcities.city_id); %>
-            <%= (isEdit) ? "Update" : "View" %> Location: <%= (subcities.name != undefined) ? subcities.name : "" %>
+            <%= (isEdit) ? "Update" : "View" %> Location: <%= (locations.name != undefined) ? locations.name : "" %>
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
@@ -39,7 +38,7 @@
                 if(countries != undefined && Object.keys(countries).length){
                   for(var key in countries) {
                 %>
-                <option <%= (key == cities[subcities.city_id].country_id) ? "selected" : "" %>
+                <option <%= (key == cities[locations.city_id].country_id) ? "selected" : "" %>
                   value="<%= key %>"><%= countries[key].name %></option>
                 <% }
                 } %>
@@ -54,17 +53,23 @@
             </div>
           </div>
           <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
-            <label for="is_active" class="col-md-4 control-label">State*</label>
+            <label for="is_active" class="col-md-4 control-label">City*</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <select name="city" id="city" class="form-control" required
                       data-parsley-required-message="<%= User.message.city_required %>">
                 <option value="">Select City</option>
                 <%
+                  // console.log(cities);
+                  // console.log(locations);
+                  // console.log(locations.city_id);
                 if(cities != undefined && Object.keys(cities).length){
                   for(var key in cities) {
+                    // if(key == cities[locations.city_id].country_id){
+                    //
+                    // }
                 %>
-                <option <%= (key == cities[subcities.city_id]) ? "selected" : "" %>
+                <option <%= (key == cities[locations.city_id]) ? "selected" : "" %>
                   value="<%= key %>"><%= cities[key].name %></option>
                 <% }
                 } %>
@@ -83,10 +88,10 @@
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="city" class="form-control" id="city"
-                     value="<%= subcities.name %>"
+                     value="<%= locations.name %>"
                      placeholder="City"/>
               <% }else{ %>
-              <span class=""><%= (subcities.name != undefined) ? subcities.name : "" %></span>
+              <span class=""><%= (locations.name != undefined) ? locations.name : "" %></span>
               <% } %>
             </div>
           </div>
@@ -97,9 +102,9 @@
               <% if(isEdit){ %>
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
-                <option <%= (subcities.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
-                <option <%= (subcities.is_deleted == false) ? "selected" : "" %> value="true">Active</option>
-                <option <%= (subcities.is_deleted == true) ? "selected" : "" %> value="false">In Active</option>
+                <option <%= (locations.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                <option <%= (locations.is_deleted == false) ? "selected" : "" %> value="true">Active</option>
+                <option <%= (locations.is_deleted == true) ? "selected" : "" %> value="false">In Active</option>
               </select>
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
@@ -107,7 +112,7 @@
 
                 <% }else{ %>
                 <span
-                  class=""><%= (subcities.is_deleted != undefined) ? ((subcities.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                  class=""><%= (locations.is_deleted != undefined) ? ((locations.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
                 <% } %>
             </div>
           </div>

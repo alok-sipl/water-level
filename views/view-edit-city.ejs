@@ -52,8 +52,6 @@
                 <% } %>
             </div>
           </div>
-
-
           <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
             <label for="email" class="col-md-4 control-label">City*</label>
             <div class="col-md-6">
@@ -67,19 +65,6 @@
             </div>
           </div>
           <input type="hidden" name="city_id" value="<%= req.params.id %>">
-
-
-
-
-
-
-
-
-
-
-
-
-
           <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Status*</label>
             <div class="col-md-6">
@@ -87,8 +72,8 @@
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
                 <option <%= (city.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
-                <option <%= (city.is_deleted == false) ? "selected" : "" %> value="true">Active</option>
-                <option <%= (city.is_deleted == true) ? "selected" : "" %> value="false">In Active</option>
+                <option <%= (city.is_deleted == false || city.is_deleted == 'false') ? "selected" : "" %> value="false">Active</option>
+                <option <%= (city.is_deleted == true || city.is_deleted == 'true') ? "selected" : "" %> value="true">In Active</option>
               </select>
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
