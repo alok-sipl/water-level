@@ -31,8 +31,9 @@ module.exports = {
                                 var ref = db.ref("users").orderByChild('id').equalTo(user.uid);
                                 ref.once("value", function (snapshot) {
                                     var adminDetail = snapshot.val();
+                                    var userKey = Object.keys(adminDetail)[0];
                                     if (adminDetail) {
-                                        if (adminDetail.is_admin != undefined && adminDetail.is_admin == true) {
+                                        if (adminDetail[userKey].is_admin != undefined && adminDetail[userKey].is_admin == true) {
                                             req.session.authenticated = true;
                                             req.session.user = user;
                                             req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
@@ -50,10 +51,10 @@ module.exports = {
                                 });
                             }).catch(function (error) {
                         if (error.code == "auth/invalid-email") {
+                            console.log('111');
                             req.flash('flashMessage', '<div class="alert alert-danger">' + User.message.email_valid + '</div>');
-                        } else if (error.code == "auth/invalid-email") {
-                            req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.invalid_email_password + '</div>');
                         } else {
+                            console.log('3333');
                             req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.invalid_email_password + '</div>');
                         }
                         return res.redirect(sails.config.base_url + 'login');
@@ -78,7 +79,7 @@ module.exports = {
      */
     signUp: function (req, res) {
         if (!req.session.authenticated) {
-            firebase.auth().createUserWithEmailAndPassword('rahul.khandel@systematixindia.com', '123456')
+            firebase.auth().createUserWithEmailAndPassword('admin@qatrah.com', 'admin@1234')
                     .then(function () {
                         user = firebase.auth().currentUser;
                     }).then(function () {
@@ -103,8 +104,8 @@ module.exports = {
                     phone: "9713997998",
                     id: user.uid,
                     is_deleted: false,
-                    is_user_notification: true,
-                    is_device_notification: true,
+                    is_user_notification_enable: true,
+                    is_device_notification_enable: true,
                     created_at: Date.now(),
                     modified_at: Date.now(),
                 }

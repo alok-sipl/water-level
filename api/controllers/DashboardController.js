@@ -235,6 +235,7 @@ module.exports = {
       ref.once("value", function (snapshot) {
         var userDetail = snapshot.val();
         if (userDetail) {
+            console.log(userDetail);
           return res.view('notification-setting', {
             title: sails.config.title.notification_setting,
             userDetail: userDetail

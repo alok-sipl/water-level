@@ -11,7 +11,7 @@
               <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
               <li><a href="<%= sails.config.base_url %>device">Device List</a></li>
               <li class="active">
-                <%= (Object.keys(device).length) ? 'Edit' : 'Add' %> Device </span>
+                <%= (device != undefined && Object.keys(device).length) ? 'Edit' : 'Add' %> Device </span>
               </li>
             </ol>
           </div>
@@ -24,7 +24,7 @@
   <div class="col-md-8">
     <div class="hpanel">
       <div class="panel-body">
-        <% if(!(Object.keys(device).length)){ %>
+        <% if(device == undefined || !(Object.keys(device).length)){ %>
         <form action="<%= sails.config.base_url %>device/add" method="post" id="add-device" class='form-horizontal' data-parsley-validate='true'>
           <% }else{ %>
           <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id%>" method="post" id="edit-device" class='form-horizontal' data-parsley-validate='true'>

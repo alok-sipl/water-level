@@ -86,7 +86,7 @@
                       data-parsley-required-message="<%= User.message.country_required %>">
                 <option value="">Select Country</option>
                 <%
-                if(Object.keys(countries).length){
+                if(countries != undefined && Object.keys(countries).length){
                   for(var key in countries) { %>
                 <option <%= (key == user.country_id) ? "selected" : "" %>
                   value="<%= key %>"><%= countries[key].name %></option>
@@ -107,7 +107,7 @@
                       data-parsley-required-message="<%= User.message.city_required %>">
                 <option value="">Select City</option>
                 <%
-                if(Object.keys(cities).length){
+                if(cities != undefined &&  Object.keys(cities).length){
                   for(var key in cities) { %>
                 <option <%= (key == user.city_id) ? "selected" : "" %>
                   value="<%= key %>"><%= cities[key].name %></option>

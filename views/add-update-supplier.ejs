@@ -4,14 +4,14 @@
       <div class="row">
         <div class="col-md-6">
           <h2 class="font-light m-b-xs">
-            <%= (Object.keys(supplier).length) ? 'Edit' : 'Add' %> Supplier
+            <%= (supplier == undefined && Object.keys(supplier).length) ? 'Edit' : 'Add' %> Supplier
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
               <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
               <li><a href="<%= sails.config.base_url %>supplier">Supplier List</a></li>
               <li class="active">
-                <%= (Object.keys(supplier).length) ? 'Edit' : 'Add' %> Supplier</span>
+                <%= (supplier == undefined && Object.keys(supplier).length) ? 'Edit' : 'Add' %> Supplier</span>
               </li>
             </ol>
           </div>
@@ -24,7 +24,7 @@
   <div class="col-md-8">
     <div class="hpanel">
       <div class="panel-body">
-        <% if(!(Object.keys(supplier).length)){ %>
+        <% if(supplier == undefined || !(Object.keys(supplier).length)){ %>
         <form action="<%= sails.config.base_url %>supplier/add" method="post" enctype="multipart/form-data"
               id="add-supplier" class='form-horizontal' data-parsley-validate='true'>
           <% }else{ %>
@@ -199,7 +199,7 @@
               <div class="form-group <%= (errors.company_image != undefined) ? " has-error" : "" %>">
                 <label for="is_active" class="col-md-4 control-label">Company Logo*</label>
                 <div class="col-md-6">
-                  <% if(Object.keys(supplier).length){ %>
+                  <% if(supplier == undefined && Object.keys(supplier).length){ %>
                   <img width="100"
                        src="<%= (supplier.compnay_image) ? supplier.compnay_image : sails.config.base_url + 'images/profile.png' %>"
                        title="<%= (supplier.name) ? supplier.name : '' %>"
