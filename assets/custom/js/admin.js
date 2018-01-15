@@ -2,11 +2,12 @@
  * Main set common settings of the application
  */
 
-var BASE_URL = 'http://10.10.100.19:1337';
+var BASE_URL = 'https://water-level.herokuapp.com';
+//var BASE_URL = 'http://10.10.100.19:1337';
 
 /* All message will be declared here */
 var CONST = {
-  MSGTIMEOUT: 4000,
+  MSGTIMEOUT: 6000,
 }
 
 $(document).ready(function () {
