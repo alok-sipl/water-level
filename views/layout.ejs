@@ -100,13 +100,13 @@
         <li class="<%= (req.options.controller == 'contact') ? 'active' : ''%>">
           <a href="<%= sails.config.base_url %>contact" title="View Enquiry"><span class="nav-label">View Enquiry</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.controller == 'setting')) ? 'active' : ''%>">
+        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'setting')) ? 'active' : ''%>">
           <a href="<%= sails.config.base_url %>dashboard/setting" title="Setting"><span class="nav-label">Setting</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.controller == 'profile')) ? 'active' : ''%>">
+        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'profile')) ? 'active' : ''%>">
           <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile"><span class="nav-label">Profile</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.controller == 'changePassword')) ? 'active' : ''%>">
+        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'changePassword')) ? 'active' : ''%>">
           <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Change Password"><span class="nav-label">Change Password</span></a>
         </li>
         <li>
