@@ -60,9 +60,6 @@ module.exports.policies = {
    "ReadingController": {
      '*': true
    },
-   "supplierController": {
-     '*': true
-   },
   // "LoginController": {
   //   "*": "firebaseNoAuth",
   // }

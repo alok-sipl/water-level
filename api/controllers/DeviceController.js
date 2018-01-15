@@ -177,7 +177,7 @@ module.exports = {
   updateStatus:function(req, res){
     var id = req.body.id;
     var status = req.body.is_active;
-    var ref = db.ref('/users/'+ id);
+    var ref = db.ref('/devices/'+ id);
     ref.once("value", function (snapshot) {
       if(snapshot.val()){
         db.ref('/devices/'+ id)

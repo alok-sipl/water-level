@@ -76,8 +76,8 @@ module.exports = {
             'city_id': req.param('city'),
             'city_name': req.param('city_name'),
             'area': req.param('area'),
-            'latitude': req.param('latitude'),
-            'longitude': req.param('longitude')
+            'latitude': parseFloat(req.param('latitude')),
+            'longitude': parseFloat(req.param('longitude'))
             }).then(function () {
               user = firebaseAuth.auth().currentUser;
             }).then(function (){

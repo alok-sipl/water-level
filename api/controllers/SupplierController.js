@@ -208,8 +208,8 @@ module.exports = {
                         city_id: req.param('city'),
                         city_name: req.param('city_name'),
                         area: req.param('area'),
-                        latitude: req.param('latitude'),
-                        longitude: req.param('longitude'),
+                        latitude: parseFloat(req.param('latitude')),
+                        longitude: parseFloat(req.param('longitude')),
                         is_deleted: false,
                         created_date: Date.now(),
                         modified_date: Date.now(),
@@ -385,8 +385,8 @@ module.exports = {
                   'city_id': req.param('city'),
                   'city_name': req.param('city_name'),
                   'area': req.param('area'),
-                  'latitude': req.param('latitude'),
-                  'longitude': req.param('longitude')
+                  'latitude': parseFloat(req.param('latitude')),
+                  'longitude': parseFloat(req.param('longitude'))
                 })
                 .then(function (res) {
                   req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
