@@ -1,14 +1,16 @@
+<script src="<%= sails.config.base_url %>/custom/js/filter.js" type="text/javascript"></script>
+<script src="<%= sails.config.base_url %>/custom/js/index.js" type="text/javascript"></script>
 <div class="normalheader transition animated fadeIn">
   <div class="hpanel">
     <div class="panel-body">
       <div class="row">
         <div class="col-md-6">
-          <h2 class="font-light m-b-xs">
+          <h3 class="font-light m-b-xs">
             Supplier List
-          </h2>
+          </h3>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
               <li class="active">
                 <span>Supplier List</span>
               </li>
@@ -22,54 +24,76 @@
     </div>
   </div>
 </div>
-<div class="content">
-  <% if (req.session.flash) { %>
-  <%- req.flash('flashMessage') %>
-  <% } %>
-  <% if(suppliers == undefined || !Object.keys(suppliers).length){ %>
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="hpanel">
-        <div class="panel-body">
-          <span class="">There has no supplier available</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <% }else{ %>
-  <div class="alert alert-success" style="display: none"></div>
-  <div class="alert alert-danger" style="display: none"></div>
-  <div class="row">
-    <div class="col-lg-4 pull-right">
-      <div class="hpanel">
-        <div class="m-t-sm">
-          <div class="input-group">
-            <input class="form-control search" type="text" name="search" placeholder="Search Supplier...">
-            <div class="input-group-btn">
-              <button class="btn btn-default search-supplier"><i class="fa fa-search"></i></button>
-            </div>
+
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<div class="row">
+  <div class="col-lg-3">
+    <div class="hpanel">
+      <div class="m-t-sm">
+        <div class="input-group">
+          <input  id="searchbox" class="form-control search" type="text" name="search" placeholder="Search Supplier...">
+          <div class="input-group-btn">
+            <button class="btn btn-default search-supplier"><i class="fa fa-search"></i></button>
+            <button style="display: none" class="btn btn-default clr-search-supplier"><i class="pe-7s-close-circle"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row supplier-block">
-    <%- partial('show-supplier.ejs') %>
+</div>
+<div class="row supplier-block">
+  <div id="movies">
   </div>
-  <% } %>
-  <% if(count > sails.config.per_page_data){ %>
-  <div class="col-md-12 border-right">
-    <div class="pagination">
-      <input type="hidden" id="offset" value="<%= sails.config.per_page_data%>">
-      <input type="hidden" id="limit" value="<%= sails.config.per_page_data%>">
-      <input type="hidden" id="count" value="<%= count %>">
-      <p class="seeMoreFollowList">
-        <a class="load_more_preferences c1" href="javascript:void(0);" onclick="showMyTrips()">Show More</a>
-      </p>
-      <div align="center">
-        <img name="smallGlobalLoader" id="smallGlobalLoader" title="Loading" style="display:none; max-width:100px; max-height:100px;" src="/images/loadingBar.gif">
+</div>
+
+
+<script id="movie-template" type="text/html">
+    <div class="col-md-3">
+      <div class="hpanel hgreen contact-panel">
+        <div class="panel-body">
+          <-% if(is_deleted == 'true' || is_deleted == true){ %->
+          <a data-tooltip data-supplier="true" data-status="true"
+             data-url="<%= sails.config.base_url %>supplier/updateStatus/<-%= id %->"
+             class="label label-danger pull-right status-label status-action" data-id="<-%= id %->"
+             href="javascript:void(0);" data-original-title="Make Supplier Active">In Active</a>
+          <-% }else{ %->
+          <a data-tooltip data-supplier="true" data-status="false"
+             data-url="<%= sails.config.base_url %>supplier/updateStatus/<-%= id %->"
+             class="label label-success pull-right status-label status-action" data-id="<-%= id %->"
+             href="javascript:void(0);" data-original-title="Make Supplier In Active">Active</a>
+          <-% } %->
+
+          <span class="img-circle m-b">
+          <img alt="<-%= company_name %->"
+               src="<-%= company_name %->" >
+       </span>
+          <h3><-%= company_name %-></h3>
+
+          <div
+            class="text-muted font-bold m-b-sm"><-%= name %-></div>
+
+          <p class="icon-text">
+            <i class="fa fa-location-arrow"></i>
+            <-%= city_name + country_name %->
+          </p>
+
+          <p class="icon-text">
+            <i class="fa fa-phone"></i>
+            <-%= mobile_number %-></p>
+          <p class="icon-text">
+            <i class="fa fa-envelope"></i>
+            <-%= email %-></p>
+        </div>
+        <div class="panel-footer contact-footer clearfix">
+          <a href="<%= sails.config.base_url %>supplier/edit/<-%= id %->" class="btn btn-primary col-md-12"
+             title="Edit Supplier">Edit Supplier</a>
+        </div>
       </div>
     </div>
-  </div>
-  <% } %>
-</div>
+
+</script>

@@ -1,47 +1,62 @@
-<% if(supplier != suppliers && Object.keys(suppliers).length){
+<% if(suppliers != undefined && Object.keys(suppliers).length){
+  var counter = 0;
   for (var key in suppliers) { %>
-<div class="col-md-4">
-  <div class="hpanel hgreen contact-panel">
-    <div class="panel-body">
-      <div class="text-center">
-        <% if(suppliers[key]['is_deleted']  == 'true'){%>
-        <span class="label label-danger pull-right status-label">In Active</span>
-        <%}else{ %>
-        <span class="label label-success pull-right">Active</span>
-        <%} %>
-        <img alt="<%= (suppliers[key]['company_name'] != undefined) ? suppliers[key]['company_name'] : '' %>" class="img-circle m-b"
-             src="<%= (suppliers[key]['compnay_image'] != undefined) ? suppliers[key]['compnay_image'] : sails.config.base_url + 'images/profile.png' %>">
+<% if(counter == 0 || counter%4 == 0){ %>
+<div class="row">
+<% } %>
+  <div class="col-md-3">
+    <div class="hpanel hgreen contact-panel">
+      <div class="panel-body">
+        <% if(suppliers[key]['is_deleted'] == 'true' || suppliers[key]['is_deleted'] == true){ %>
+        <a data-tooltip data-supplier="true" data-status="true"
+           data-url="<%= sails.config.base_url %>supplier/updateStatus/<%= key %>"
+           class="label label-danger pull-right status-label status-action" data-id="<%= key %>"
+           href="javascript:void(0);" data-original-title="Make Supplier Active">In Active</a>
+        <% }else{ %>
+        <a data-tooltip data-supplier="true" data-status="false"
+           data-url="<%= sails.config.base_url %>supplier/updateStatus/<%= key %>"
+           class="label label-success pull-right status-label status-action" data-id="<%= key %>"
+           href="javascript:void(0);" data-original-title="Make Supplier In Active">Active</a>
+        <% } %>
+
+        <span class="img-circle m-b">
+          <img alt="<%= (suppliers[key]['company_name'] != undefined) ? suppliers[key]['company_name'] : '' %>"
+               src="<%= (suppliers[key]['compnay_image'] != undefined) ? suppliers[key]['compnay_image'] : sails.config.base_url + 'images/profile.png' %>">
+       </span>
         <h3><%= (suppliers[key]['company_name'] != undefined) ? suppliers[key]['company_name'] : '' %></h3>
-        <h4><%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %></h4>
-        <div class="text-muted font-bold m-b-xs">
-          <%= (suppliers[key]['city_name'] != undefined) ? ((suppliers[key]['area'] != undefined) ? suppliers[key]['area'] + ', ' : '') + suppliers[key]['city_name'] + ', ' + suppliers[key]['country_name'] : '' %>
-        </div>
-        <p><%= (suppliers[key]['mobile_number'] != undefined) ? suppliers[key]['mobile_number'] : '' %></p>
-        <p><%= (suppliers[key]['email'] != undefined) ? suppliers[key]['email'] : '' %></p>
+
+        <div
+          class="text-muted font-bold m-b-sm"><%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %></div>
+
+        <p class="icon-text">
+          <i class="fa fa-location-arrow"></i>
+          <%= (suppliers[key]['city_name'] != undefined) ? (suppliers[key]['city_name'] + ', ' + suppliers[key]['country_name']) : '' %>
+        </p>
+
+        <p class="icon-text">
+          <i class="fa fa-phone"></i>
+          <%= (suppliers[key]['mobile_number'] != undefined) ? suppliers[key]['mobile_number'] : '' %></p>
+        <p class="icon-text">
+          <i class="fa fa-envelope"></i>
+          <%= (suppliers[key]['email'] != undefined) ? suppliers[key]['email'] : '' %></p>
       </div>
-    </div>
-    <div class="panel-footer contact-footer">
-      <div class="row">
-        <div class="col-md-6 border-right">
-          <div class="contact-stat">
-            <span>Status </span>
-            <strong><% if(suppliers[key]['is_deleted'] == 'true'){ %>
-              <a data-tooltip="" title="" data-status="true" data-url="<%= sails.config.base_url %>supplier/updateStatus/<%= key %>" class="button status-action active" data-id="<%= key %>" href="javascript:void(0);" data-original-title="Make Active"><i class="fa fa-check-square-o"></i></a>
-              <% }else{ %>
-              <a data-tooltip="" title="" data-status="false" data-url="<%= sails.config.base_url %>supplier/updateStatus/<%= key %>" class="button status-action active" data-id="<%= key %>" href="javascript:void(0);" data-original-title="Make In Active"><i class="fa fa-square-o"></i></a>
-              <% } %>
-            </strong>
-          </div>
-        </div>
-        <div class="col-md-6 border-right">
-          <div class="contact-stat"><a href="<%= sails.config.base_url %>supplier/edit/<%= key %>"
-                                       title="<%= (suppliers[key]['name'] != undefined) ? suppliers[key]['name'] : '' %>">Edit
-              Supplier</a>
-          </div>
-        </div>
+      <div class="panel-footer contact-footer clearfix">
+        <a href="<%= sails.config.base_url %>supplier/edit/<%= key %>" class="btn btn-primary col-md-12"
+           title="Edit Supplier">Edit Supplier</a>
       </div>
     </div>
   </div>
+  <%
+    counter++;
+  if(counter % 4 == 0 || (counter-2) == Object.keys(suppliers).length){ %></div><% }%>
+<%
+
+  }
+}else{ %>
+<div class="row supplier-block">
+  <div class="col-md-12">
+    <div class="hpanel hgreen contact-panel">No record found</div>
+  </div>
 </div>
-<% }
-} %>
+
+<% } %>

@@ -8,7 +8,7 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
               <li class="active"> <%= (isEdit) ? "Edit" : "View" %> Device
               </li>
             </ol>
@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6 col-md-push-3">
     <div class="hpanel">
       <div class="panel-body">
         <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post"
@@ -28,7 +28,7 @@
           <%- req.flash('flashMessage') %>
           <% } %>
           <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
-            <label for="device_id" class="col-md-4 control-label">Device Id*</label>
+            <label for="device_id" class="col-md-4 control-label">Device Id<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="device_id" class="form-control" id="device_id"
@@ -50,14 +50,14 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="device_name" class="col-md-4 control-label">Device Name*</label>
+            <label for="device_name" class="col-md-4 control-label">Device Name<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="device_name" class="form-control" id="device_name"
-                     value="<%= (device.device_name != undefined) ? device.device_name : "Device Not Set" %>"
+                     value="<%= (device.device_name != undefined) ? device.device_name : "NA" %>"
                      disabled/>
               <% }else{ %>
-              <span class=""><%= (device.device_name != undefined) ? device.device_name : "Device Not Set" %></span>
+              <span class=""><%= (device.device_name != undefined) ? device.device_name : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -66,11 +66,11 @@
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="user_name" class="form-control" id="user_name"
-                     value="<%= (device.user_name != undefined) ? device.user_name : "User is not attached" %>"
+                     value="<%= (device.user_name != undefined) ? device.user_name : "NA" %>"
                      disabled
                      placeholder="User Name"/>
               <% }else{ %>
-              <span class=""><%= (device.user_name != undefined) ? device.user_name : "User is not attached" %></span>
+              <span class=""><%= (device.user_name != undefined) ? device.user_name : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -89,12 +89,12 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (device.area != undefined) ? device.area : "Not Specified" %></span>
+              <span class=""><%= (device.area != undefined) ? device.area : "NA" %></span>
               <% } %>
             </div>
           </div>
           <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
-            <label for="is_active" class="col-md-4 control-label">Status*</label>
+            <label for="is_active" class="col-md-4 control-label">Status<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <select name="status" id="status" class="form-control" required
@@ -108,7 +108,7 @@
                 </strong>
 
                 <% }else{ %>
-                <span class=""><%= (device.is_deleted != undefined) ? ((device.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                <span class=""><%= (device.is_deleted != undefined) ? ((device.is_deleted) ? "In Active" : "Active") : "NA" %></span>
                 <% } %>
             </div>
           </div>

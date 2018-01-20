@@ -111,7 +111,6 @@ module.exports = {
                 var allowExts = ['image/png', 'image/jpg', 'image/jpeg'];
                 req.file('image').upload({
                     dirname: sails.config.base_url + 'assets/images',
-                    // don't allow the total upload size to exceed ~4MB
                     maxBytes: sails.config.length.max_file_upload
                 }, function whenDone(err, uploadedFiles) {
                     if (err) {
@@ -150,13 +149,13 @@ module.exports = {
                                 var ref = db.ref();
                                 db.ref('users/' + req.params.id)
                                         .update({
-                                            'name': req.param('name'),
-                                            'account_number': req.param('account_number'),
-                                            'country_id': req.param('country'),
-                                            'country_name': req.param('country_name'),
-                                            'city_id': req.param('city'),
-                                            'city_name': req.param('city_name'),
-                                            'area': req.param('area'),
+                                            'name': req.param('name').trim(),
+                                            'account_number': req.param('account_number').trim(),
+                                            'country_id': req.param('country').trim(),
+                                            'country_name': req.param('country_name').trim(),
+                                            'city_id': req.param('city').trim(),
+                                            'city_name': req.param('city_name').trim(),
+                                            'area': req.param('area').trim(),
                                             'latitude': parseFloat(req.param('latitude')),
                                             'longitude': parseFloat(req.param('longitude')),
                                             'is_deleted': status
@@ -170,7 +169,7 @@ module.exports = {
                                                 });
                                             }
                                         })
-                                        .then(function (res) {
+                                        .then(function () {
                                             req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
                                             return res.redirect(sails.config.base_url + 'user');
                                         })
@@ -228,13 +227,13 @@ module.exports = {
                                         }).then(function (signedUrls) {
                                             db.ref('users/' + req.params.id)
                                                     .update({
-                                                        'name': req.param('name'),
-                                                        'account_number': req.param('account_number'),
-                                                        'country_id': req.param('country'),
-                                                        'country_name': req.param('country_name'),
-                                                        'city_id': req.param('city'),
-                                                        'city_name': req.param('city_name'),
-                                                        'area': req.param('area'),
+                                                        'name': req.param('name').trim(),
+                                                        'account_number': req.param('account_number').trim(),
+                                                        'country_id': req.param('country').trim(),
+                                                        'country_name': req.param('country_name').trim(),
+                                                        'city_id': req.param('city').trim(),
+                                                        'city_name': req.param('city_name').trim(),
+                                                        'area': req.param('area').trim(),
                                                         'latitude': parseFloat(req.param('latitude')),
                                                         'longitude': parseFloat(req.param('longitude')),
                                                         'is_deleted': status,
@@ -250,7 +249,7 @@ module.exports = {
                                                             });
                                                         }
                                                     })
-                                                    .then(function (res) {
+                                                    .then(function () {
                                                         req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
                                                         return res.redirect(sails.config.base_url + 'user');
                                                     })
@@ -322,14 +321,15 @@ module.exports = {
             if (snapshot.val()) {
                 db.ref('/users/' + id)
                         .update({
-                            'is_deleted': status
+                            'is_deleted': (status == 'true')? true : false,
+                          'modified_date': Date.now(),
                         })
                         .then(function (res) {
                             userinfo = snapshot.val();
                             MailerService.sendWelcomeMail({
                                 name: userinfo.name,
                                 email: userinfo.email,
-                                subject: (status == true || status == 'true') ? sails.config.email_message.user_activated : sails.config.email_message.user_deactivated
+                                subject: (status == true || status == 'true') ? sails.config.email_message.user_deactivated : sails.config.email_message.user_activated
                             });
                         })
                         .then(function () {
@@ -364,7 +364,7 @@ function getUserList(snap) {
             users.push(updateUser);
         });
         users.sort(function (a, b) {
-            return b.created_at - a.created_at;
+            return b.created_date - a.created_date;
         })
         return users;
     } else {

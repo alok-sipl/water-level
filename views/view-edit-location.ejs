@@ -8,7 +8,7 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> Location
               </li>
             </ol>
@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6 col-md-push-3">
     <div class="hpanel">
       <div class="panel-body">
         <form action="<%= sails.config.base_url %>city/edit" method="post"

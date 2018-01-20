@@ -7,15 +7,16 @@ var BASE_URL = 'https://water-level.herokuapp.com';
 
 /* All message will be declared here */
 var CONST = {
-  MSGTIMEOUT: 6000,
+  MSGTIMEOUT: 10000,
 }
+
 
 $(document).ready(function () {
   /* Hide server side header messages */
-  setTimeout(function(){
+  setTimeout(function () {
     $('div').removeClass('has-error');
     $('.form-group').find('.help-block').hide();
-  },6000);
+  }, 6000);
 
 })
 /*
@@ -23,6 +24,9 @@ $(document).ready(function () {
  */
 
 $(document).ready(function () {
+  //Grid  Defaul Width Set
+  $.jgrid.defaults.width = $(window).width() - 95;
+  console.log($.jgrid.defaults)
 
   /* Check/uncheck the tank type for supplier */
   $('#check_all').click(function () {
@@ -39,12 +43,7 @@ $(document).ready(function () {
     var _this = this;
     var currentTank = $(this).val();
     var allChecked = true
-    $('.tank_type').find('input[name="tank_size"]').each(function () {
-      if (!$(_this).is(':checked') && currentTank != $(this).val()) {
-        allChecked = false;
-      }
-    });
-    if (allChecked) {
+    if ($('.tank_size:checked').length == $('.tank_size').length) {
       $("#check_all").prop('checked', true);
     } else {
       $("#check_all").prop('checked', false);
@@ -75,7 +74,8 @@ $(document).ready(function () {
           } else {
             $('.seeMoreFollowList').css('display', 'block');
           }
-          $('div.supplier-block').append(response);
+          $('button.clr-search-supplier').css("display", "block");
+          $('div.supplier-block').html(response);
         }, error: function (jqXHR, exception) {
           alert(jqXHR);
           alert(exception);
@@ -84,6 +84,12 @@ $(document).ready(function () {
     }
   });
 
+
+  /* Clear Search supplier */
+  $('.clr-search-supplier').click(function () {
+    var text = $(".search").val('');
+    $('button.clr-search-supplier').css("display", "none");
+  });
 })
 
 
@@ -186,20 +192,35 @@ function geolocate() {
 }
 
 /* parsley file upload velidation */
-window.Parsley.addValidator('maxFileSize', {
-  validateString: function (_value, maxSize, parsleyInstance) {
-    if (!window.FormData) {
-      alert('You are making all developpers in the world cringe. Upgrade your browser!');
-      return true;
+window.Parsley
+  .addValidator('maxFileSize', {
+    validateString: function (_value, maxSize, parsleyInstance) {
+      if (!window.FormData) {
+        alert('You are making all developpers in the world cringe. Upgrade your browser!');
+        return true;
+      }
+      var files = parsleyInstance.$element[0].files;
+      return files.length != 1 || files[0].size <= maxSize * 1024;
+    },
+    requirementType: 'integer',
+    messages: {
+      en: 'Company logo should not be larger than 4 Mb',
     }
-    var files = parsleyInstance.$element[0].files;
-    return files.length != 1 || files[0].size <= maxSize * 1024;
-  },
-  requirementType: 'integer',
-  messages: {
-    en: 'Company logo should not be larger than 4 Mb',
-  }
-});
+  })
+  .addValidator('filemimetypes', {
+    requirementType: 'string',
+    validateString: function (_value, requirement, parsleyInstance) {
+      var file = parsleyInstance.$element[0].files;
+      if (file.length == 0) {
+        return true;
+      }
+      var allowedMimeTypes = requirement.replace(/\s/g, "").split(',');
+      return allowedMimeTypes.indexOf(file[0].type) !== -1;
+    },
+    messages: {
+      en: 'Please upload only image'
+    }
+  });
 
 
 /* Declare all helper functions here */
@@ -264,6 +285,7 @@ $("body").on("click", ".status-action", function () {
   $(".alert-success").css("display", "none");
   helper.showLoader();
   var id = $(this).attr('data-id');
+  var isSupplier = $(this).attr('data-supplier');
   if ($(this).attr('data-status') == 'true') {
     var status = false;
   } else if ($(this).attr('data-status') == 'false') {
@@ -280,12 +302,16 @@ $("body").on("click", ".status-action", function () {
       url: url,
       data: formData,
       success: function (result) {
-        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('clearGridData');
-        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('setGridParam', {datatype:'json'});
-        jQuery('#city-grid, #device-grid, #location-grid, #user-grid').trigger('reloadGrid');
-        helper.hideLoader();
-        $(".alert-success").css("display", "block");
-        $(".alert-success").html(result.message);
+        if (isSupplier == 'true') {
+          location.reload();
+        } else {
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('clearGridData');
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('setGridParam', {datatype: 'json'});
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').trigger('reloadGrid');
+          helper.hideLoader();
+          $(".alert-success").css("display", "block");
+          $(".alert-success").html(result.message);
+        }
       },
       error: function (textStatus, errorThrown) {
         helper.hideLoader();
@@ -336,29 +362,37 @@ $(document).ready(function () {
       {label: 'City', name: 'name', width: 300, search: true},
       {label: 'Country', name: 'country_name', width: 150},
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        name: 'city_id', hidden: true,
         formatter: function (cellvalue) {
-          status = cellvalue;
-          return (cellvalue == false) ? "Active" : "In active";
+          city_id = cellvalue;
         }
       },
       {
-        label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
-          var action = '<a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status == 'true' || status == true) {
-            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/city/updateStatus" class="button status-action active" data-id="' + city_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/city/updateStatus" class="button status-action active" data-id="' + city_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
+          return statusAction;
+        }
+      },
+      {
+        label: 'Action', name: 'city_id', search: false, width: 150, align: "right",
+        formatter: function (cellvalue) {
+          var action = '<div class="td-action">';
+          action += '<span><a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '</div>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1110,
-    height: 250,
+    //width: 1110,
+    height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
@@ -378,7 +412,7 @@ $(document).ready(function () {
       {label: 'Email', name: 'email', width: 300, search: true},
       {label: 'Query', name: 'query', width: 450},
       {
-        label: 'Action', name: 'contact_id', search: false, width: 150, align: "center",
+        label: 'Action', name: 'contact_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<a href="' + BASE_URL + '/contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
           return action;
@@ -386,8 +420,8 @@ $(document).ready(function () {
       }
     ],
     viewrecords: true,
-    width: 1110,
-    height: 250,
+    //width: 1110,
+    height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
@@ -404,55 +438,56 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Device Id', name: 'device_id', width: 150, search: true},
+      {label: 'Device Id', name: 'device_id', width: 180, search: true},
       {
-        label: 'Device Name', name: 'name', width: 300, search: true,
+        label: 'Device Name', name: 'name', width: 200, search: true,
         formatter: function (cellvalue) {
-          return (cellvalue == undefined) ? "--" : cellvalue;
+          return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'User Name', name: 'phone', width: 150,
+        label: 'User Name', name: 'phone', width: 200,
         formatter: function (cellvalue) {
-          return (cellvalue == undefined) ? "Not Assigned" : cellvalue;
-        }
-      },
-      {
-        label: 'Location', name: 'area', width: 250,
-        formatter: function (cellvalue) {
-          return (cellvalue == undefined) ? "--" : cellvalue;
+          return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
         label: 'Last Inactive Time', name: 'city_name', width: 150, search: false,
         formatter: function (cellvalue) {
-          return (cellvalue == undefined) ? "--" : cellvalue;
+          return (cellvalue == undefined) ? "NA" : cellvalue;
+        }
+      },
+      {
+        name: 'device_unique_id', hidden: true,
+        formatter: function (cellvalue) {
+          device_unique_id = cellvalue;
         }
       },
       {
         label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
-          status = cellvalue;
-          return (cellvalue == false) ? "Active" : "In active";
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/device/updateStatus" class="button status-action active" data-id="' + device_unique_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+          } else {
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/device/updateStatus" class="button status-action active" data-id="' + device_unique_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+          }
+          return statusAction;
         }
       },
       {
-        label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "center",
+        label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
-          var action = '<a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status == 'true' || status == true) {
-            action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
-          } else {
-            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/device/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
-          }
+          var action = '<div class="td-action">';
+          action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '</div>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1110,
-    height: 250,
+    //width: 1110,
+    height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
@@ -469,31 +504,38 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Sub City', name: 'name', width: 300, search: true},
+      {label: 'Location', name: 'name', width: 300, search: true},
       {label: 'City', name: 'city_name', width: 150},
       {
-        label: 'Status', name: 'is_deleted', width: 100,
+        name: 'city_id', hidden: true,
         formatter: function (cellvalue) {
-          status = cellvalue;
-          return (cellvalue == false) ? "Active" : "In active";
+          location_id = cellvalue;
         }
       },
       {
-        label: 'Action', name: 'city_id', search: false, width: 150, align: "center",
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
-          var action = '<a href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status == 'true' || status == true) {
-            action += '<a data-tooltip="" title="" data-status="true" data-url="' + BASE_URL + '/city/updateLocationStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/locations/updateStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            action += '<a data-tooltip="" title="" data-status="false" data-url="' + BASE_URL + '/city/updateLocationStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/locations/updateStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
+          return statusAction;
+        }
+      },
+      {
+        label: 'Action', name: 'city_id', search: false, width: 150, align: "right",
+        formatter: function (cellvalue) {
+          var action = '<div class="td-action">';
+          action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '</div>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1110,
-    height: 250,
+    height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
@@ -503,42 +545,66 @@ $(document).ready(function () {
   jQuery("#location-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
   /* User listing grid */
+  var user_id = '';
   $("#user-grid").jqGrid({
     url: BASE_URL + '/user/userlist',
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Name', name: 'name', width: 200, search: true},
-      {label: 'Email', name: 'email', width: 320, search: true},
-      {label: 'Contact Number', name: 'phone', width: 150, align: "right"},
-      {label: 'Location', name: 'area', width: 250},
-      {label: 'City', name: 'city_name', width: 150},
-      {label: 'Country', name: 'country_name', width: 130},
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        label: ' ', name: 'name', width: 60, search: false, classes: 'user-avatar-cell',
         formatter: function (cellvalue) {
-          status = cellvalue;
-          return (cellvalue == false) ? "Active" : "In active";
+          return '<span class="user-location" ' +
+            'style="background-image:url(' + BASE_URL + '/images/avatar.png)">';
+        }
+      },
+      {label: 'Name', name: 'name', width: 180, search: true},
+      {label: 'Email', name: 'email', width: 300, search: true},
+      {label: 'Contact Number', name: 'phone', width: 180, align: "center"},
+      {
+        label: 'Location', name: 'area', width: 150, align: "center", search: true,
+      },
+      {label: 'City', name: 'city_name', width: 150},
+      {
+        name: 'user_id', hidden: true,
+        formatter: function (cellvalue) {
+          user_id = cellvalue;
         }
       },
       {
-        label: 'Action', name: 'user_id', search: false, width: 150, align: "center",
+        label: 'Country', name: 'country_name', width: 80, search: false,
         formatter: function (cellvalue) {
-          var action = '<a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
-          action += '<a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a>';
-          if (status == 'true' || status == true) {
-            action += '<a data-tooltip="" title="Active" data-status="true" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-check-square-o"></i></a>';
+          return '<span class="user-location" style="background-image:url(https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/255px-Flag_of_India.svg.png)"></span>';
+        }
+      },
+      {
+        label: 'Status', name: 'is_deleted', width: 80, search: false, align: "center",
+        formatter: function (cellvalue) {
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/user/updateStatus" class="button status-action active" data-id="' + user_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            action += '<a data-tooltip="" title="In Active" data-status="false" data-url="' + BASE_URL + '/user/updateStatus/' + cellvalue + '" class="button status-action active" data-id="' + cellvalue + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-square-o"></i></a>';
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/user/updateStatus" class="button status-action active" data-id="' + user_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
+          return statusAction;
+        }
+      },
+      {
+        label: 'Action', name: 'user_id', search: false, width: 90, align: "right",
+        formatter: function (cellvalue) {
+          var action = '<div class="td-action">';
+          action += '<span><a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '</div>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    width: 1110,
-    height: 250,
+    //width: 1110,
+    height: 480,
     rowNum: 10,
+    rowList: [10, 20, 50, 100],
     loadonce: true,
     gridview: true,
     pager: "#user-grid-pager",

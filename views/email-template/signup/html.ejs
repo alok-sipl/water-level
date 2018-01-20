@@ -141,8 +141,8 @@
             <table class="BoxWrap" width="600" align="center" cellpadding="0" cellspacing="0">
               <tbody>
               <tr>
-                <td class="hero"><img class="heroImg"
-                                      src="https://static.wixstatic.com/media/469cbf_1ceb0496ecab4fc5b242db8365ac32dc~mv2.png/v1/fill/w_250,h_130,al_c/469cbf_1ceb0496ecab4fc5b242db8365ac32dc~mv2.png">
+                <td class="hero"><img width="200px" class="heroImg"
+                                      src="<%= sails.config.base_url %>images/logo.png">
                 </td>
               </tr>
               </tbody>
@@ -167,7 +167,7 @@
                 <td width="100%" style="-webkit-text-size-adjust: none;">
                   <p mc:edit
                      style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    Hello <%= name%>, </p>
+                    Hello <%= (name != undefined) ? name.charAt(0).toUpperCase() : 'User'%>, </p>
                 </td>
               </tr>
               <tr>
@@ -223,9 +223,9 @@
         <tr>
           <td style="-webkit-text-size-adjust: none;"><h3 mc:edit="footer_txt01"
                                                           style="font-size: 11px;margin: 5px 0 5px 0;color: #a19f9f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 14px;">
-              You've received this email as part of your <strong><%= sails.config.base_url %></strong> membership.<br/>
+              You've received this email as part of your <strong><%= sails.config.base_url %></strong>.<br/>
               <br/>
-              If you want to chat just drop us a line using the contact form on the site.</h3></td>
+              If you want to contact just drop us a line using the contact form on the site.</h3></td>
         </tr>
         <tr>
           <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>

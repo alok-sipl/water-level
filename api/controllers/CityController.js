@@ -139,7 +139,7 @@ module.exports = {
     var cities = ref.child("countries");
     var newCities = cities.push();
     newCities.set({
-      name: 'France',
+      name: 'India',
       is_deleted: false
     });
   },
@@ -238,6 +238,7 @@ module.exports = {
           'country_id': req.param('country'),
           'is_deleted': status,
           'name': req.param('city'),
+            'modified_date': Date.now(),
         }).then(function () {
           req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_edit_success + '</div>');
           return res.redirect('city');
@@ -294,6 +295,7 @@ module.exports = {
         usersRef.update({
           'country_id': req.param('country'),
           'is_deleted': status,
+          'modified_date': Date.now(),
           'name': req.param('city'),
         });
         return res.redirect('/city');
@@ -416,8 +418,8 @@ module.exports = {
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
   },
-  
-  moveFbRecord: function() {   
+
+  moveFbRecord: function() {
       var oldRef = db.ref('users/-L241aMXvbCuJhGpV-Hy');
      oldRef.once('value', function(snap)  {
          var newRef = db.ref('users/siplindia');
@@ -451,7 +453,7 @@ function getCityList(snap, countries) {
       cities.push(updateCity);
     });
     cities.sort(function (a, b) {
-            return b.created_at - a.created_at;
+            return b.created_date - a.created_date;
         })
     return cities;
   } else {
@@ -479,7 +481,7 @@ function getLocationList(snap, cities) {
       locations.push(updateLocation);
     });
     locations.sort(function (a, b) {
-            return b.created_at - a.created_at;
+            return b.created_date - a.created_date;
         })
     return locations;
   } else {

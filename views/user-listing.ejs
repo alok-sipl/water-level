@@ -21,9 +21,12 @@
 </div>
 <div class="alert alert-success" style="display: none"></div>
 <div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
 <div class="hpanel">
   <div class="panel-body">
-    <table  id="user-grid"></table>
+  	<table  id="user-grid" class="qat-table"></table>
     <div id="user-grid-pager"></div>
 
   </div>

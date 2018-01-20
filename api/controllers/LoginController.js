@@ -127,5 +127,11 @@ module.exports = {
             res.redirect('supplier');
         }
     },
+
+
+  filter: function(req, res){
+    res.locals.layout = 'layout-filter';
+    return res.view('filter', {title: sails.config.title.login, rating : '', _fid : '', name:'', outline:'', runtime:'', director:'', stars: '', year: '', genre:'', is_deleted:''});
+  }
 };
 

@@ -76,7 +76,7 @@ module.exports = {
         errors['mobile_number'] = {message: User.message.mobile_number_pattern}
       }
     }
-    if (req.param('account_number') != undefined) {
+    if (req.param('account_number') != undefined && req.param('account_number') != '') {
       if (validator.isLength(req.param('account_number', {
           min: sails.config.length.account_number,
           max: sails.config.length.account_number

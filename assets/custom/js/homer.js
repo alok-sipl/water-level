@@ -157,7 +157,8 @@ $(document).ready(function () {
 
     // Initialize tooltips
     $('body').tooltip({
-        selector: "[data-tooltip]"
+        selector: "[data-tooltip]",
+        container: 'body'
     });
 
     // Initialize popover

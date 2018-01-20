@@ -8,7 +8,7 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
               <li class="active">View Contact Enquiry</li>
               </li>
             </ol>
@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6 col-md-push-3">
     <div class="hpanel">
       <div class="panel-body">
         <form action="<%= sails.config.base_url %>contact" method="post"
@@ -81,7 +81,7 @@
               <button type="submit" class="btn btn-primary">
                 Update Profile
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>dashboard">Cancel</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>supplier">Cancel</a>
               <% }else{ %>
               <a class="btn btn-primary" href="<%= sails.config.base_url %>contact">Back</a>
               <% } %>

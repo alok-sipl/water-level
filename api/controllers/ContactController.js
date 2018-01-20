@@ -77,7 +77,7 @@ function getContactList(snap) {
       contacts.push(updateContact);
     });
     contacts.sort(function (a, b) {
-            return b.created_at - a.created_at;
+            return b.created_date - a.created_date;
         })
     return contacts;
   } else {

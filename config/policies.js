@@ -50,16 +50,16 @@ module.exports.policies = {
 	// }
 
 
-   "*": "firebaseAuth",
-   "LoginController": {
-     '*': true
-   },
-   "NotificationController": {
-     '*': true
-   },
-   "ReadingController": {
-     '*': true
-   },
+//   "*": "firebaseAuth",
+//   "LoginController": {
+//     '*': true
+//   },
+//   "NotificationController": {
+//     '*': true
+//   },
+//   "ReadingController": {
+//     '*': true
+//   },
   // "LoginController": {
   //   "*": "firebaseNoAuth",
   // }

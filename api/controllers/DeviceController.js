@@ -28,7 +28,7 @@ module.exports = {
   devicelist: function (req, res) {
     /* device listing*/
     devices = [];
-    var ref = db.ref("devices");
+    var ref = db.ref("master_devices");
     ref.once('value', function (snap) {
       var deviceJson = (Object.keys(snap).length) ? getDeviceList(snap) : {};
       return res.json({'rows': deviceJson});
@@ -52,7 +52,7 @@ module.exports = {
         isFormError = true;
         return res.view('add-update-device', {title: sails.config.title.device_list,'device': device, "errors": errors, req: req});
       } else {
-        var ref = db.ref("/devices");
+        var ref = db.ref("/master_devices");
         ref.orderByChild("device_id").equalTo(req.param('device_id')).once('value')
           .then(function (snapshot) {
             devicedata = snapshot.val();
@@ -60,16 +60,17 @@ module.exports = {
               req.flash('flashMessage', '<div class="alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/add');
             } else {
-              var ref = db.ref().child("devices");
+              var status = (req.param('status') == "false") ? false : true;
+              var ref = db.ref().child("master_devices");
               var data = {
                 device_id: req.param('device_id'),
-                is_deleted: false,
-                created_date: Date.now(),
-                modified_date: Date.now(),
+                is_deleted: status,
+                created_at: Date.now(),
+                modified_at: Date.now(),
               }
               ref.push(data).then(function () {
                 req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.device_add_success + '</div>');
-                return res.redirect(sails.config.base_url + 'device/add');
+                return res.redirect(sails.config.base_url + 'device');
               }, function (error) {
                 req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.device_add_error + '</div>');
                 return res.redirect(sails.config.base_url + 'device/add');
@@ -100,7 +101,7 @@ module.exports = {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        var ref = db.ref("devices/" + req.params.id);
+        var ref = db.ref("master_devices/" + req.params.id);
         ref.once("value", function (snapshot) {
           var device = snapshot.val();
           return res.view('view-edit-device', {
@@ -111,18 +112,18 @@ module.exports = {
         });
       }else{
         var status = (req.param('status') == "false") ? false : true
-        var ref = db.ref("devices/" + req.params.id);
+        var ref = db.ref("master_devices/" + req.params.id);
         ref.once("value", function (snapshot) {
           var device = snapshot.val();
           if (device != undefined) {
-            db.ref('devices/' + req.params.id)
+            db.ref('master_devices/' + req.params.id)
               .update({
                 device_id: req.param('device_id'),
                 is_deleted: status,
-                modified_date: Date.now(),
+                modified_at: Date.now(),
               }).then(function () {
               req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.device_edit_success + '</div>');
-              return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
+              return res.redirect(sails.config.base_url + 'device');
             }, function (error) {
               req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.device_edit_error + '</div>');
               return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
@@ -134,7 +135,7 @@ module.exports = {
       }
     }else {
       /* supplier detail */
-      var ref = db.ref("devices/" + req.params.id);
+      var ref = db.ref("master_devices/" + req.params.id);
       ref.once("value", function (snapshot) {
         var device = snapshot.val();
         return res.view('view-edit-device', {
@@ -156,7 +157,7 @@ module.exports = {
   view: function (req, res) {
     /* device detail */
     var errors = {};
-    var ref = db.ref("devices/" + req.params.id);
+    var ref = db.ref("master_devices/" + req.params.id);
     ref.once("value", function (snapshot) {
       var device = snapshot.val();
       return res.view('view-edit-device', {
@@ -177,12 +178,12 @@ module.exports = {
   updateStatus:function(req, res){
     var id = req.body.id;
     var status = req.body.is_active;
-    var ref = db.ref('/devices/'+ id);
+    var ref = db.ref('/master_devices/'+ id);
     ref.once("value", function (snapshot) {
       if(snapshot.val()){
-        db.ref('/devices/'+ id)
+        db.ref('/master_devices/'+ id)
           .update({
-            'is_deleted': status
+            'is_deleted': (status == 'true')? true : false
           })
           .then(function () {
             userinfo = snapshot.val();
@@ -194,12 +195,15 @@ module.exports = {
             return res.json({'status': true, message: sails.config.flash.update_successfully});
           })
           .catch(function (err) {
+            console.log('111',err);
             return res.json({'status': false, message: sails.config.flash.something_went_wronge});
           });
       }else{
+        console.log('2222');
         return res.json({'status': false, message: sails.config.flash.something_went_wronge});
       }
     }, function (errorObject) {
+      console.log('3333',errorObject);
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     });
   },
@@ -222,7 +226,7 @@ function getDeviceList(snap) {
       devices.push(updateDevice);
     });
     devices.sort(function (a, b) {
-            return b.created_at - a.created_at;
+            return b.created_date - a.created_date;
         })
     return devices;
   } else {

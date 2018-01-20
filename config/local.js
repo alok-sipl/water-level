@@ -82,11 +82,11 @@ module.exports = {
 
     // environment: process.env.NODE_ENV || 'development'
 
-    app_name: 'Water Level Detector',
-    //base_url: 'http://10.10.100.19:1337/',
-    //admin_url: 'http://10.10.100.19:1337/admin',
+    app_name: 'Qatrah',
     base_url: 'https://water-level.herokuapp.com/',
     admin_url: 'https://water-level.herokuapp.com/admin',
+    //base_url: 'http://10.10.100.19:1337/',
+    //admin_url: 'http://10.10.100.19:1337/admin',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
     admin_email: 'ravi_sipl@systematixindia.com',
     authentication_email: 'ravi_sipl@systematixindia.com',
@@ -108,15 +108,15 @@ module.exports = {
         min_password: 6,
         max_password: 16,
         device_id: 32,
-        max_file_upload: 4000000,
-        max_file_upload_kb: 40
+        max_file_upload: 4194304,
+        max_file_upload_kb: 4194
     },
 
     regex: {
         name: /^([ \\'-.A-Za-z\u0600-\u06FF]{1,50})$/,
         alpha_numeric: "^[a-zA-Z0-9]*$",
         mobile_number: /^(\+\d{1,3}[- ]?)?\d{10}$/,
-        device_id: /^[a-zA-Z0-9_]*$/
+        device_id: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/
     },
 
     title: {
@@ -161,23 +161,23 @@ module.exports = {
         update_successfully: "Status updated successfully",
         supplier_add_success: "Supplier added successfully",
         supplier_add_error: "Error in adding supplier",
-        supplier_edit_success: "Supplier edit successfully",
-        supplier_edit_error: "Error in edit supplier",
+        supplier_edit_success: "Supplier updated successfully",
+        supplier_edit_error: "Error in updating supplier",
         device_add_success: "Device added successfully",
         device_add_error: "Error in adding device",
-        device_edit_success: "Device edit successfully",
-        device_edit_error: "Error in edit device",
+        device_edit_success: "Device updated successfully",
+        device_edit_error: "Error in updating device",
         device_already_exist: " device already registered",
         city_add_success: "City added successfully",
         city_add_error: "Error in adding city",
-        city_edit_success: "City edit successfully",
-        city_edit_error: "Error in edit city",
+        city_edit_success: "City updated successfully",
+        city_edit_error: "Error in updating city",
         location_add_success: "Location added successfully",
         location_add_error: "Error in adding location",
-        location_edit_success: "Location edit successfully",
-        location_edit_error: "Error in edit location",
-        user_edit_success: "User edit successfully",
-        user_edit_error: "Error in edit user",
+        location_edit_success: "Location updated successfully",
+        location_edit_error: "Error in updating location",
+        user_edit_success: "User updated successfully",
+        user_edit_error: "Error in updating user",
         profile_update_success: "Profile update successfully",
         profile_update_error: "Error in updating profile",
         paramter_missing: "Required parameter is mising",
