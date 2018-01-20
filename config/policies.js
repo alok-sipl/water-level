@@ -50,10 +50,10 @@ module.exports.policies = {
 	// }
 
 
-//   "*": "firebaseAuth",
-//   "LoginController": {
-//     '*': true
-//   },
+  "*": "firebaseAuth",
+  "LoginController": {
+    '*': true
+  },
 //   "NotificationController": {
 //     '*': true
 //   },
