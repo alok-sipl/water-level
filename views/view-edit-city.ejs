@@ -10,6 +10,7 @@
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
               <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="City List" href="<%= sails.config.base_url %>city">City List</a></li>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> City
               </li>
             </ol>
@@ -21,13 +22,13 @@
 </div>
 <div class="row">
   <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
         <form action="<%= sails.config.base_url %>city/edit" method="post"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
-          <% if (req.session.flash) { %>
-          <%- req.flash('flashMessage') %>
-          <% } %>
           <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Country*</label>
             <div class="col-md-6">
@@ -46,7 +47,7 @@
               <span class="help-block">
                 <strong><%= (errors.country != undefined) ? errors.country.message : '' %>
                 </strong>
-
+              </span>
                 <% }else{ %>
                 <span class=""><%= (city.country_name != undefined) ? city.country_name : "" %></span>
                 <% } %>
@@ -78,22 +79,21 @@
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
                 </strong>
-
+              </span>
                 <% }else{ %>
-                <span
-                  class=""><%= (city.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                <span class=""><%= (city.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
                 <% } %>
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <% if(isEdit){ %>
-              <button type="submit" class="btn btn-primary">
+              <button title="Update City" type="submit" class="btn btn-primary">
                 Update City
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Back</a>
+              <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>city">Back</a>
               <% } %>
             </div>
           </div>

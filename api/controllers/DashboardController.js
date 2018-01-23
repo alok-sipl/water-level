@@ -80,13 +80,6 @@ module.exports = {
             'longitude': parseFloat(req.param('longitude'))
             }).then(function () {
               user = firebaseAuth.auth().currentUser;
-            }).then(function (){
-              user.updateProfile({
-                displayName: req.param('name'),
-                photoURL: sails.config.base_url+'images/profile.png'
-              });
-              req.session.user.displayName = req.param('name');
-              req.session.user.photoURL = sails.config.base_url+"images/profile.png";
             })
           .then(function () {
             req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.profile_update_success + '</div>');

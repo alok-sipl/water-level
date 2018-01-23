@@ -414,7 +414,9 @@ $(document).ready(function () {
       {
         label: 'Action', name: 'contact_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
-          var action = '<a href="' + BASE_URL + '/contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a>';
+          var action = '<div class="td-action">';
+          action += '<span><a title="View Enquiry" href="' + BASE_URL + '/contact/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '</div>';
           return action;
         }
       }
@@ -440,25 +442,25 @@ $(document).ready(function () {
     colModel: [
       {label: 'Device Id', name: 'device_id', width: 180, search: true},
       {
-        label: 'Device Name', name: 'name', width: 200, search: true,
+        label: 'Device Name', name: 'device_name', width: 200, search: true,
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'User Name', name: 'phone', width: 200,
+        label: 'User Name', name: 'user_name', width: 200,
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'Last Inactive Time', name: 'city_name', width: 150, search: false,
+        label: 'Last Reading Time', name: 'last_reading', width: 150, search: false,
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        name: 'device_unique_id', hidden: true,
+        name: 'device_key', hidden: true,
         formatter: function (cellvalue) {
           device_unique_id = cellvalue;
         }
@@ -476,7 +478,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Action', name: 'device_unique_id', search: false, width: 150, align: "right",
+        label: 'Action', name: 'device_key', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
@@ -517,9 +519,9 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
-            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/locations/updateStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/city/updateLocationStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/locations/updateStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/city/updateLocationStatus" class="button status-action active" data-id="' + location_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
           return statusAction;
         }
@@ -528,7 +530,7 @@ $(document).ready(function () {
         label: 'Action', name: 'city_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
-          action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a title="Edit Location" href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -559,7 +561,7 @@ $(document).ready(function () {
         }
       },
       {label: 'Name', name: 'name', width: 180, search: true},
-      {label: 'Email', name: 'email', width: 300, search: true},
+      {label: 'Email', name: 'email', width: 280, search: true},
       {label: 'Contact Number', name: 'phone', width: 180, align: "center"},
       {
         label: 'Location', name: 'area', width: 150, align: "center", search: true,
@@ -571,11 +573,14 @@ $(document).ready(function () {
           user_id = cellvalue;
         }
       },
-      {
+      /*{
         label: 'Country', name: 'country_name', width: 80, search: false,
         formatter: function (cellvalue) {
           return '<span class="user-location" style="background-image:url(https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/255px-Flag_of_India.svg.png)"></span>';
         }
+      },*/
+      {
+        label: 'Device', name: 'device', width: 100, search: false
       },
       {
         label: 'Status', name: 'is_deleted', width: 80, search: false, align: "center",

@@ -8,11 +8,11 @@
         <h3>Administrator Login</h3>
       </div>
       <div class="hpanel">
+        <% if (req.session.flash) { %>
+        <%- req.flash('flashMessage') %>
+        <% } %>
         <div class="panel-body">
           <form method="post" action="<%= sails.config.base_url %>login" data-parsley-validate novalidate="" name="loginForm" id="loginForm">
-            <% if (req.session.flash) { console.log(req.session.flash) %>
-              <%- req.flash('flashMessage') %>
-            <% } %>
             <div class="form-group <%= (errors.email != undefined) ? " has-error" : "" %>">
               <label class="control-label" for="email">Email*</label>
               <input type="email" name="email" class="form-control" id="email"

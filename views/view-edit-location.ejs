@@ -9,6 +9,7 @@
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
               <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="City List" href="<%= sails.config.base_url %>city">City List</a></li>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> Location
               </li>
             </ol>
@@ -20,13 +21,14 @@
 </div>
 <div class="row">
   <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>city/edit" method="post"
+        <form action="<%= sails.config.base_url %>city/editLocation/<%= req.params.id%>" method="post"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
-          <% if (req.session.flash) { %>
-          <%- req.flash('flashMessage') %>
-          <% } %>
+          <input type="hidden" name="city_id" value="<%= req.params.id %>">
           <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Country*</label>
             <div class="col-md-6">
@@ -64,12 +66,8 @@
                   // console.log(locations);
                   // console.log(locations.city_id);
                 if(cities != undefined && Object.keys(cities).length){
-                  for(var key in cities) {
-                    // if(key == cities[locations.city_id].country_id){
-                    //
-                    // }
-                %>
-                <option <%= (key == cities[locations.city_id]) ? "selected" : "" %>
+                  for(var key in cities) { %>
+                <option <%= (locations.city_id != undefined && key == locations.city_id) ? "selected" : "" %>
                   value="<%= key %>"><%= cities[key].name %></option>
                 <% }
                 } %>
@@ -77,19 +75,19 @@
               <span class="help-block">
                 <strong><%= (errors.city != undefined) ? errors.city.message : '' %>
                 </strong>
-
+              </span>
                 <% }else{ %>
                 <span class=""><%= (city.city_name != undefined) ? city.city_name : "" %></span>
                 <% } %>
             </div>
           </div>
-          <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
-            <label for="email" class="col-md-4 control-label">City*</label>
+          <div class="form-group <%= (errors.location != undefined) ? " has-error" : "" %>">
+            <label for="email" class="col-md-4 control-label">Location*</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
-              <input type="text" name="city" class="form-control" id="city"
+              <input type="text" name="location" class="form-control" id="location"
                      value="<%= locations.name %>"
-                     placeholder="City"/>
+                     placeholder="Location"/>
               <% }else{ %>
               <span class=""><%= (locations.name != undefined) ? locations.name : "" %></span>
               <% } %>
@@ -103,8 +101,8 @@
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
                 <option <%= (locations.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
-                <option <%= (locations.is_deleted == false) ? "selected" : "" %> value="true">Active</option>
-                <option <%= (locations.is_deleted == true) ? "selected" : "" %> value="false">In Active</option>
+                <option <%= (locations.is_deleted == false) ? "selected" : "" %> value="false">Active</option>
+                <option <%= (locations.is_deleted == true) ? "selected" : "" %> value="true">In Active</option>
               </select>
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
@@ -119,12 +117,12 @@
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <% if(isEdit){ %>
-              <button type="submit" class="btn btn-primary">
+              <button title="Update Location" type="submit" class="btn btn-primary">
                 Update Location
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Back</a>
+              <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>city">Back</a>
               <% } %>
             </div>
           </div>

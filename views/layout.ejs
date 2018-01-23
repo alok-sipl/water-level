@@ -102,7 +102,7 @@
           <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Change Password"><span class="nav-label">Change Password</span></a>
         </li>
         <li class="dropdown">
-            <a class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown" aria-expanded="false">
+            <a title="Alerts" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown" aria-expanded="false">
                 <i class="pe-7s-bell"></i>
                 <span class="label label-success">4</span>
             </a>
@@ -134,7 +134,7 @@
             </ul>
         </li>
         <li>
-          <a href="<%= sails.config.base_url %>dashboard/logout" logout class="logout">
+          <a title="Logout" href="<%= sails.config.base_url %>dashboard/logout" logout class="logout">
             <i class="pe-7s-upload pe-rotate-90"></i>
           </a>
         </li>
@@ -150,7 +150,7 @@
         <%- body %>
       </div>
       <p class="footer text-center m-b-none">
-        © 2018 <span class="m-b-none"><%= sails.config.app_name %></span> All Rights Reserved.
+        © <%= (new Date()).getFullYear() %> <span class="m-b-none"><%= sails.config.app_name %></span> All Rights Reserved.
       </p>
 
     </div>

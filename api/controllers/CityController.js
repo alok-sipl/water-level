@@ -44,39 +44,53 @@ module.exports = {
     * @param  type
     */
   addCity: function (req, res) {
-    async.waterfall([
-      function (cb) {
-        if (req.method == 'GET') {
-          var country = {};
-          var city = {};
-          var ref = db.ref('countries');
-          ref.orderByChild("is_deleted").equalTo(false)
+    if (req.method == 'GET') {
+      var country = {};
+      var city = {};
+      var ref = db.ref('countries');
+      ref.orderByChild("is_deleted").equalTo(false)
+        .once("value", function (snapshot) {
+          country = snapshot.val();
+          return res.view('add-update-city', {
+            title: sails.config.title.add_city,
+            'country': country,
+            'type': true,
+            'errors': {}
+          });
+        });
+    } else {
+      errors = ValidationService.validate(req);
+      if (Object.keys(errors).length) {
+        var country = {};
+        var city = {};
+        var ref = db.ref('countries');
+        ref.orderByChild("is_deleted").equalTo(false)
           .once("value", function (snapshot) {
             country = snapshot.val();
             return res.view('add-update-city', {
               title: sails.config.title.add_city,
               'country': country,
-              'type': true
+              'type': true,
+              'errors': errors
             });
           });
-        } else {
-          var ref = db.ref("cities");
-          ref.push({
-            country_id: req.param('country'),
-            name: req.param('city'),
-            created_date: Date.now(),
-            modified_date: Date.now(),
-            is_deleted: false
-          }).then(function () {
-            req.flash('flashMessage', '<div class="alert alert-success">'+ sails.config.flash.city_add_success+'</div>');
-            return res.redirect('city');
-          }, function (error) {
-            req.flash('flashMessage', '<div class="alert alert-danger">'+ sails.config.flash.city_add_error+'</div>');
-            return res.redirect('city');
-          });
-        }
+      } else {
+        var ref = db.ref("cities");
+        ref.push({
+          country_id: req.param('country'),
+          name: req.param('city'),
+          created_date: Date.now(),
+          modified_date: Date.now(),
+          is_deleted: false
+        }).then(function () {
+          req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_add_success + '</div>');
+          return res.redirect('city');
+        }, function (error) {
+          req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.city_add_error + '</div>');
+          return res.redirect('city');
+        });
       }
-    ])
+    }
   },
 
 
@@ -91,12 +105,11 @@ module.exports = {
     if (req.method == 'GET') {
       var country = {};
       var cities = {};
-      var ref = db.ref('cities/'+ req.params.id);
+      var ref = db.ref('cities/' + req.params.id);
       ref.once("value", function (snapshot) {
         cities = snapshot.val();
         var ref = db.ref('countries');
-        ref.orderByChild("is_deleted").equalTo(false)
-        .once("value", function (snapshot) {
+        ref.once("value", function (snapshot) {
           country = snapshot.val();
           return res.view('add-update-city', {
             title: sails.config.title.add_city,
@@ -104,25 +117,51 @@ module.exports = {
             'cityId': req.params.id,
             'country': country,
             'cities': cities,
-            'type': false
+            'type': false,
+            'errors': {}
           });
         });
       });
     } else {
-      var ref = db.ref("locations");
-      ref.push({
-        name: req.param('area'),
-        city_id: req.param('city'),
-        created_date: Date.now(),
-        modified_date: Date.now(),
-        is_deleted: false
-      }).then(function () {
-        req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.location_add_success + '</div>');
-        return res.redirect('city');
-      }, function (error) {
-        req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.location_add_error + '</div>');
-        return res.redirect('city');
-      });
+      errors = ValidationService.validate(req);
+      if (Object.keys(errors).length) {
+        var country = {};
+        var cities = {};
+        var ref = db.ref('cities/' + req.params.id);
+        ref.once("value", function (snapshot) {
+          cities = snapshot.val();
+          var ref = db.ref('countries');
+          ref.orderByChild("is_deleted").equalTo(false)
+            .once("value", function (snapshot) {
+              country = snapshot.val();
+              return res.view('add-update-city', {
+                title: sails.config.title.add_city,
+                'countryId': cities.country_id,
+                'cityId': req.params.id,
+                'country': country,
+                'cities': cities,
+                'type': false,
+                'errors': errors
+              });
+            });
+        });
+      } else {
+        var status = (req.param('status') == "false") ? false : true
+        var ref = db.ref("locations");
+        ref.push({
+          name: req.param('area'),
+          city_id: req.param('city'),
+          created_date: Date.now(),
+          modified_date: Date.now(),
+          is_deleted: status
+        }).then(function () {
+          req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.location_add_success + '</div>');
+          return res.redirect('city/view/'+ req.param('city_id'));
+        }, function (error) {
+          req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.location_add_error + '</div>');
+          return res.redirect('city/addLocation/'+ req.param('city_id'));
+        });
+      }
     }
   },
 
@@ -180,17 +219,17 @@ module.exports = {
       /* countries listing*/
       var ref = db.ref("countries");
       ref.orderByChild("is_deleted").equalTo(false)
-      .once("value", function (snapshot) {
-        var countries = snapshot.val();
-        return res.view('location-listing', {
-          title: sails.config.title.location_list,
-          cityId: req.params.id,
-          cities: cities,
-          countries: countries
+        .once("value", function (snapshot) {
+          var countries = snapshot.val();
+          return res.view('location-listing', {
+            title: sails.config.title.location_list,
+            cityId: req.params.id,
+            cities: cities,
+            countries: countries
+          });
+        }, function (errorObject) {
+          return res.serverError(errorObject.code);
         });
-      }, function (errorObject) {
-        return res.serverError(errorObject.code);
-      });
 
     }, function (errorObject) {
       return res.serverError(errorObject.code);
@@ -235,11 +274,11 @@ module.exports = {
         var status = (req.param('status') == false || req.param('status') == "false") ? false : true;
         db.ref('cities/' + req.param('city_id'))
           .update({
-          'country_id': req.param('country'),
-          'is_deleted': status,
-          'name': req.param('city'),
+            'country_id': req.param('country'),
+            'is_deleted': status,
+            'name': req.param('city'),
             'modified_date': Date.now(),
-        }).then(function () {
+          }).then(function () {
           req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_edit_success + '</div>');
           return res.redirect('city');
         })
@@ -255,19 +294,19 @@ module.exports = {
         /* city listing*/
         var ref = db.ref("countries");
         ref.orderByChild("is_deleted").equalTo(false)
-        .once("value", function (snapshot) {
-          var countries = snapshot.val();
-          return res.view('view-edit-city', {
-            title: sails.config.title.edit_city,
-            'city': cities[req.params.id],
-            'cities': cities,
-            'countries': countries,
-            'errors': errors,
-            'isEdit': true,
+          .once("value", function (snapshot) {
+            var countries = snapshot.val();
+            return res.view('view-edit-city', {
+              title: sails.config.title.edit_city,
+              'city': cities[req.params.id],
+              'cities': cities,
+              'countries': countries,
+              'errors': {},
+              'isEdit': true,
+            });
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
           });
-        }, function (errorObject) {
-          return res.serverError(errorObject.code);
-        });
 
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -287,18 +326,44 @@ module.exports = {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        isFormError = true;
+        var errors = {};
+        var ref = db.ref("locations/" + req.params.id);
+        ref.once("value", function (snapshot) {
+          var locations = snapshot.val();
+          var ref = db.ref("cities");
+          ref.orderByChild("is_deleted").equalTo(false)
+            .once("value", function (snapshot) {
+              var cities = snapshot.val();
+              /* city listing*/
+              var ref = db.ref("countries");
+              ref.orderByChild("is_deleted").equalTo(false)
+                .once("value", function (snapshot) {
+                  var countries = snapshot.val();
+                  return res.view('view-edit-location', {
+                    title: sails.config.title.edit_location,
+                    'locations': locations, 'cities': cities, countries: countries, errors: errors, isEdit: true,
+                  });
+                }, function (errorObject) {
+                  return res.serverError(errorObject.code);
+                });
+
+            }, function (errorObject) {
+              return res.serverError(errorObject.code);
+            });
+        }, function (errorObject) {
+          return res.serverError(errorObject.code);
+        });
       } else {
         var status = (req.param('status') == "false") ? false : true
         var ref = db.ref();
-        var usersRef = ref.child('cities/' + req.param('city_id'));
+        var usersRef = ref.child('locations/' + req.params.id);
         usersRef.update({
-          'country_id': req.param('country'),
-          'is_deleted': status,
-          'modified_date': Date.now(),
-          'name': req.param('city'),
+          name: req.param('location'),
+          city_id: req.param('city'),
+          modified_date: Date.now(),
+          is_deleted: status
         });
-        return res.redirect('/city');
+        return res.redirect('city/view/' + req.param('city'));
       }
     } else {
       var errors = {};
@@ -306,13 +371,11 @@ module.exports = {
       ref.once("value", function (snapshot) {
         var locations = snapshot.val();
         var ref = db.ref("cities");
-        ref.orderByChild("is_deleted").equalTo(false)
-        .once("value", function (snapshot) {
+        ref.once("value", function (snapshot) {
           var cities = snapshot.val();
           /* city listing*/
           var ref = db.ref("countries");
-          ref.orderByChild("is_deleted").equalTo(false)
-          .once("value", function (snapshot) {
+          ref.once("value", function (snapshot) {
             var countries = snapshot.val();
             return res.view('view-edit-location', {
               title: sails.config.title.edit_location,
@@ -418,18 +481,6 @@ module.exports = {
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
   },
-
-  moveFbRecord: function() {
-      var oldRef = db.ref('users/-L241aMXvbCuJhGpV-Hy');
-     oldRef.once('value', function(snap)  {
-         var newRef = db.ref('users/siplindia');
-          newRef.set( snap.val(), function(error) {
-               if( !error ) {  oldRef.remove(); }
-               else if( typeof(console) !== 'undefined' && console.error ) {  console.error(error); }
-          });
-     });
-}
-
 };
 
 
@@ -453,8 +504,8 @@ function getCityList(snap, countries) {
       cities.push(updateCity);
     });
     cities.sort(function (a, b) {
-            return b.created_date - a.created_date;
-        })
+      return b.created_date - a.created_date;
+    })
     return cities;
   } else {
     cities = {}
@@ -481,8 +532,8 @@ function getLocationList(snap, cities) {
       locations.push(updateLocation);
     });
     locations.sort(function (a, b) {
-            return b.created_date - a.created_date;
-        })
+      return b.created_date - a.created_date;
+    })
     return locations;
   } else {
     locations = {}

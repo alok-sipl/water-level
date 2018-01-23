@@ -8,8 +8,8 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
-              <li><a href="<%= sails.config.base_url %>device">Device List</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="Device List" href="<%= sails.config.base_url %>device">Device List</a></li>
               <li class="active">
                 <%= (device != undefined && Object.keys(device).length) ? 'Edit' : 'Add' %> Device </span>
               </li>
@@ -21,7 +21,10 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
         <% if(device == undefined || !(Object.keys(device).length)){ %>
@@ -29,9 +32,6 @@
           <% }else{ %>
           <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id%>" method="post" id="edit-device" class='form-horizontal' data-parsley-validate='true'>
             <% }%>
-        <% if (req.session.flash) { %>
-        <%- req.flash('flashMessage') %>
-        <% } %>
           <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
             <label for="first_name" class="col-md-4 control-label">Device Id*</label>
             <div class="col-md-6">
@@ -68,10 +68,10 @@
             </div>
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
-              <button type="submit" class="btn btn-primary">
+              <button title="<%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device" type="submit" class="btn btn-primary">
                 <%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
             </div>
           </div>
         </form>

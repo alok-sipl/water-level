@@ -1,36 +1,39 @@
 <div class="normalheader transition animated fadeIn">
-    <div class="hpanel">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="font-light m-b-xs">
-                        Location List: <%= (cities[req.params.id].name != undefined) ? cities[req.params.id].name : "" %>
-                    </h2>
-                    <div id="hbreadcrumb">
-                        <ol class="hbreadcrumb breadcrumb">
-                            <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
-                            <li class="active">
-                                <span>Location List</span>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-                <div class="col-md-6 text-right m-t-sm">
-                  <a class="btn btn-primary" href="<%= sails.config.base_url %>city/addLocation/<%=  cityId %>"><i class="icon icon-user"></i>Add Location</a>
-                </div>
-            </div>
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            Location List: <%= (cities[req.params.id].name != undefined) ? cities[req.params.id].name : "" %>
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="City List" href="<%= sails.config.base_url %>city">City List</a></li>
+              <li class="active">
+                <span>Location List</span>
+              </li>
+            </ol>
+          </div>
         </div>
+        <div class="col-md-6 text-right m-t-sm">
+          <a title="Add Location" class="btn btn-primary"
+             href="<%= sails.config.base_url %>city/addLocation/<%= cityId %>"><i class="icon icon-user"></i>Add
+            Location</a>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 <input type="hidden" id="city_id" name="city_id" value="<%= (cityId != undefined) ? cityId : '' %>">
 <div class="alert alert-success" style="display: none"></div>
 <div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
 <div class="hpanel">
-  <% if (req.session.flash) { %>
-  <%- req.flash('flashMessage') %>
-  <% } %>
   <div class="panel-body">
-    <table  id="location-grid"></table>
+    <table id="location-grid"></table>
     <div id="location-grid-pager"></div>
 
   </div>

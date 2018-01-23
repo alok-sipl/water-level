@@ -8,8 +8,8 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
-              <li><a href="<%= sails.config.base_url %>city">City List</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="City List" href="<%= sails.config.base_url %>city">City List</a></li>
               <li class="active">
                 <%= (type) ? 'Add City' : 'Add Location' %>
               </li>
@@ -21,86 +21,108 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
         <% if(type == true){ %>
         <form action="<%= sails.config.base_url %>city/addCity" method="post"
               id="add-city" class='form-horizontal' data-parsley-validate='true'>
-        <% }else{ %>
+          <% }else{ %>
           <form action="<%= sails.config.base_url %>city/addLocation" method="post"
                 id="add-location" class='form-horizontal' data-parsley-validate='true'>
-        <%}%>
-          <div class="form-group">
-            <label for="first_name" class="col-md-4 control-label">Country*</label>
-            <div class="col-md-6">
-              <select name="country" id="country" class="form-control" required
-                      data-parsley-required-message="<%= City.message.country_required %>">
-                <option value="">Select Country</option>
-                <% if(country != undefined && Object.keys(country).length){ %>
+            <% } %>
+            <input type="hidden" value="<%= req.params.id %>" name="city_id">
+            <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">
+              <label for="first_name" class="col-md-4 control-label">Country*</label>
+              <div class="col-md-6">
+                <select name="country" id="country" class="form-control" required
+                        data-parsley-required-message="<%= City.message.country_required %>">
+                  <option value="">Select Country</option>
+                  <% if(country != undefined && Object.keys(country).length){ %>
                   <% if(!type){ %>
-                      <% for(var key in country) { %>
-                        <% if(key == cities.country_id){ %>
-                          <option <%= (!type) ? ((countryId == key) ?  'selected': '' ) :''%> value="<%= key %>"><%= country[key].name %></option>
-                        <% } %>
+                  <% for(var key in country) { %>
+                  <% if(key == cities.country_id){ %>
+                  <option <%= (!type) ? ((countryId == key) ? 'selected' : '') : '' %>
+                    value="<%= key %>"><%= country[key].name %></option>
+                  <% } %>
 
-                      <%  } %>
+                  <% } %>
                   <% }else{ %>
-                      <% for(var key in country) { %>
-                        <option <%= (!type) ? ((countryId == key) ?  'selected': '' ) :''%> value="<%= key %>"><%= country[key].name %></option>
-                      <% } %>
+                  <% for(var key in country) { %>
+                  <option <%= (!type) ? ((countryId == key) ? 'selected' : '') : '' %>
+                    value="<%= key %>"><%= country[key].name %></option>
+                  <% } %>
                   <% }
-                } %>
-              </select>
+                  } %>
+                </select>
+              </div>
             </div>
-          </div>
-          <% if(type == true){ %>
-          <div class="form-group">
-            <label for="is_active" class="col-md-4 control-label">City*</label>
-            <div class="col-md-6">
-              <input type="text" name="city" id="city" class="form-control" required
-                     data-parsley-required-message="<%= City.message.city_required %>"
-                     data-parsley-maxlength-message="<%= City.message.city_maxlength %>"
-                     placeholder="City"/>
+            <% if(type == true){ %>
+            <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
+              <label for="is_active" class="col-md-4 control-label">City*</label>
+              <div class="col-md-6">
+                <input type="text" name="city" id="city" class="form-control" required
+                       data-parsley-required-message="<%= City.message.city_required %>"
+                       data-parsley-maxlength-message="<%= City.message.city_maxlength %>"
+                       placeholder="City"/>
+              </div>
             </div>
-          </div>
-          <% }else{ %>
-          <div class="form-group">
-            <label for="is_active" class="col-md-4 control-label">City*</label>
-            <div class="col-md-6">
-              <select name="city" id="city" class="form-control" required
-                      data-parsley-required-message="<%= City.message.city_required %>">
-                <option value="">Select City</option>
-                <%
-                if(cities != undefined && Object.keys(cities).length){ %>
-                <option selected  value="<%= cityId %>"><%= cities.name %></option>
-                <%
-                } %>
-              </select>
+            <% }else{ %>
+            <div class="form-group <%= (errors.city != undefined) ? " has-error" : "" %>">
+              <label for="is_active" class="col-md-4 control-label">City*</label>
+              <div class="col-md-6">
+                <select name="city" id="city" class="form-control" required
+                        data-parsley-required-message="<%= City.message.city_required %>">
+                  <option value="">Select City</option>
+                  <%
+                  if(cities != undefined && Object.keys(cities).length){ %>
+                  <option selected value="<%= cityId %>"><%= cities.name %></option>
+                  <%
+                  } %>
+                </select>
+              </div>
             </div>
-          </div>
-          <% } %>
-          <input type="hidden" name="type" value="<%= type %>"/>
-          <% if(!type){ %>
-          <div class="form-group">
-            <label for="is_active" class="col-md-4 control-label">Location*</label>
-            <div class="col-md-6">
-              <input type="text" name="area" class="form-control" required id="area" value=""
-                     data-parsley-required-message="<%= City.message.area_required %>"
-                     data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
-                     placeholder="Location"/>
+            <% } %>
+            <input type="hidden" name="type" value="<%= type %>"/>
+            <% if(!type){ %>
+            <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
+              <label for="is_active" class="col-md-4 control-label">Location*</label>
+              <div class="col-md-6">
+                <input type="text" name="area" class="form-control" required id="area" value=""
+                       data-parsley-required-message="<%= City.message.area_required %>"
+                       data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
+                       placeholder="Location"/>
+              </div>
             </div>
-          </div>
-          <% } %>
-          <div class="form-group">
-            <div class="col-md-8 col-md-offset-4">
-              <button type="submit" class="btn btn-primary">
-                <%= (type) ? 'Save City' : 'Add Location' %>
-              </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
+            <% } %>
+            <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
+              <label for="is_active" class="col-md-4 control-label">Status*</label>
+              <div class="col-md-6">
+                <select name="status" id="status" class="form-control" required
+                        data-parsley-required-message="<%= User.message.status_required %>">
+                  <option value="">Select Status</option>
+                  <option value="false">Active</option>
+                  <option value="true">In Active
+                  </option>
+                </select>
+                <span class="help-block">
+                <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                </strong>
+              </span>
+              </div>
             </div>
-          </div>
-        </form>
+            <div class="form-group">
+              <div class="col-md-8 col-md-offset-4">
+                <button title="<%= (type) ? 'Add City' : 'Add Location' %>" type="submit" class="btn btn-primary">
+                  <%= (type) ? 'Add City' : 'Add Location' %>
+                </button>
+                <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
+              </div>
+            </div>
+          </form>
       </div>
     </div>
   </div>

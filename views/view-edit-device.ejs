@@ -8,7 +8,8 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="Device List" href="<%= sails.config.base_url %>device">Device List</a></li>
               <li class="active"> <%= (isEdit) ? "Edit" : "View" %> Device
               </li>
             </ol>
@@ -20,13 +21,13 @@
 </div>
 <div class="row">
   <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
         <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
-          <% if (req.session.flash) { %>
-          <%- req.flash('flashMessage') %>
-          <% } %>
           <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
             <label for="device_id" class="col-md-4 control-label">Device Id<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
@@ -74,22 +75,22 @@
               <% } %>
             </div>
           </div>
-          <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
-            <label for="area" class="col-md-4 control-label">Tank Location</label>
+          <div class="form-group <%= (errors.location != undefined) ? " has-error" : "" %>">
+            <label for="location" class="col-md-4 control-label">Tank Location</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" onFocus="geolocate()" name="area" class="form-control" id="area" disabled
-                     value="<%= (device.area) ? (device.area) : '' %>"
+                     value="<%= (device.location) ? (device.location) : '' %>"
                      maxlength="<%= sails.config.length.address %>"
                      data-parsley-required-message="<%= WaterSupplier.message.area_required %>"
                      data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"
-                     placeholder="Area"/>
+                     placeholder="Location"/>
               <span class="help-block">
-                <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
+                <strong><%= (errors.location != undefined) ? errors.area.message : '' %>
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (device.area != undefined) ? device.area : "NA" %></span>
+              <span class=""><%= (device.location != undefined) ? device.location : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -115,12 +116,12 @@
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <% if(isEdit){ %>
-              <button type="submit" class="btn btn-primary">
+              <button title="Update Device" type="submit" class="btn btn-primary">
                 Update Device
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>device">Back</a>
+              <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>device">Back</a>
               <% } %>
             </div>
           </div>

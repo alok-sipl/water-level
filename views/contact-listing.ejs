@@ -10,7 +10,7 @@
                         <ol class="hbreadcrumb breadcrumb">
                             <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
                             <li class="active">
-                                <span>Contact Enqiry List</span>
+                                <span>Contact Enquiry List</span>
                             </li>
                         </ol>
                     </div>
@@ -19,6 +19,9 @@
         </div>
     </div>
 </div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
 <div class="hpanel">
   <div class="panel-body">
     <table  id="contact-grid"></table>

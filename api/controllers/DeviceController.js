@@ -30,8 +30,60 @@ module.exports = {
     devices = [];
     var ref = db.ref("master_devices");
     ref.once('value', function (snap) {
-      var deviceJson = (Object.keys(snap).length) ? getDeviceList(snap) : {};
-      return res.json({'rows': deviceJson});
+      if (Object.keys(snap).length) {
+        var count = 1;
+        var tempSnap = snap;
+        snap = snap.val();
+        var tempBinRecords = [];
+        _.map(snap, function (val, device_key) {
+          val.device_key = device_key;
+          tempBinRecords.push(val)
+        });
+        async.forEach(tempBinRecords, function (childSnap, callback) {
+          var deviceList = ''
+          var userName = '';
+          if (childSnap.id != undefined && childSnap.user_id != undefined) {
+            var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
+            ref.once("value", function (snapshot) {
+              var deviceDetail = snapshot.val();
+              deviceName = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+              lastReading = (deviceDetail.updated_at != undefined) ? deviceDetail.updated_at : 0;
+              var ref = db.ref('users/');
+              ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
+              }).then(function (userSnapshot) {
+                var userDetail = userSnapshot.val();
+                userName = (userDetail.name != undefined) ? userDetail.name : '';
+              }).catch(function (err) {
+                req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+                return res.redirect(sails.config.base_url + 'supplier');
+              });
+            }).then(function (snapshot) {
+              updateUser = childSnap;
+              updateUser.device_name = deviceName;
+              updateUser.user_name = userName;
+              updateUser.last_reading = DateService.timeSince(lastReading);
+              devices.push(updateUser);
+              if (tempSnap.numChildren() == count) {
+                return res.json({'rows': devices});
+              }
+              count++;
+            }).catch(function (err) {
+              console.log('Console-->2', err);
+              req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+              return res.redirect(sails.config.base_url + 'supplier');
+            });
+          }
+          callback();
+        });
+
+      } else {
+        devices = {}
+        return devices;
+      }
+
+
+      //var deviceJson = (Object.keys(snap).length) ? getDeviceList(snap) : {};
+      //return res.json({'rows': deviceJson});
     });
   },
 
@@ -50,7 +102,12 @@ module.exports = {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         isFormError = true;
-        return res.view('add-update-device', {title: sails.config.title.device_list,'device': device, "errors": errors, req: req});
+        return res.view('add-update-device', {
+          title: sails.config.title.device_list,
+          'device': device,
+          "errors": errors,
+          req: req
+        });
       } else {
         var ref = db.ref("/master_devices");
         ref.orderByChild("device_id").equalTo(req.param('device_id')).once('value')
@@ -83,7 +140,7 @@ module.exports = {
           })
       }
     } else {
-      return res.view('add-update-device', {title: sails.config.title.edit_device,'device': device, errors: errors});
+      return res.view('add-update-device', {title: sails.config.title.edit_device, 'device': device, errors: errors});
     }
   },
 
@@ -105,12 +162,12 @@ module.exports = {
         ref.once("value", function (snapshot) {
           var device = snapshot.val();
           return res.view('view-edit-device', {
-            title: sails.config.title.edit_device,'device': device, errors: errors, isEdit: true,
+            title: sails.config.title.edit_device, 'device': device, errors: errors, isEdit: true,
           });
         }, function (errorObject) {
           return res.serverError(errorObject.code);
         });
-      }else{
+      } else {
         var status = (req.param('status') == "false") ? false : true
         var ref = db.ref("master_devices/" + req.params.id);
         ref.once("value", function (snapshot) {
@@ -133,13 +190,13 @@ module.exports = {
           }
         });
       }
-    }else {
+    } else {
       /* supplier detail */
       var ref = db.ref("master_devices/" + req.params.id);
       ref.once("value", function (snapshot) {
         var device = snapshot.val();
         return res.view('view-edit-device', {
-          title: sails.config.title.edit_device,'device': device, errors: errors, isEdit: true,
+          title: sails.config.title.edit_device, 'device': device, errors: errors, isEdit: true,
         });
       }, function (errorObject) {
         return res.serverError(errorObject.code);
@@ -160,9 +217,29 @@ module.exports = {
     var ref = db.ref("master_devices/" + req.params.id);
     ref.once("value", function (snapshot) {
       var device = snapshot.val();
-      return res.view('view-edit-device', {
-        title: sails.config.title.view_device,'device': device, errors: errors, isEdit: false,
-      });
+      if (device != null && Object.keys(device).length && device.user_id != undefined && device.id != undefined) {
+        var ref = db.ref('/devices/' + device.user_id + '/' + device.id);
+        ref.once("value", function (snapshot) {
+        }).then(function (snapshot) {
+          var deviceDetail = snapshot.val();
+          deviceName = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+          tankLocation = (deviceDetail.tank_location != undefined) ? deviceDetail.tank_location : 0;
+        }).then(function (snapshot) {
+          device.device_name = deviceName;
+          device.location = tankLocation;
+          return res.view('view-edit-device', {
+            title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
+          });
+        }).catch(function (err) {
+          console.log('2222--->',err);
+          req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.redirect(sails.config.base_url + 'device');
+        });
+      } else {
+        return res.view('view-edit-device', {
+          title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
+        });
+      }
     }, function (errorObject) {
       return res.serverError(errorObject.code);
     });
@@ -175,15 +252,15 @@ module.exports = {
  * Purpose: Update status of device
  * @param  req
  */
-  updateStatus:function(req, res){
+  updateStatus: function (req, res) {
     var id = req.body.id;
     var status = req.body.is_active;
-    var ref = db.ref('/master_devices/'+ id);
+    var ref = db.ref('/master_devices/' + id);
     ref.once("value", function (snapshot) {
-      if(snapshot.val()){
-        db.ref('/master_devices/'+ id)
+      if (snapshot.val()) {
+        db.ref('/master_devices/' + id)
           .update({
-            'is_deleted': (status == 'true')? true : false
+            'is_deleted': (status == 'true') ? true : false
           })
           .then(function () {
             userinfo = snapshot.val();
@@ -195,15 +272,12 @@ module.exports = {
             return res.json({'status': true, message: sails.config.flash.update_successfully});
           })
           .catch(function (err) {
-            console.log('111',err);
             return res.json({'status': false, message: sails.config.flash.something_went_wronge});
           });
-      }else{
-        console.log('2222');
+      } else {
         return res.json({'status': false, message: sails.config.flash.something_went_wronge});
       }
     }, function (errorObject) {
-      console.log('3333',errorObject);
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     });
   },
@@ -226,8 +300,8 @@ function getDeviceList(snap) {
       devices.push(updateDevice);
     });
     devices.sort(function (a, b) {
-            return b.created_date - a.created_date;
-        })
+      return b.created_date - a.created_date;
+    })
     return devices;
   } else {
     devices = {}

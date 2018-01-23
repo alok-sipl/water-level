@@ -8,7 +8,8 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
+              <li><a title="User List" href="<%= sails.config.base_url %>user">User List</a></li>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> User
               </li>
             </ol>
@@ -20,11 +21,11 @@
 </div>
 <div class="row">
   <div class="col-md-6 col-md-push-3">
+    <% if (req.session.flash) { %>
+    <%- req.flash('flashMessage') %>
+    <% } %>
     <div class="hpanel">
       <div class="panel-body">
-        <% if (req.session.flash) { %>
-        <%- req.flash('flashMessage') %>
-        <% } %>
         <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <div class="form-group <%= (errors.account_number != undefined) ? " has-error" : "" %>">
@@ -196,7 +197,7 @@
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
                 </strong>
-
+              </span>
                 <% }else{ %>
                 <span
                   class=""><%= (user.is_deleted != undefined) ? ((user.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
@@ -206,12 +207,12 @@
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <% if(isEdit){ %>
-              <button type="submit" class="btn btn-primary">
+              <button title="Update User" type="submit" class="btn btn-primary">
                 Update User
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
+              <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
               <% } %>
             </div>
           </div>
