@@ -554,10 +554,13 @@ $(document).ready(function () {
     datatype: "json",
     colModel: [
       {
-        label: ' ', name: 'name', width: 60, search: false, classes: 'user-avatar-cell',
+        label: ' ', name: 'image', width: 60, search: false, classes: 'user-avatar-cell',
         formatter: function (cellvalue) {
-          return '<span class="user-location" ' +
-            'style="background-image:url(' + BASE_URL + '/images/avatar.png)">';
+          if(cellvalue != undefined){
+            return '<span class="user-location" ' + 'style="background-image:url('+ cellvalue +')">';
+          }else{
+            return '<span class="user-location" ' + 'style="background-image:url('+ BASE_URL +'/images/avatar.png)">';
+          }
         }
       },
       {label: 'Name', name: 'name', width: 180, search: true},

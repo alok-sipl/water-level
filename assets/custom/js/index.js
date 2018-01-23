@@ -37,7 +37,7 @@ $(document).ready(function(){
   });
 
   FJS.setStreaming({
-    data_url: 'http://10.10.100.19:1337/supplier/getSupplier',
+    data_url: BASE_URL +'/supplier/getSupplier',
     stream_after: 1,
     batch_size: 20
   });

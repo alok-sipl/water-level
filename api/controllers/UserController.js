@@ -151,7 +151,9 @@ module.exports = {
       } else {
         var allowExts = ['image/png', 'image/jpg', 'image/jpeg'];
         req.file('image').upload({
-          dirname: sails.config.base_url + 'assets/images',
+          saveAs:function(file, handler) {
+            handler(null,'../../assets/images'+"/"+file.filename);
+          },
           maxBytes: sails.config.length.max_file_upload
         }, function whenDone(err, uploadedFiles) {
           if (err) {
@@ -182,7 +184,7 @@ module.exports = {
             });
           }
           if (uploadedFiles.length === 0) {
-            var status = (req.param('status') == "false") ? false : true
+            var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
             var ref = db.ref("users/" + req.params.id);
             ref.once("value", function (snapshot) {
               var user = snapshot.val();
@@ -253,15 +255,15 @@ module.exports = {
               return res.serverError(errorObject.code);
             });
           } else {
-            storageBucket.upload(uploadedFiles[0].fd, function (err, file) {
+            storageBucket.upload('assets/images/'+uploadedFiles[0].filename, function (err, file) {
               if (!err) {
-                var status = (req.param('status') == "false") ? false : true
+                var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
                 var ref = db.ref("users/" + req.params.id);
                 ref.once("value", function (snapshot) {
                   var user = snapshot.val();
                   if (user != undefined) {
                     var ref = db.ref();
-                    const file = storageBucket.file(uploadedFiles[0].fd);
+                    const file = storageBucket.file(uploadedFiles[0].filename);
                     return file.getSignedUrl({
                       action: 'read',
                       expires: '03-09-2491'
@@ -300,7 +302,6 @@ module.exports = {
                           return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                         });
                     }).catch(function (err) {
-                      console.log("in error-->", err);
                       req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
                       return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                     });
@@ -377,7 +378,6 @@ module.exports = {
             return res.json({'status': true, message: sails.config.flash.update_successfully});
           })
           .catch(function (err) {
-            console.log(err)
             return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
           });
       } else {
@@ -387,6 +387,25 @@ module.exports = {
       return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
     });
   },
+
+
+  imageUpload: function () {
+    bucket.upload('alok/if_9_2698684.png', function(err, file) {
+      console.log(file);
+      if (!err) {
+
+        const file = bucket.file('if_9_2698684.png');
+        return file.getSignedUrl({
+          action: 'read',
+          expires: '03-09-2491'
+        }).then(signedUrls => {
+          console.log("signedUrls==",signedUrls);
+      });
+      }else{
+        console.log(err);
+      }
+    });
+  }
 };
 
 /*
@@ -431,11 +450,9 @@ function getUserList(snap) {
           //return res.redirect(sails.config.base_url + 'supplier');
         });
       }
-      console.log(snap.numChildren(), '==', users, '==', count);
     });
 
   } else {
-    console.log('In else');
     users = {}
     return users;
   }
