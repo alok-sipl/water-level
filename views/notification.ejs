@@ -1,0 +1,17 @@
+<a title="Alerts" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown"
+   aria-expanded="false">
+  <i class="pe-7s-bell"></i>
+  <span
+    class="label label-success"><%= (alertList != undefined && Object.keys(alertList).length) ? Object.keys(alertList).length : 0 %></span>
+</a>
+<ul class="dropdown-menu hdropdown animated flipInX">
+  <div class="title">You have <%= (alertList != undefined && Object.keys(alertList).length) ? Object.keys(alertList).length : 0 %> new
+    messages
+  </div>
+  <% if(alertList != undefined && Object.keys(alertList).length != null && Object.keys(alertList).length){
+    for (var key in alertList){ %>
+  <li><a><%= (alertList[key].message != undefined) ? alertList[key].message : '' %></a></li>
+  <% } %>
+  <li class="summary"><a href="<%= sails.config.base_url %>notification">See All Messages</a></li>
+  <% } %>
+</ul>

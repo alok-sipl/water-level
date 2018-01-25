@@ -46,7 +46,8 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (contact.name != undefined) ? contact.name : "" %></span>
+              <span class="control-label pull-left">
+              <%= (contact.name != undefined) ? contact.name : "" %></span>
               <% } %>
             </div>
           </div>
@@ -59,7 +60,7 @@
                      disabled
                      placeholder="Email"/>
               <% }else{ %>
-              <span class=""><%= (contact.email != undefined) ? contact.email : "" %></span>
+              <span class="control-label pull-left"><%= (contact.email != undefined) ? contact.email : "" %></span>
               <% } %>
             </div>
           </div>
@@ -72,7 +73,7 @@
                      disabled
                      placeholder="Query"/>
               <% }else{ %>
-              <span class=""><%= (contact.query != undefined) ? contact.query : "" %></span>
+              <span class="control-label pull-left"><%= (contact.query != undefined) ? contact.query : "" %></span>
               <% } %>
             </div>
           </div>

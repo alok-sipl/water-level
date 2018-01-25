@@ -70,6 +70,7 @@ module.exports.globals = {
   firebasedb: firebasedb,
   firebaseAuth: firebaseAuth,
   storageBucket: storageBucket,
+  //getAdminNotification: getAdminNotification,
 };
 
 /*
@@ -126,3 +127,44 @@ function storageBucket() {
   });
   return bucket = storage.bucket("waterleveldetector-db2b3.appspot.com");
 }
+
+
+/*
+ * Name: getAdminNotification
+ * Created By: A-SIPL
+ * Created Date: 23-jan-2018
+ * Purpose: get notification of the admin
+ * @param  req
+ */
+// function getAdminNotification() {
+//   var notification = '';
+//   var count = 0;
+//   var db = sails.config.globals.firebasedb();
+//   db.ref('alerts/').orderByChild("is_admin").equalTo(true).once('value')
+//     .then(function (snapshot) {
+//       var userInfore = snapshot.val();
+//       var adminId = (userInfore.id != undefined) ? userInfore.id : '';
+//       db.ref('alerts/' + adminId).once('value')
+//         .then(function (snapshot) {
+//           var notificationList = snapshot.val();
+//           if (notificationList != null && Object.keys(notificationList).length) {
+//             count = Object.keys(notificationList).length;
+//             notification += '<div class="title">You have 4 new messages</div>';
+//             for (var key in notificationList) {
+//               notification += '<li><a>It is a long established.</a></li>';
+//               notification += '<li><a>There are many variations.</a></li>'
+//               notification += '<li><a>Lorem Ipsum is simply dummy.</a></li>';
+//               notification += '<li><a>Contrary to popular belief.</a></li>';
+//               notification += '<li class="summary"><a href="#">See All Messages</a></li>';
+//             }
+//             return notification+ '#' + count;
+//           } else {
+//             return notification + '#' + count;
+//           }
+//         }).catch(function (err) {
+//         return notification + '#' + count;
+//       });
+//     }).catch(function (err) {
+//     return notification + '#' + count;
+//   });
+// }

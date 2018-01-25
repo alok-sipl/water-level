@@ -12,20 +12,20 @@
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/sweet-alert.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css"/>
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css"/>
   <!-- The link to the CSS that the grid needs -->
-  <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/css/ui.jqgrid.min.css"/>
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/css/ui.jqgrid.min.css"/>
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/style.css">
 
-  <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 </head>
 <body class="admin-layout hide-sidebar">
 <!-- Simple splash screen-->
 <div class="splash">
   <div class="splash-title">
-    <h1>Homer - Responsive Admin Theme</h1>
-    <p>Special AngularJS Admin Theme for small and medium webapp with very clean and aesthetic style and feel. </p>
     <div class="spinner">
       <div class="rect1"></div>
       <div class="rect2"></div>
@@ -67,7 +67,8 @@
 <!-- Header -->
 <div id="header">
   <div id="logo" class="light-version">
-      <a href="<%= sails.config.base_url %>" ><img src="<%= sails.config.base_url %>images/logo.png" title="<%= sails.config.app_name %>" alt="<%= sails.config.app_name %>"></a>
+    <a href="<%= sails.config.base_url %>"><img src="<%= sails.config.base_url %>images/logo.png"
+                                                title="<%= sails.config.app_name %>" alt="<%= sails.config.app_name %>"></a>
   </div>
   <nav role="navigation">
     <!--<div class="header-link hide-menu"><i class="fa fa-bars"></i></div>-->
@@ -76,62 +77,38 @@
     </div>
     <div class="navbar-right">
       <ul class="nav navbar-nav no-borders col-md-12">
-          <li class="<%= (req.options.controller == 'supplier') ? 'active' : ''%>">
+        <li class="<%= (req.options.controller == 'supplier') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>supplier" title="Manage Supplier"><span
               class="nav-label">Manage Supplier</span></a>
         </li>
-        <li class="<%= (req.options.controller == 'user') ? 'active' : ''%>">
+        <li class="<%= (req.options.controller == 'user') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>user" title="Manage User"><span class="nav-label">Manage User</span></a>
         </li>
-        <li class="<%= (req.options.controller == 'device') ? 'active' : ''%>">
-          <a href="<%= sails.config.base_url %>device" title="Manage Device"><span class="nav-label">Manage Device</span></a>
+        <li class="<%= (req.options.controller == 'device') ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>device" title="Manage Device"><span
+              class="nav-label">Manage Device</span></a>
         </li>
-        <li class="<%= (req.options.controller == 'city') ? 'active' : ''%>">
+        <li class="<%= (req.options.controller == 'city') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>city" title="Manage City"><span class="nav-label">Manage City</span></a>
         </li>
-        <li class="<%= (req.options.controller == 'contact') ? 'active' : ''%>">
+        <li class="<%= (req.options.controller == 'contact') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>contact" title="View Enquiry"><span class="nav-label">View Enquiry</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'setting')) ? 'active' : ''%>">
+        <li
+          class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'setting')) ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>dashboard/setting" title="Setting"><span class="nav-label">Setting</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'profile')) ? 'active' : ''%>">
+        <li
+          class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'profile')) ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile"><span class="nav-label">Profile</span></a>
         </li>
-        <li class="<%= ((req.options.controller == 'dashboard') &&  (req.options.action == 'changePassword')) ? 'active' : ''%>">
-          <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Change Password"><span class="nav-label">Change Password</span></a>
+        <li
+          class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'changePassword')) ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Change Password"><span
+              class="nav-label">Change Password</span></a>
         </li>
-        <li class="dropdown">
-            <a title="Alerts" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown" aria-expanded="false">
-                <i class="pe-7s-bell"></i>
-                <span class="label label-success">4</span>
-            </a>
-            <ul class="dropdown-menu hdropdown animated flipInX">
-                <div class="title">
-                    You have 4 new messages
-                </div>
-                <li>
-                    <a>
-                        It is a long established.
-                    </a>
-                </li>
-                <li>
-                    <a>
-                        There are many variations.
-                    </a>
-                </li>
-                <li>
-                    <a>
-                        Lorem Ipsum is simply dummy.
-                    </a>
-                </li>
-                <li>
-                    <a>
-                        Contrary to popular belief.
-                    </a>
-                </li>
-                <li class="summary"><a href="#">See All Messages</a></li>
-            </ul>
+        <li class="dropdown notification-tab">
+
         </li>
         <li>
           <a title="Logout" href="<%= sails.config.base_url %>dashboard/logout" logout class="logout">
@@ -150,7 +127,8 @@
         <%- body %>
       </div>
       <p class="footer text-center m-b-none">
-        © <%= (new Date()).getFullYear() %> <span class="m-b-none"><%= sails.config.app_name %></span> All Rights Reserved.
+        © <%= (new Date()).getFullYear() %> <span class="m-b-none"><%= sails.config.app_name %></span> All Rights
+        Reserved.
       </p>
 
     </div>
@@ -189,7 +167,9 @@
 <script src="<%= sails.config.base_url %>custom/js/vendor/parsley.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/homer.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/admin.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= sails.config.google_key %>&libraries=places&callback=initAutocomplete" async defer></script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=<%= sails.config.google_key %>&libraries=places&callback=initAutocomplete"
+  async defer></script>
 <script type="text/ecmascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
 <!-- This is the Javascript file of jqGrid -->

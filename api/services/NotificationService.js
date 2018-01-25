@@ -1,8 +1,15 @@
 // api/services/MailerService.js
 
+
 module.exports = {
+  /*
+   * Name: sendNotification
+   * Created By: A-SIPL
+   * Created Date: 20-dec-2017
+   * Purpose: send push notifiocation service
+   * @param  req
+   */
     sendNotification : function (obj, req, res) {
-        console.log(obj);
         var FCM = require('fcm-push');
         var fcm = new FCM('AIzaSyDqMXMWEYzoBgYxa37ha6RSB28x7urxKKI');
 
@@ -28,5 +35,7 @@ module.exports = {
                 console.log(response);
             }
         });
-    }
+    },
+
+
 }

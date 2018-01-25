@@ -39,11 +39,11 @@ module.exports = {
                                             req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
                                             return res.redirect(sails.config.base_url + 'supplier');
                                         } else {
-                                            req.flash('flashMessage', '<div class="alert alert-danger">' + User.message.email_valid + '</div>');
+                                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
                                             return res.redirect(sails.config.base_url);
                                         }
                                     } else {
-                                        req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
                                         return res.redirect(sails.config.base_url);
                                     }
                                 }, function (errorObject) {
@@ -51,11 +51,9 @@ module.exports = {
                                 });
                             }).catch(function (error) {
                         if (error.code == "auth/invalid-email") {
-                            console.log('111');
-                            req.flash('flashMessage', '<div class="alert alert-danger">' + User.message.email_valid + '</div>');
+                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
                         } else {
-                            console.log('3333');
-                            req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.invalid_email_password + '</div>');
+                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.invalid_email_password + '</div>');
                         }
                         return res.redirect(sails.config.base_url + 'login');
                     });
@@ -69,6 +67,52 @@ module.exports = {
             res.redirect('supplier');
         }
     },
+
+  /*
+     * Name: forgotPassword
+     * Created By: A-SIPL
+     * Created Date: 24-jan-2018
+     * Purpose: for generate password
+     */
+  forgotPassword: function (req, res) {
+    var errors = {};
+    if (req.method == "POST") {
+      errors = ValidationService.validate(req);
+      if (Object.keys(errors).length) {
+        res.locals.layout = 'layout-login';
+        return res.view('forgot-password', {
+          errors: errors,
+          title: sails.config.title.forgot_password
+        });
+      } else {
+        var ref = db.ref("users");
+        ref.orderByChild('email').equalTo(req.param('email').trim()).once('value', function (snap) {
+          if (Object.keys(snap).length) {
+            var userInfo = snap.val();
+            if(userInfo.is_deleted == false){
+              MailerService.sendForgotPasswordMail({
+                name: userInfo.name,
+                email: userInfo.email,
+                subject: sails.config.email_message.forgot_password
+              });
+            }else{
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
+              return res.redirect(sails.config.base_url + 'login');
+            }
+          }else{
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.invalid_email + '</div>');
+            return res.redirect(sails.config.base_url + 'login');
+          }
+        })
+      }
+    } else {
+      res.locals.layout = 'layout-login';
+      return res.view('forgot-password', {
+        errors: errors,
+        title: sails.config.title.forgot_password
+      });
+    }
+  },
 
     /*
      * Name: signUp
@@ -112,15 +156,15 @@ module.exports = {
                 console.log('Created');
 
                 ref.push(data).then(function () {//use 'child' and 'set' combination to save data in your own generated key
-                    req.flash('flashMessage', '<div class="alert alert-success">Admin Created Successfully.</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-success">Admin Created Successfully.</div>');
                     return res.redirect(sails.config.base_url + 'login');
                 }, function (error) {
-                    req.flash('flashMessage', '<div class="alert alert-danger">Error In Creating Admin.</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">Error In Creating Admin.</div>');
                     return res.redirect(sails.config.base_url + 'login');
                 });
             })
                     .catch(function (error) {
-                        req.flash('flashMessage', '<div class="alert alert-danger">Error In Creating Admin.</div>');
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">Error In Creating Admin.</div>');
                         return res.redirect(sails.config.base_url + 'login');
                     });
         } else {

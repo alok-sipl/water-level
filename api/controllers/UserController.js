@@ -65,7 +65,7 @@ module.exports = {
               }
               count++;
             }).catch(function (err) {
-              req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
               return res.redirect(sails.config.base_url + 'supplier');
             });
           }
@@ -213,12 +213,12 @@ module.exports = {
                     }
                   })
                   .then(function () {
-                    req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
                     return res.redirect(sails.config.base_url + 'user');
                   })
                   .catch(function (err) {
                     console.log("in error-->", err);
-                    req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
                     return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                   });
               } else {
@@ -293,16 +293,16 @@ module.exports = {
                           }
                         })
                         .then(function () {
-                          req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
+                          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
                           return res.redirect(sails.config.base_url + 'user');
                         })
                         .catch(function (err) {
                           console.log("in error-->", err);
-                          req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                          req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
                           return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                         });
                     }).catch(function (err) {
-                      req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                      req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
                       return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                     });
                   } else {
@@ -313,7 +313,7 @@ module.exports = {
                 });
 
               } else {
-                req.flash('flashMessage', '<div class="alert alert-danger">' + err + '</div>');
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + err + '</div>');
                 return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
               }
             });

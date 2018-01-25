@@ -18,6 +18,21 @@ $(document).ready(function () {
     $('.form-group').find('.help-block').hide();
   }, 6000);
 
+  setTimeout(function () {
+    $('.flash-message').remove();
+  }, 8000);
+
+  $.ajax({
+    url: BASE_URL + '/dashboard/getAdminNotification',
+    type: 'POST',
+    success: function (response) {
+      $('.notification-tab').html(response)
+    }, error: function (jqXHR, exception) {
+      alert(jqXHR);
+      alert(exception);
+    }
+  });
+
 })
 /*
  *  For manage all actions for the admin
@@ -150,6 +165,9 @@ $('.change-notification').click(function () {
       $(".alert-danger").html(textStatus);
     }
   });
+  setTimeout(function () {
+    $('div.alert').css('display', "none");
+  }, 6000);
 });
 
 
@@ -319,6 +337,9 @@ $("body").on("click", ".status-action", function () {
         $(".alert-danger").html(textStatus);
       }
     });
+    setTimeout(function () {
+      $('div.alert').css('display', "none");
+    }, 6000);
   }
 })
 
@@ -349,6 +370,9 @@ function showMyTrips() {
       $(".alert-danger").html(textStatus);
     }
   });
+  setTimeout(function () {
+    $('div.alert').css('display', "none");
+  }, 6000);
 }
 
 /* Show grid */
@@ -359,8 +383,8 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'City', name: 'name', width: 300, search: true},
-      {label: 'Country', name: 'country_name', width: 150},
+      {label: 'City', name: 'name', width: 300, search: true, classes: 'text-break'},
+      {label: 'Country', name: 'country_name', width: 150, classes: 'text-break'},
       {
         name: 'city_id', hidden: true,
         formatter: function (cellvalue) {
@@ -408,9 +432,9 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Name', name: 'name', width: 250, search: true},
+      {label: 'Name', name: 'name', width: 250, search: true, classes: 'text-break'},
       {label: 'Email', name: 'email', width: 300, search: true},
-      {label: 'Query', name: 'query', width: 450},
+      {label: 'Query', name: 'query', width: 450, classes: 'text-break'},
       {
         label: 'Action', name: 'contact_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
@@ -442,13 +466,13 @@ $(document).ready(function () {
     colModel: [
       {label: 'Device Id', name: 'device_id', width: 180, search: true},
       {
-        label: 'Device Name', name: 'device_name', width: 200, search: true,
+        label: 'Device Name', name: 'device_name', width: 200, search: true, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'User Name', name: 'user_name', width: 200,
+        label: 'User Name', name: 'user_name', width: 200 , classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
@@ -506,8 +530,8 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Location', name: 'name', width: 300, search: true},
-      {label: 'City', name: 'city_name', width: 150},
+      {label: 'Location', name: 'name', width: 300, search: true, classes: 'text-break'},
+      {label: 'City', name: 'city_name', width: 150, classes: 'text-break'},
       {
         name: 'city_id', hidden: true,
         formatter: function (cellvalue) {
@@ -556,18 +580,18 @@ $(document).ready(function () {
       {
         label: ' ', name: 'image', width: 60, search: false, classes: 'user-avatar-cell',
         formatter: function (cellvalue) {
-          if(cellvalue != undefined){
-            return '<span class="user-location" ' + 'style="background-image:url('+ cellvalue +')">';
-          }else{
-            return '<span class="user-location" ' + 'style="background-image:url('+ BASE_URL +'/images/avatar.png)">';
+          if (cellvalue != undefined) {
+            return '<span class="user-location" ' + 'style="background-image:url(' + cellvalue + ')">';
+          } else {
+            return '<span class="user-location" ' + 'style="background-image:url(' + BASE_URL + '/images/avatar.png)">';
           }
         }
       },
-      {label: 'Name', name: 'name', width: 180, search: true},
+      {label: 'Name', name: 'name', width: 180, search: true, classes: 'text-break'},
       {label: 'Email', name: 'email', width: 280, search: true},
       {label: 'Contact Number', name: 'phone', width: 180, align: "center"},
       {
-        label: 'Location', name: 'area', width: 150, align: "center", search: true,
+        label: 'Location', name: 'area', width: 150, align: "center", search: true, classes: 'text-break',
       },
       {label: 'City', name: 'city_name', width: 150},
       {
@@ -583,7 +607,7 @@ $(document).ready(function () {
         }
       },*/
       {
-        label: 'Device', name: 'device', width: 100, search: false
+        label: 'Device', name: 'device', width: 100, search: false, classes: 'text-break'
       },
       {
         label: 'Status', name: 'is_deleted', width: 80, search: false, align: "center",

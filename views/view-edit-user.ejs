@@ -8,8 +8,7 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a title="Dashboard" href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
-              <li><a title="User List" href="<%= sails.config.base_url %>user">User List</a></li>
+              <li><a href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> User
               </li>
             </ol>
@@ -21,11 +20,11 @@
 </div>
 <div class="row">
   <div class="col-md-6 col-md-push-3">
-    <% if (req.session.flash) { %>
-    <%- req.flash('flashMessage') %>
-    <% } %>
     <div class="hpanel">
       <div class="panel-body">
+        <% if (req.session.flash) { %>
+        <%- req.flash('flashMessage') %>
+        <% } %>
         <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <div class="form-group <%= (errors.account_number != undefined) ? " has-error" : "" %>">
@@ -46,7 +45,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (user.name != undefined) ? user.name : "" %></span>
+              <span class="control-label pull-left"><%= (user.name != undefined) ? user.name : "" %></span>
               <% } %>
             </div>
           </div>
@@ -59,7 +58,7 @@
                      disabled
                      placeholder="Email"/>
               <% }else{ %>
-              <span class=""><%= (user.email != undefined) ? user.email : "" %></span>
+              <span class="control-label pull-left"><%= (user.email != undefined) ? user.email : "" %></span>
               <% } %>
             </div>
           </div>
@@ -72,7 +71,7 @@
                      disabled
                      placeholder="Mobile Number"/>
               <% }else{ %>
-              <span class=""><%= (user.phone != undefined) ? user.phone : "" %></span>
+              <span class="control-label pull-left"><%= (user.phone != undefined) ? user.phone : "" %></span>
               <% } %>
             </div>
           </div>
@@ -92,7 +91,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (user.account_number != undefined) ? user.account_number : "" %></span>
+              <span class="control-label pull-left"><%= (user.account_number != undefined) ? user.account_number : "" %></span>
               <% } %>
             </div>
           </div>
@@ -116,7 +115,7 @@
                 </strong>
 
                 <% }else{ %>
-                <span class=""><%= (user.country_name != undefined) ? user.country_name : "" %></span>
+                <span class="control-label pull-left"><%= (user.country_name != undefined) ? user.country_name : "" %></span>
                 <% } %>
             </div>
             <input type="hidden" name="country_name" id="country_name" value="<%= (user.country_name) ? (user.country_name) : '' %>"/>
@@ -139,7 +138,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (user.city_name != undefined) ? user.city_name : "" %></span>
+              <span class="control-label pull-left"><%= (user.city_name != undefined) ? user.city_name : "" %></span>
               <% } %>
             </div>
             <input type="hidden" name="city_name" id="city_name" value="<%= (user.city_name) ? (user.city_name) : '' %>"/>
@@ -158,7 +157,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (user.area != undefined) ? user.area : "" %></span>
+              <span class="control-label pull-left"><%= (user.area != undefined) ? user.area : "" %></span>
               <% } %>
             </div>
             <input type="hidden" name="latitude" id="latitude" value="<%= (user.latitude != undefined) ? (user.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>
@@ -172,13 +171,14 @@
                                   src="<%= (user.image != undefined) ? user.image : sails.config.base_url + 'images/profile.png' %>"
                                   title="<%= (user.name != undefined) ? user.name : '' %>" alt="<%= (user.name) ? user.name : '' %>"></span>
               <input type="file" class="form-control" name="image" id="image"
-                     data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"/>
+                     data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"
+                     data-parsley-filemimetypes="image/jpeg, image/png"/>
               <span class="help-block">
                 <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><img width="100"
+              <span class="control-label pull-left"><img width="100"
                                   src="<%= (user.image) ? user.image : sails.config.base_url + 'images/profile.png' %>"
                                   title="<%= (user.name) ? user.name : '' %>" alt="<%= (user.name) ? user.name : '' %>"></span>
               <% } %>
@@ -197,22 +197,22 @@
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
                 </strong>
-              </span>
+
                 <% }else{ %>
                 <span
-                  class=""><%= (user.is_deleted != undefined) ? ((user.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                  class="control-label pull-left"><%= (user.is_deleted != undefined) ? ((user.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
                 <% } %>
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-8 col-md-offset-4">
               <% if(isEdit){ %>
-              <button title="Update User" type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary">
                 Update User
               </button>
-              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
               <% }else{ %>
-              <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
               <% } %>
             </div>
           </div>

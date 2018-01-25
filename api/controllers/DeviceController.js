@@ -54,7 +54,7 @@ module.exports = {
                 var userDetail = userSnapshot.val();
                 userName = (userDetail.name != undefined) ? userDetail.name : '';
               }).catch(function (err) {
-                req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+                req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
                 return res.redirect(sails.config.base_url + 'supplier');
               });
             }).then(function (snapshot) {
@@ -68,10 +68,19 @@ module.exports = {
               }
               count++;
             }).catch(function (err) {
-              console.log('Console-->2', err);
-              req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
               return res.redirect(sails.config.base_url + 'supplier');
             });
+          }else{
+            updateUser = childSnap;
+            updateUser.device_name = '';
+            updateUser.user_name = '';
+            updateUser.last_reading = 'N/A';
+            devices.push(updateUser);
+            if (tempSnap.numChildren() == count) {
+              return res.json({'rows': devices});
+            }
+            count++;
           }
           callback();
         });
@@ -114,7 +123,7 @@ module.exports = {
           .then(function (snapshot) {
             devicedata = snapshot.val();
             if (devicedata) {
-              req.flash('flashMessage', '<div class="alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/add');
             } else {
               var status = (req.param('status') == "false") ? false : true;
@@ -126,16 +135,16 @@ module.exports = {
                 modified_at: Date.now(),
               }
               ref.push(data).then(function () {
-                req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.device_add_success + '</div>');
+                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_add_success + '</div>');
                 return res.redirect(sails.config.base_url + 'device');
               }, function (error) {
-                req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.device_add_error + '</div>');
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.device_add_error + '</div>');
                 return res.redirect(sails.config.base_url + 'device/add');
               });
             }
           })
           .catch(function (error) {
-            req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
             return res.redirect(sails.config.base_url + 'device/add');
           })
       }
@@ -179,10 +188,10 @@ module.exports = {
                 is_deleted: status,
                 modified_at: Date.now(),
               }).then(function () {
-              req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.device_edit_success + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_edit_success + '</div>');
               return res.redirect(sails.config.base_url + 'device');
             }, function (error) {
-              req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.device_edit_error + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.device_edit_error + '</div>');
               return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
             });
           } else {
@@ -231,8 +240,7 @@ module.exports = {
             title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
           });
         }).catch(function (err) {
-          console.log('2222--->',err);
-          req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+          req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'device');
         });
       } else {
@@ -260,7 +268,7 @@ module.exports = {
       if (snapshot.val()) {
         db.ref('/master_devices/' + id)
           .update({
-            'is_deleted': (status == 'true') ? true : false
+            'is_deleted': (status == 'true' || status == true) ? true : false,
           })
           .then(function () {
             userinfo = snapshot.val();

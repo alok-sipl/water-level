@@ -46,7 +46,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (device.device_id != undefined) ? device.device_id : "" %></span>
+              <span class="control-label pull-left"><%= (device.device_id != undefined) ? device.device_id : "" %></span>
               <% } %>
             </div>
           </div>
@@ -58,7 +58,7 @@
                      value="<%= (device.device_name != undefined) ? device.device_name : "NA" %>"
                      disabled/>
               <% }else{ %>
-              <span class=""><%= (device.device_name != undefined) ? device.device_name : "NA" %></span>
+              <span class="control-label pull-left"><%= (device.device_name != undefined) ? device.device_name : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -71,7 +71,7 @@
                      disabled
                      placeholder="User Name"/>
               <% }else{ %>
-              <span class=""><%= (device.user_name != undefined) ? device.user_name : "NA" %></span>
+              <span class="control-label pull-left"><%= (device.user_name != undefined) ? device.user_name : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -90,7 +90,7 @@
                 </strong>
               </span>
               <% }else{ %>
-              <span class=""><%= (device.location != undefined) ? device.location : "NA" %></span>
+              <span class="control-label pull-left"><%= (device.location != undefined) ? device.location : "NA" %></span>
               <% } %>
             </div>
           </div>
@@ -109,7 +109,7 @@
                 </strong>
 
                 <% }else{ %>
-                <span class=""><%= (device.is_deleted != undefined) ? ((device.is_deleted) ? "In Active" : "Active") : "NA" %></span>
+                <span class="control-label pull-left"><%= (device.is_deleted != undefined) ? ((device.is_deleted) ? "In Active" : "Active") : "NA" %></span>
                 <% } %>
             </div>
           </div>

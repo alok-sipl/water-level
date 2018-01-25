@@ -49,7 +49,7 @@
                 </strong>
               </span>
                 <% }else{ %>
-                <span class=""><%= (city.country_name != undefined) ? city.country_name : "" %></span>
+                <span class="control-label pull-left"><%= (city.country_name != undefined) ? city.country_name : "" %></span>
                 <% } %>
             </div>
           </div>
@@ -61,7 +61,7 @@
                      value="<%= city.name %>"
                      placeholder="City"/>
               <% }else{ %>
-              <span class=""><%= (city.name != undefined) ? city.name : "" %></span>
+              <span class="control-label pull-left"><%= (city.name != undefined) ? city.name : "" %></span>
               <% } %>
             </div>
           </div>
@@ -81,7 +81,7 @@
                 </strong>
               </span>
                 <% }else{ %>
-                <span class=""><%= (city.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                <span class="control-label pull-left"><%= (city.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
                 <% } %>
             </div>
           </div>

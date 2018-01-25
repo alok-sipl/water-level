@@ -113,7 +113,7 @@ module.exports = {
         errors['device_id'] = {message: Device.message.device_id_required}
       } else if (validator.isLength(req.param('device_id', {min: sails.config.length.device_id, max: sails.config.length.device_id}))) {
         errors['device_id'] = {message: Device.message.device_id_size}
-      } else if (!validator.matches(req.param('device_id'), sails.config.regex.alpha_numeric)) {
+      } else if (!validator.matches(req.param('device_id'), sails.config.regex.device_id)) {
         errors['device_id'] = {message: Device.message.device_id_pattern}
       }
     }

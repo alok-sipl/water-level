@@ -95,21 +95,23 @@ module.exports = {
     supplier_range: 80,
     min_battery_level: 16,
     min_device_battery_level: 10,
+    device_reading_alert_time: 1,
+    notification_limit : 4,
 
     /* Validation message setting */
     length: {
-        name: 65,
-        company_name: 125,
+        name: 30,
+        company_name: 70,
         account_number: 10,
         min_mobile_number: 10,
         max_mobile_number: 13,
         address: 125,
-        email: 125,
+        email: 70,
         min_password: 6,
         max_password: 16,
         device_id: 32,
         max_file_upload: 4194304,
-        max_file_upload_kb: 4194
+        max_file_upload_kb: 4194,
     },
 
     regex: {
@@ -146,7 +148,8 @@ module.exports = {
         edit_location: 'Edit Location',
         enquiry_list: 'Contact Enqiry List',
         view_enquiry: 'View Enquiry',
-        notification_setting: 'Notification Setting'
+        notification_setting: 'Notification Setting',
+      forgot_passwor: "Forgot password"
     },
 
     flash: {
@@ -181,6 +184,8 @@ module.exports = {
         profile_update_success: "Profile update successfully",
         profile_update_error: "Error in updating profile",
         paramter_missing: "Required parameter is mising",
+        invalid_email: "This email is not registered",
+        account_inactive: "Your account is inactived by admin",
     },
 
     email_message: {
@@ -188,6 +193,7 @@ module.exports = {
         user_deactivated: "Your account has been deactivated by admin",
         device_activated: "Your device has been activated by admin",
         device_deactivated: "Your device has been deactivated by admin",
+        forgot_password: 'Forgot password link'
     }
 
 };

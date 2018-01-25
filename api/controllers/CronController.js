@@ -1,0 +1,56 @@
+/**
+ * NotificationController
+ *
+ * @description :: Server-side logic for managing notifications
+ * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ */
+var db = sails.config.globals.firebasedb();
+
+module.exports = {
+    /*
+     * Name: supplierListing
+     * Created By: A-SIPL
+     * Created Date: 8-dec-2017
+     * Purpose: add new supplier
+     * @param  req
+     */
+    getInactiveDevice: function (req, res) {
+      var ref = db.ref("users");
+      ref.orderByChild("is_admin").equalTo(true)
+        .once("child_added", function (snapshot) {
+          var userInfore = snapshot.val();
+          var adminId =  (userInfore.id != undefined) ? userInfore.id : '';
+          if(userInfore.is_device_notification_enable != undefined && userInfore.is_device_notification_enable == true) {
+            db.ref('devices').once('child_added')
+              .then(function (snapshot) {
+                deviceDetail = snapshot.val();
+                if (deviceDetail != null && Object.keys(deviceDetail).length) {
+                  for (var key in deviceDetail) {
+                    var date = new Date();
+                    var beforeDate = date.setHours(date.getHours() - sails.config.device_reading_alert_time);
+                    if (beforeDate > deviceDetail[key].updated_at) {
+                      var ref = db.ref("alerts/" + adminId);
+                      var data = {
+                        message: 'Device ' + deviceDetail[key].device_name + ' (' + deviceDetail[key].device_id + ') is not working properly. Please check',
+                        type: 'device_issue'
+                      }
+                      ref.push(data).then(function () {
+                        res.json({'msg': 'Alert added sucesfully'})
+                      }, function (error) {
+                        res.json({'msg': error})
+                      });
+                    }
+                  }
+                }
+              }).catch(function (err) {
+              res.json({'msg': err})
+            });
+          }
+        }, function (errorObject) {
+          return res.serverError(errorObject.code);
+        });
+
+    },
+}
+
+
