@@ -506,6 +506,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
           action += '</div>';
           return action;
         }

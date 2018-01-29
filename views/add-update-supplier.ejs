@@ -93,6 +93,7 @@
                 <input type="text" name="mobile_number" class="form-control" id="mobile_number"
                        value="<%= (supplier.mobile_number) ? (supplier.mobile_number) : (req.param('mobile_number')) ? req.param('mobile_number') : '' %>"
                        required
+                       maxlength="<%= sails.config.length.max_mobile_number %>"
                        data-parsley-length="[<%= sails.config.length.min_mobile_number %>, <%= sails.config.length.max_mobile_number %>]"
                        data-parsley-required-message="<%= WaterSupplier.message.mobile_number_required %>"
                        data-parsley-length-message="<%= WaterSupplier.message.mobile_number_length %>"

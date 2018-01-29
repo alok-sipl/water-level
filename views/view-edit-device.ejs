@@ -80,7 +80,7 @@
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" onFocus="geolocate()" name="area" class="form-control" id="area" disabled
-                     value="<%= (device.location) ? (device.location) : '' %>"
+                     value="<%= (device.location != undefined) ? (device.location) : 'NA' %>"
                      maxlength="<%= sails.config.length.address %>"
                      data-parsley-required-message="<%= WaterSupplier.message.area_required %>"
                      data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"

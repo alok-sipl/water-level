@@ -65,6 +65,7 @@
               <label for="is_active" class="col-md-4 control-label">City*</label>
               <div class="col-md-6">
                 <input type="text" name="city" id="city" class="form-control" required
+                       maxlength="<%= sails.config.length.city %>"
                        data-parsley-required-message="<%= City.message.city_required %>"
                        data-parsley-maxlength-message="<%= City.message.city_maxlength %>"
                        placeholder="City"/>
@@ -92,6 +93,7 @@
               <label for="is_active" class="col-md-4 control-label">Location*</label>
               <div class="col-md-6">
                 <input type="text" name="area" class="form-control" required id="area" value=""
+                       maxlength="<%= sails.config.length.address %>"
                        data-parsley-required-message="<%= City.message.area_required %>"
                        data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
                        placeholder="Location"/>

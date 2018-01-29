@@ -68,6 +68,7 @@
             <div class="col-md-6">
               <input type="text" name="account_number" class="form-control" id="account_number"
                      value="<%= user.account_number %>"
+                     maxlength="<%= sails.config.length.account_number %>"
                      data-parsley-type="alphanum"
                      data-parsley-length="[<%= sails.config.length.account_number %>, <%= sails.config.length.account_number %>]"
                      data-parsley-length-message="<%= User.message.account_number_length %>"
