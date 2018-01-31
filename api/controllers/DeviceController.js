@@ -42,6 +42,7 @@ module.exports = {
         async.forEach(tempBinRecords, function (childSnap, callback) {
           var deviceList = ''
           var userName = '';
+          var lastReading = 0;
           if (childSnap.id != undefined && childSnap.user_id != undefined) {
             var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             ref.once("value", function (snapshot) {
@@ -89,8 +90,6 @@ module.exports = {
         devices = {}
         return devices;
       }
-
-
       //var deviceJson = (Object.keys(snap).length) ? getDeviceList(snap) : {};
       //return res.json({'rows': deviceJson});
     });
