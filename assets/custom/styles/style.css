@@ -3622,3 +3622,4 @@ span.badge{background-color:white;}
 span.forgot{text-align: center;margin-top: 10px;}
 .tank_type .checkbox-inline {margin-left: 1px;}
 .text-break{white-space: inherit !important; text-align: left !important;}
+.supplier-list .fjs_item .panel-body{overflow: auto;height: 300px}

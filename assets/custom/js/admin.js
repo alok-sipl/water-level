@@ -16,7 +16,7 @@ $(document).ready(function () {
   setTimeout(function () {
     $('div').removeClass('has-error');
     $('.form-group').find('.help-block').hide();
-  }, 6000);
+  }, 8000);
 
   setTimeout(function () {
     $('.flash-message').remove();
@@ -32,7 +32,6 @@ $(document).ready(function () {
       alert(exception);
     }
   });
-
 })
 /*
  *  For manage all actions for the admin
@@ -377,6 +376,57 @@ function showMyTrips() {
 
 /* Show grid */
 $(document).ready(function () {
+  /* Admin grid */
+  var status = false;
+  var user_id = false;
+  $("#admin-grid").jqGrid({
+    url: BASE_URL + '/dashboard/adminList',
+    mtype: "GET",
+    datatype: "json",
+    colModel: [
+      {label: 'Name', name: 'name', width: 300, search: true, classes: 'text-break'},
+      {label: 'Email', name: 'email', width: 300, search: true, classes: 'text-break'},
+      {label: 'Mobile', name: 'phone', width: 300, search: true, classes: 'text-break'},
+      {name: 'id', hidden: true,
+        formatter: function (cellvalue) {
+          user_id = cellvalue;
+        }
+      },
+      {label: 'Status', name: 'is_deleted', width: 100, search: false,
+        formatter: function (cellvalue) {
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/dahsboard/updateStatus" class="button status-action active" data-id="' + user_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+          } else {
+            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/dahsboard/updateStatus" class="button status-action active" data-id="' + user_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+          }
+          return statusAction;
+        }
+      },
+      {label: 'Action', name: 'id', search: false, width: 150, align: "right",
+        formatter: function (cellvalue) {
+          var action = '<div class="td-action">';
+          action += '<span><a title="View Location" href="' + BASE_URL + '/dashboard/viewAdmin/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="Edit City" href="' + BASE_URL + '/dashboard/editAdmin/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '</div>';
+          return action;
+        }
+      }
+    ],
+    viewrecords: true,
+    //width: 1110,
+    height: 480,
+    rowNum: 10,
+    loadonce: true,
+    gridview: true,
+    pager: "#admin-grid-pager",
+  });
+  jQuery("#admin-grid").jqGrid('filterToolbar', {
+    searchOperators: true, stringResult: true, searchOnEnter: false
+  });
+
+
+
   var status = false;
   $("#city-grid").jqGrid({
     url: BASE_URL + '/city/cityList',
@@ -392,7 +442,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, search: false, align: "center",
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
@@ -490,7 +540,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, search: false, align: "center",
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {

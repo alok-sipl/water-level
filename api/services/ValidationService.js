@@ -82,7 +82,7 @@ module.exports = {
           max: sails.config.length.account_number
         }))) {
         errors['account_number'] = {message: User.message.account_number_length}
-      } else if (!validator.isAlphanumeric(req.param('account_number'))) {
+      } else if (!validator.isNumeric(req.param('account_number'))) {
         errors['account_number'] = {message: User.message.account_number_alphanumeric}
       }
     }

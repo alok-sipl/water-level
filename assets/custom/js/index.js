@@ -39,7 +39,7 @@ $(document).ready(function(){
   FJS.setStreaming({
     data_url: BASE_URL+'/supplier/getSupplier',
     stream_after: 1,
-    batch_size: 20
+    batch_size: total_supplier
   });
 
   FJS.addCriteria({field: 'year', ele: '#year_filter', type: 'range', all: 'all'});

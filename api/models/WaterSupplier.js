@@ -20,7 +20,7 @@ module.exports = {
     "mobile_number_length": "Mobile number should be between 10 and 13 digit long.",
     "mobile_number_pattern": "Provide correct mobile number",
     "account_number_length": "Account number should be 10 digit long",
-    "account_number_alphanumeric": "Account number should be alphanumeric",
+    "account_number_alphanumeric": "Account number should be numeric",
     "tank_size_required": "Tank size is required",
     "country_required": "Please select country",
     "city_required": "Please select city",

@@ -95,6 +95,7 @@
                        required
                        maxlength="<%= sails.config.length.max_mobile_number %>"
                        data-parsley-length="[<%= sails.config.length.min_mobile_number %>, <%= sails.config.length.max_mobile_number %>]"
+                       pattern="<%= sails.config.regex.mobile_number %>"
                        data-parsley-required-message="<%= WaterSupplier.message.mobile_number_required %>"
                        data-parsley-length-message="<%= WaterSupplier.message.mobile_number_length %>"
                        data-parsley-pattern-message="<%= WaterSupplier.message.mobile_number_pattern %>"
@@ -110,7 +111,7 @@
                 <input type="text" name="account_number" class="form-control" id="account_number"
                        value="<%= (supplier.account_number) ? (supplier.account_number) : (req.param('account_number')) ? req.param('account_number') : '' %>"
                        maxlength="<%= sails.config.length.account_number %>"
-                       data-parsley-type="alphanum"
+                       data-parsley-type="digits"
                        data-parsley-length="[<%= sails.config.length.account_number %>, <%= sails.config.length.account_number %>]"
                        data-parsley-length-message="<%= WaterSupplier.message.account_number_length %>"
                        data-parsley-type-message="<%= WaterSupplier.message.account_number_alphanumeric %>"
@@ -129,19 +130,23 @@
                          value="5" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>
                          id="check_all" data-parsley-errors-container="#tank_size_message"/> All </label>
                 <div class="tank_type">
-                  <label class="checkbox-inline"><input type="checkbox" class="tank_size" name="tank_size" required
-                                                        value="1" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('1') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %> />
+                  <label class="checkbox-inline">
+                    <input type="checkbox" class="tank_size" name="tank_size" required
+                           value="1" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('1') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %> />
                     5(m3)</label>
-                  <label class="checkbox-inline"><input type="checkbox" class="tank_size" name="tank_size" required
-                                                        value="2" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('2') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>/>
+                  <label class="checkbox-inline">
+                    <input type="checkbox" class="tank_size" name="tank_size" required
+                           value="2" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('2') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>/>
                     12(m3)</label>
-                  <label class="checkbox-inline"><input type="checkbox" class="tank_size" name="tank_size" required
-                                                        value="3" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('3') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>/>
+                  <label class="checkbox-inline">
+                    <input type="checkbox" class="tank_size" name="tank_size" required
+                           value="3" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('3') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>/>
                     18(m3)</label>
-                  <label class="checkbox-inline"><input type="checkbox" class="tank_size" name="tank_size"
-                                                        value="4" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('4') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>
-                                                        required
-                                                        data-parsley-required-message="<%= WaterSupplier.message.tank_size_required %>"
+                  <label class="checkbox-inline">
+                    <input type="checkbox" class="tank_size" name="tank_size"
+                           value="4" <%= ((supplier.tank_size != undefined) && ((supplier.tank_size.indexOf('4') > -1) || (supplier.tank_size.indexOf('5') > -1))) ? "checked" : "" %>
+                           required
+                           data-parsley-required-message="<%= WaterSupplier.message.tank_size_required %>"
                     />
                     32(m3)</label>
                 </div>
@@ -205,13 +210,18 @@
                        data-parsley-required-message="<%= WaterSupplier.message.area_required %>"
                        data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"
                        placeholder="Area"/>
+                <div id="location_message"></div>
                 <span class="help-block">
                                         <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
                                         </strong>
                                     </span>
-                <input type="hidden" name="latitude" id="latitude"
+                <input style="display: none" type="text" name="latitude" id="latitude"
+                       required
+                       data-parsley-required-message="<%= User.message.area_selection %>"
+                       data-parsley-pattern-message="Invalid lat long"
+                       data-parsley-errors-container="#location_message"
                        value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>
-                <input type="hidden" name="longitude" id="longitude"
+                <input style="display: none" type="hidden" name="longitude" id="longitude"
                        value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>
               </div>
             </div>

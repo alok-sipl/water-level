@@ -27,7 +27,7 @@
         <% } %>
         <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
-          <div class="form-group <%= (errors.account_number != undefined) ? " has-error" : "" %>">
+          <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
             <label for="last_name" class="col-md-4 control-label">Name<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
               <% if(isEdit){ %>
@@ -81,7 +81,8 @@
               <% if(isEdit){ %>
               <input type="text" name="account_number" class="form-control" id="account_number"
                      value="<%= (user.account_number != undefined) ? user.account_number : '' %>"
-                     data-parsley-type="alphanum"
+                     maxlength="<%= sails.config.length.account_number %>"
+                     data-parsley-type="digits"
                      data-parsley-length="[<%= sails.config.length.account_number %>, <%= sails.config.length.account_number %>]"
                      data-parsley-length-message="<%= User.message.account_number_length %>"
                      data-parsley-type-message="<%= User.message.account_number_alphanumeric %>"
@@ -149,6 +150,7 @@
               <% if(isEdit){ %>
               <input type="text" name="area" class="form-control" required id="area"
                      value="<%= (user.area) ? (user.area) : '' %>"
+                     maxlength="<%= sails.config.length.address %>"
                      data-parsley-required-message="<%= User.message.area_required %>"
                      data-parsley-maxlength-message="<%= User.message.area_maxlength %>"
                      placeholder="Area"/>

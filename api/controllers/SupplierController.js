@@ -333,7 +333,7 @@ module.exports = {
               var supplier = snapshot.val();
               /* city name */
               var cityId = (supplier.city_id) ? supplier.city_id : 0;
-              var ref = db.ref("cities").orderByChild('country_id').equalTo(supplier.country_id);
+              var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
               ref.once("value", function (snapshot) {
                 var cities = snapshot.val();
                 return res.view('add-update-supplier', {
@@ -374,7 +374,7 @@ module.exports = {
                   var supplier = snapshot.val();
                   /* city name */
                   var cityId = (supplier.city_id) ? supplier.city_id : 0;
-                  var ref = db.ref("cities").orderByChild('country_id').equalTo(supplier.country_id);
+                  var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
                   ref.once("value", function (snapshot) {
                     var cities = snapshot.val();
                     return res.view('add-update-supplier', {
@@ -407,7 +407,7 @@ module.exports = {
                     var supplier = snapshot.val();
                     /* city name */
                     var cityId = (supplier.city_id) ? supplier.city_id : 0;
-                    var ref = db.ref("cities").orderByChild('country_id').equalTo(supplier.country_id);
+                    var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
                     ref.once("value", function (snapshot) {
                       var cities = snapshot.val();
                       return res.view('add-update-supplier', {
@@ -517,7 +517,7 @@ module.exports = {
             var supplier = snapshot.val();
             /* city name */
             var cityId = (supplier.city_id) ? supplier.city_id : 0;
-            var ref = db.ref("cities").orderByChild('country_id').equalTo(supplier.country_id);
+            var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
             ref.once("value", function (snapshot) {
               var cities = snapshot.val();
               return res.view('add-update-supplier', {

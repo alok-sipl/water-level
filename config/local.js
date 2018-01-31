@@ -97,6 +97,7 @@ module.exports = {
     min_device_battery_level: 10,
     device_reading_alert_time: 1,
     notification_limit : 4,
+    password_link_expired_min : 60,
 
     /* Validation message setting */
     length: {
@@ -116,10 +117,11 @@ module.exports = {
     },
 
     regex: {
-        name: /^([ \\'-.A-Za-z\u0600-\u06FF]{1,50})$/,
+        name: /^(?!\s)([ \\'-.&A-Za-z\u0600-\u06FF]{1,70})$/,
         alpha_numeric: "^[a-zA-Z0-9]*$",
-        mobile_number: /^(\+\d{1,3}[- ]?)?\d{10}$/,
-        device_id: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/
+        mobile_number: /^(\+\d{1,3}[-]?)?\d{10,13}$/,
+        device_id: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
+        lat_long: /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/
     },
 
     title: {
@@ -128,6 +130,10 @@ module.exports = {
         profile: 'Profile',
         edit_profile: 'Edit Profile',
         change_password: 'Change password',
+        admin_list: 'Admin List',
+        add_admin: 'Add Admin',
+        edit_admin: 'Edit Admin',
+        view_admin: 'View Admin',
         supplier_list: 'Supplier List',
         add_supplier: 'Add Supplier',
         edit_supplier: 'Edit Supplier',
@@ -135,6 +141,9 @@ module.exports = {
         user_list: 'User List',
         edit_user: 'Edit User',
         view_user: 'View User',
+        add_admin: 'Add Admin',
+        edit_admin: 'Edit Admin',
+        view_admin: 'View Admin',
         device_list: 'Device List',
         add_device: 'Add Device',
         edit_device: 'Edit Device',
@@ -150,7 +159,8 @@ module.exports = {
         enquiry_list: 'Contact Enqiry List',
         view_enquiry: 'View Enquiry',
         notification_setting: 'Notification Setting',
-      forgot_passwor: "Forgot password"
+      forgot_passwor: "Forgot password",
+      set_new_passwors: "Set new password"
     },
 
     flash: {
@@ -158,8 +168,12 @@ module.exports = {
         image_not_upload: "No file was uploaded",
         incorrect_file_format: "File type is not supported!",
         email_already_exist: " email already registered",
+        email_already_exist_in_admin: " email already registered for admin",
+        email_already_exist_in_user: " email already registered for user",
         password_change_success: "Password changed successfully",
         password_change_error: "Error in changed password",
+        password_set_success: "Password set successfully",
+        password_set_error: "Error in set password",
         old_password_unmatch: "Incorrect current password",
         something_went_wronge: "Something went wronge",
         update_successfully: "Status updated successfully",
@@ -167,6 +181,10 @@ module.exports = {
         supplier_add_error: "Error in adding supplier",
         supplier_edit_success: "Supplier updated successfully",
         supplier_edit_error: "Error in updating supplier",
+        admin_add_success: "Admin added successfully",
+        admin_add_error: "Error in adding admin",
+        admin_edit_success: "Admin updated successfully",
+        admin_edit_error: "Error in updating admin",
         device_add_success: "Device added successfully",
         device_add_error: "Error in adding device",
         device_edit_success: "Device updated successfully",
@@ -187,6 +205,7 @@ module.exports = {
         paramter_missing: "Required parameter is mising",
         invalid_email: "This email is not registered",
         account_inactive: "Your account is inactived by admin",
+        forgot_mail_send_success: "We have send mail please check mail and follow the steps"
     },
 
     email_message: {

@@ -1,0 +1,114 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            View Admin
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
+              <li class="active"> View Admin
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-md-push-3">
+    <div class="hpanel">
+      <div class="panel-body">
+        <% if (req.session.flash) { %>
+        <%- req.flash('flashMessage') %>
+        <% } %>
+        <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post"
+              id="profile" class='form-horizontal' data-parsley-validate='true'>
+          <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
+            <label for="last_name" class="col-md-4 control-label">Name<%= (isEdit) ? '*' : '' %></label>
+            <div class="col-md-6">
+              <% if(isEdit){ %>
+              <input type="text" name="name" class="form-control" id="name"
+                     value="<%= (user.name != undefined) ? user.name : '' %>"
+                     required
+                     maxlength="<%= sails.config.length.name %>"
+                     data-parsley-required-message="<%= User.message.name_required %>"
+                     data-parsley-maxlength-message="<%= User.message.name_maxlength %>"
+                     pattern="<%= sails.config.regex.name %>"
+                     data-parsley-pattern-message="<%= User.message.name_pattern %>"
+                     placeholder="Name"/>
+              <span class="help-block">
+                <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
+                </strong>
+              </span>
+              <% }else{ %>
+              <span class="control-label pull-left"><%= (user.name != undefined) ? user.name : "" %></span>
+              <% } %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email" class="col-md-4 control-label">Email<%= (isEdit) ? '*' : '' %></label>
+            <div class="col-md-6">
+              <% if(isEdit){ %>
+              <input type="email" name="mobile_number" class="form-control" id="mobile_number"
+                     value="<%= (user.email != undefined) ? user.email : '' %>"
+                     disabled
+                     placeholder="Email"/>
+              <% }else{ %>
+              <span class="control-label pull-left"><%= (user.email != undefined) ? user.email : "" %></span>
+              <% } %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contact_no" class="col-md-4 control-label">Mobile Number<%= (isEdit) ? '*' : '' %></label>
+            <div class="col-md-6">
+              <% if(isEdit){ %>
+              <input type="text" name="mobile_number" class="form-control" id="mobile_number"
+                     value="<%= (user.phone != undefined) ? user.phone : '' %>"
+                     disabled
+                     placeholder="Mobile Number"/>
+              <% }else{ %>
+              <span class="control-label pull-left"><%= (user.phone != undefined) ? user.phone : "" %></span>
+              <% } %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="is_active" class="col-md-4 control-label">Status<%= (isEdit) ? '*' : '' %></label>
+            <div class="col-md-6">
+              <% if(isEdit){ %>
+              <select name="status" id="status" class="form-control" required
+                      data-parsley-required-message="<%= User.message.status_required %>">
+                <option <%= (user.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                <option <%= (user.is_deleted == false || user.is_deleted == "false") ? "selected" : "" %> value="false">Active</option>
+                <option <%= (user.is_deleted == true || user.is_deleted == "true") ? "selected" : "" %> value="true">In Active</option>
+              </select>
+              <span class="help-block">
+                <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                </strong>
+
+                <% }else{ %>
+                <span
+                  class="control-label pull-left"><%= (user.is_deleted != undefined) ? ((user.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                <% } %>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+              <% if(isEdit){ %>
+              <button type="submit" class="btn btn-primary">
+                Update User
+              </button>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
+              <% }else{ %>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
+              <% } %>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
