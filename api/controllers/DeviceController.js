@@ -46,8 +46,8 @@ module.exports = {
             var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var deviceDetail = snapshot.val();
-              deviceName = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
-              lastReading = (deviceDetail.updated_at != undefined) ? deviceDetail.updated_at : 0;
+              deviceName = (deviceDetail != null && deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+              lastReading = (deviceDetail != null && deviceDetail.updated_at != undefined) ? deviceDetail.updated_at : 0;
               var ref = db.ref('users/');
               ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
               }).then(function (userSnapshot) {
