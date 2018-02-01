@@ -86,6 +86,15 @@ module.exports = {
         errors['account_number'] = {message: User.message.account_number_alphanumeric}
       }
     }
+    if (req.param('company_name') != undefined) {
+      if (validator.isEmpty(req.param('company_name'))) {
+        errors['company_name'] = {message: User.message.company_name_required}
+      } else if (validator.isLength(req.param('name', {min: 0, max: sails.config.length.company_name}))) {
+        errors['company_name'] = {message: User.message.company_name_maxlength}
+      } else if (!validator.matches(req.param('name'), sails.config.regex.company_name)) {
+        errors['company_name'] = {message: User.message.company_name_pattern}
+      }
+    }
     if (req.param('country') != undefined) {
       if (validator.isEmpty(req.param('country'))) {
         errors['country'] = {message: User.message.country_required}
@@ -101,6 +110,11 @@ module.exports = {
         errors['area'] = {message: User.message.area_required}
       } else if (validator.isLength(req.param('area', {max: sails.config.length.address}))) {
         errors['area'] = {message: User.message.area_length}
+      }
+    }
+    if (req.param('status') != undefined) {
+      if (validator.isEmpty(req.param('status'))) {
+        errors['status'] = {message: User.message.status_required}
       }
     }
     if (req.param('latitude') != undefined) {

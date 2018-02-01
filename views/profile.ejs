@@ -28,7 +28,7 @@
         <form action="<%= sails.config.base_url %>dashboard/profile" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
-            <label for="name" class="col-md-4 control-label">Name*</label>
+            <label for="name" class="col-md-4 control-label">Full Name*</label>
             <div class="col-md-6">
               <input type="text" name="name" class="form-control" id="name"
                      value="<%= (user.name != undefined) ? user.name : "" %>"
@@ -38,7 +38,7 @@
                      data-parsley-maxlength-message="<%= User.message.name_maxlength %>"
                      pattern="<%= sails.config.regex.name %>"
                      data-parsley-pattern-message="<%= User.message.name_pattern %>"
-                     placeholder="Name"/>
+                     placeholder="Full Name"/>
               <span class="help-block">
                 <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
                 </strong>
@@ -49,7 +49,7 @@
             <label for="email" class="col-md-4 control-label">Email*</label>
             <div class="col-md-6">
               <input type="email" name="email" class="form-control" id="email"
-                     value="<%= user.email %>"
+                     value="<%= (user.email != undefined) ? user.email : "" %>"
                      disabled
                      placeholder="Email"/>
             </div>
@@ -58,7 +58,7 @@
             <label for="mobile_number" class="col-md-4 control-label">Mobile Number</label>
             <div class="col-md-6">
               <input type="text" name="mobile_number" class="form-control" id="mobile_number"
-                     value="<%= user.phone %>"
+                     value="<%= (user.phone != undefined) ? user.phone : "" %>"
                      disabled
                      placeholder="Mobile Number"/>
             </div>
@@ -67,7 +67,7 @@
             <label for="account_number" class="col-md-4 control-label">Account Number</label>
             <div class="col-md-6">
               <input type="text" name="account_number" class="form-control" id="account_number"
-                     value="<%= user.account_number %>"
+                     value="<%= (user.account_number != undefined) ? user.account_number : "" %>"
                      maxlength="<%= sails.config.length.account_number %>"
                      data-parsley-type="digits"
                      data-parsley-length="[<%= sails.config.length.account_number %>, <%= sails.config.length.account_number %>]"
@@ -107,8 +107,7 @@
               <select name="city" id="city" onchange="getSubCity(this.value)" class="form-control" required
                       data-parsley-required-message="<%= User.message.city_required %>">
                 <option value="">Select City</option>
-
-                <% console.log(cities, user.city_id)
+                <%
                 if(cities != undefined &&  Object.keys(cities).length){
                   for(var key in cities) { %>
                 <option <%= (key == user.city_id) ? "selected" : "" %>

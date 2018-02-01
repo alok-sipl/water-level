@@ -28,7 +28,7 @@
         <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post" enctype="multipart/form-data"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
-            <label for="last_name" class="col-md-4 control-label">Name<%= (isEdit) ? '*' : '' %></label>
+            <label for="last_name" class="col-md-4 control-label">Full Name<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="name" class="form-control" id="name"
@@ -39,7 +39,7 @@
                      data-parsley-maxlength-message="<%= User.message.name_maxlength %>"
                      pattern="<%= sails.config.regex.name %>"
                      data-parsley-pattern-message="<%= User.message.name_pattern %>"
-                     placeholder="Name"/>
+                     placeholder="Full Name"/>
               <span class="help-block">
                 <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
                 </strong>

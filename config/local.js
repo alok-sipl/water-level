@@ -117,7 +117,8 @@ module.exports = {
     },
 
     regex: {
-        name: /^(?!\s)([ \\'-.&A-Za-z\u0600-\u06FF]{1,70})$/,
+        name: /^([a-zA-Z]{2,}\s[a-zA-z]{1,}'?-?[a-zA-Z]{1,}\s?([a-zA-Z]{1,})?)/,
+        company_name: /^(?!\s)([ \\'-.&A-Za-z\u0600-\u06FF]{1,70})$/,
         alpha_numeric: "^[a-zA-Z0-9]*$",
         mobile_number: /^(\+\d{1,3}[-]?)?\d{10,13}$/,
         device_id: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,

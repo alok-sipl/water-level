@@ -21,9 +21,9 @@ $(document).ready(function(){
   });
 
   FJS.addCallback('beforeAddRecords', function(){
-    if(this.recordsCount >= 5){
+    //if(this.recordsCount >= 5){
       this.stopStreaming();
-    }
+    //}
   });
 
   FJS.addCallback('afterAddRecords', function(){

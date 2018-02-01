@@ -44,8 +44,8 @@
                        maxlength="<%= sails.config.length.company_name %>"
                        data-parsley-required-message="<%= WaterSupplier.message.company_name_required %>"
                        data-parsley-maxlength-message="<%= WaterSupplier.message.company_name_maxlength %>"
-                       pattern="<%= sails.config.regex.name %>"
-                       data-parsley-pattern-message="<%= WaterSupplier.message.name_pattern %>"
+                       pattern="<%= sails.config.regex.company_name %>"
+                       data-parsley-pattern-message="<%= WaterSupplier.message.company_name_pattern %>"
                        placeholder="Company Name"/>
                 <span class="help-block">
                                     <strong><%= (errors.company_name != undefined) ? errors.company_name.message : '' %>
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
-              <label for="last_name" class="col-md-4 control-label">Name*</label>
+              <label for="last_name" class="col-md-4 control-label">Full Name*</label>
               <div class="col-md-6">
                 <input type="text" name="name" class="form-control" id="name" required
                        value="<%= (supplier.name) ? (supplier.name) : (req.param('name')) ? req.param('name') : '' %>"
@@ -63,7 +63,7 @@
                        data-parsley-maxlength-message="<%= WaterSupplier.message.name_maxlength %>"
                        pattern="<%= sails.config.regex.name %>"
                        data-parsley-pattern-message="<%= WaterSupplier.message.name_pattern %>"
-                       placeholder="Name"/>
+                       placeholder="Full Name"/>
                 <span class="help-block">
                                     <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
                                     </strong>

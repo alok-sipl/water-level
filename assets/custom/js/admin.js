@@ -115,7 +115,6 @@ function getCity(coutryId) {
       data: {id: coutryId},
       type: 'POST',
       success: function (result) {
-        console.log('Response', result);
         $('#city').empty();
         $('#city').append('<option value="">Select City</option>');
         $.each(result, function (i, obj) {
