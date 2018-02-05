@@ -85,28 +85,35 @@ module.exports = {
           title: sails.config.title.forgot_password
         });
       } else {
-        var ref = db.ref("users");
-        ref.orderByChild('email').equalTo(req.param('email').trim()).once('child_added', function (snap) {
-          if (Object.keys(snap).length) {
-            var userInfo = snap.val();
-            console.log(userInfo);
-            if (userInfo.is_deleted == false) {
-              MailerService.sendForgotPasswordMail({
-                name: userInfo.name,
-                email: userInfo.email,
-                subject: sails.config.email_message.forgot_password
-              });
-              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.forgot_mail_send_success + '</div>');
-              return res.redirect(sails.config.base_url + 'login');
-            } else {
-              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
-              return res.redirect(sails.config.base_url + 'login');
-            }
-          } else {
-            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.invalid_email + '</div>');
+        //var ref = db.ref("users");
+        firebase.auth().sendPasswordResetEmail(req.param('email').trim())
+          .then(function () {
+            console.log('Success...')
+            req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.forgot_mail_send_success + '</div>');
             return res.redirect(sails.config.base_url + 'login');
-          }
-        })
+          })
+          .catch(function (error) {
+            console.log('Error....',error.message);
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">'+ error.message +'</div>');
+            return res.redirect(sails.config.base_url + 'login/forgotPassword');
+          })
+        // ref.orderByChild('email').equalTo(req.param('email').trim()).once('child_added', function (snap) {
+        //   if (Object.keys(snap).length) {
+        //     var userInfo = snap.val();
+        //     console.log(userInfo);
+        //     if (userInfo.is_deleted == false && userInfo.is_admin == true) {
+        //     } else {
+        //       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
+        //       return res.redirect(sails.config.base_url + 'login');
+        //     }
+        //   } else {
+        //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.invalid_email + '</div>');
+        //     return res.redirect(sails.config.base_url + 'login');
+        //   }
+        // }, function (errorObject) {
+        //   console.log('errorObject....', errorObject);
+        //   return res.serverError(errorObject.code);
+        // })
       }
     } else {
       res.locals.layout = 'layout-login';
