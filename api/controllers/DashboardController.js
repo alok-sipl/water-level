@@ -17,9 +17,9 @@ module.exports = {
      * Purpose: dashboard of the user
      * @param  int  $id
      */
-  index: function (req, res) {
-    return res.view('dashboard', {});
-  },
+  // index: function (req, res) {
+  //   return res.view('dashboard', {});
+  // },
 
   /*
      * Name: profile
@@ -87,8 +87,7 @@ module.exports = {
             return res.redirect(sails.config.base_url + 'dashboard/profile');
           })
           .catch(function (err) {
-            console.log("In error-->", err);
-            req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.profile_update_error + '</div>');
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.profile_update_error + '</div>');
             return res.redirect(sails.config.base_url + 'dashboard/profile');
           });
       }
@@ -98,28 +97,33 @@ module.exports = {
         var ref = db.ref("users/" + req.session.userid);
         ref.once("value", function (snapshot) {
           var user = snapshot.val();
-          /* country listing*/
-          var ref = db.ref("countries");
-          ref.orderByChild("is_deleted").equalTo(false)
-            .once("value", function (snapshot) {
-              var countries = snapshot.val();
-              /* city listing*/
-              var ref = db.ref("cities");
-              ref.orderByChild("is_deleted").equalTo(false)
-                .once("value", function (snapshot) {
-                  var cities = snapshot.val();
-                  return res.view('profile', {
-                    'title': sails.config.title.edit_profile,
-                    'user': user, "countries": countries,
-                    'cities': cities,
-                    'errors': errors
+          if(user != null){
+            /* country listing*/
+            var ref = db.ref("countries");
+            ref.orderByChild("is_deleted").equalTo(false)
+              .once("value", function (snapshot) {
+                var countries = snapshot.val();
+                /* city listing*/
+                var ref = db.ref("cities");
+                ref.orderByChild("is_deleted").equalTo(false)
+                  .once("value", function (snapshot) {
+                    var cities = snapshot.val();
+                    return res.view('profile', {
+                      'title': sails.config.title.edit_profile,
+                      'user': user, "countries": countries,
+                      'cities': cities,
+                      'errors': errors
+                    });
+                  }, function (errorObject) {
+                    return res.serverError(errorObject.code);
                   });
-                }, function (errorObject) {
-                  return res.serverError(errorObject.code);
-                });
-            }, function (errorObject) {
-              return res.serverError(errorObject.code);
-            });
+              }, function (errorObject) {
+                return res.serverError(errorObject.code);
+              });
+          }else{
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.profile_update_error + '</div>');
+            return res.redirect(sails.config.base_url + 'supplier');
+          }
         }, function (errorObject) {
           return res.serverError(errorObject.code);
         });
@@ -230,11 +234,16 @@ module.exports = {
     var ref = db.ref("users/" + req.params.id);
     ref.once("value", function (snapshot) {
       var user = snapshot.val();
-      return res.view('view-edit-admin', {
-        'title': sails.config.title.view_admin,
-        'user': user, errors: errors,
-        'isEdit': false,
-      });
+      if(user != null){
+        return res.view('view-edit-admin', {
+          'title': sails.config.title.view_admin,
+          'user': user, errors: errors,
+          'isEdit': false,
+        });
+      }else {
+        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+        return res.redirect(sails.config.base_url + 'dashboard/admin');
+      }
     }, function (errorObject) {
       return res.serverError(errorObject.code);
     });
@@ -288,7 +297,7 @@ module.exports = {
                   return res.redirect(sails.config.base_url + 'user');
                 })
                 .catch(function (err) {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
                   return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                 });
           } else {
@@ -304,12 +313,17 @@ module.exports = {
     var ref = db.ref("users/" + req.params.id);
     ref.once("value", function (snapshot) {
       var user = snapshot.val();
-          return res.view('add-update-admin', {
-            'title': sails.config.title.edit_user,
-            'user': user,
-            'errors': errors,
-            'isEdit': true,
-          });
+      if(user != null){
+        return res.view('add-update-admin', {
+          'title': sails.config.title.edit_user,
+          'user': user,
+          'errors': errors,
+          'isEdit': true,
+        });
+      }else {
+        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+        return res.redirect(sails.config.base_url + 'dashboard/admin');
+      }
     }, function (errorObject) {
       return res.serverError(errorObject.code);
     });
@@ -325,7 +339,7 @@ module.exports = {
  */
 admin: function (req, res) {
   return res.view('admin-listing', {
-    'title': sails.config.title.user_list
+    'title': sails.config.title.admin_list
   });
 }
 ,
@@ -387,7 +401,7 @@ changePassword: function (req, res) {
                 return res.redirect(sails.config.base_url + 'dashboard/changePassword');
               })
               .catch(function (err) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.password_change_error + '</div>');
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_change_error + '</div>');
                 return res.redirect(sails.config.base_url + 'dashboard/changePassword');
               });
           }).then(function () {

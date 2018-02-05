@@ -10,9 +10,9 @@ module.exports = {
   message: {
     "country_required": "Please select country",
     "city_required": "Please select city",
-    "city_maxlength": "City can not be max 125 characters long",
+    "city_maxlength": "City cannot be max 125 characters long",
     "area_required": "Area is required",
-    "area_maxlength": "Area can not be max 125 characters long",
+    "area_maxlength": "Area cannot be max 125 characters long",
   },
 
   attributes: {

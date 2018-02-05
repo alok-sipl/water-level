@@ -162,7 +162,7 @@
               <div class="col-md-6">
                 <select name="country" onchange="getCity(this.value)" id="country" class="form-control" required
                         data-parsley-required-message="<%= WaterSupplier.message.country_required %>">
-                  <option value="">Select Country</option>
+                  <option value>Select Country</option>
                   <%
                   if(countries != undefined && Object.keys(countries).length){
                     for(var key in countries) { %>
@@ -173,6 +173,8 @@
                 </select>
                 <input type="hidden" name="country_name" id="country_name"
                        value="<%= (supplier.country_name) ? (supplier.country_name) : '' %>"/>
+                <input type="hidden" name="country_code" id="country_code"
+                       value=""/>
                 <span class="help-block">
                                         <strong><%= (errors.country != undefined) ? errors.country.message : '' %>
                                         </strong>
@@ -209,6 +211,7 @@
                        maxlength="<%= sails.config.length.address %>"
                        data-parsley-required-message="<%= WaterSupplier.message.area_required %>"
                        data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"
+                       data-parsley-errors-container="#location_message"
                        placeholder="Area"/>
                 <div id="location_message"></div>
                 <span class="help-block">
@@ -216,8 +219,6 @@
                                         </strong>
                                     </span>
                 <input style="display: none" type="text" name="latitude" id="latitude"
-                       required
-                       data-parsley-required-message="<%= User.message.area_selection %>"
                        data-parsley-pattern-message="Invalid lat long"
                        data-parsley-errors-container="#location_message"
                        value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>
@@ -234,7 +235,7 @@
                      title="<%= (supplier.name) ? supplier.name : '' %>"
                      alt="<%= (supplier.name) ? supplier.name : '' %>">
                 <% } %>
-                <input type="file" class="form-control" name="company_image" id="company_image"
+                <input type="file" class="control-label" name="company_image" id="company_image"
                   <% if(supplier != undefined && !Object.keys(supplier).length){ %>
                        required
                        data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"

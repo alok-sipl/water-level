@@ -12,6 +12,19 @@ var CONST = {
 
 
 $(document).ready(function () {
+
+
+  var docElm = document.documentElement;
+  if (docElm.requestFullscreen) {
+    docElm.requestFullscreen();
+  }
+  else if (docElm.mozRequestFullScree) {
+    docElm.mozRequestFullScreen();
+  }
+else if (docElm.webkitRequestFullScreen) {
+    docElm.webkitRequestFullScreen();
+  }
+
   /* Hide server side header messages */
   setTimeout(function () {
     $('div').removeClass('has-error');
@@ -109,24 +122,41 @@ $(document).ready(function () {
 
 /* On change country get city list */
 function getCity(coutryId) {
-  if (coutryId !== "" || coutryId !== undefined) {
+  if (coutryId != "") {
     $.ajax({
       url: BASE_URL + '/city/getCityByCountry',
       data: {id: coutryId},
       type: 'POST',
       success: function (result) {
+        $('#area').removeAttr("disabled");
         $('#city').empty();
         $('#city').append('<option value="">Select City</option>');
         $.each(result, function (i, obj) {
           $('#city').append('<option value="' + i + '">' + obj.name + '</option>');
         });
         $('#country_name').val($("#country option:selected").text());
+
+        /* get country code*/
+        $.ajax({
+            url: BASE_URL + '/city/getCountryCode',
+            data: {id: coutryId},
+            type: 'POST',
+            success: function (result) {
+              $('#country_code').val(result);
+            },
+            error: function (textStatus, errorThrown) {
+              alert('Something went wronge');
+              location.reload();
+            }
+        });
       },
       error: function (textStatus, errorThrown) {
         alert('Something went wronge');
         location.reload();
       }
     });
+  }else{
+    $("#area").prop("disabled", "disabled");
   }
 }
 
@@ -173,9 +203,13 @@ var autocomplete;
 
 /* For google address API */
 function initAutocomplete() {
+  var options = {
+    types: ['(cities)'],
+    componentRestrictions: {country: "in"}
+  };
   autocomplete = new google.maps.places.Autocomplete(
     (document.getElementById('area')),
-    {types: ['geocode']});
+    options);
   autocomplete.addListener('place_changed', fillInAddress);
 }
 
@@ -183,7 +217,6 @@ function initAutocomplete() {
 function fillInAddress() {
   // Get the place details from the autocomplete object.
   var place = autocomplete.getPlace();
-  console.log("place", place.geometry.location.lat(), place.geometry.location.lng());
   $("#latitude").val(place.geometry.location.lat());
   $("#longitude").val(place.geometry.location.lng());
 }
@@ -193,7 +226,6 @@ function fillInAddress() {
 function geolocate() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log(position);
       var geolocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude

@@ -30,7 +30,6 @@ module.exports = {
    * @param  req
    */
   userlist: function (req, res) {
-
     /* country listing*/
     users = [];
     var ref = db.ref("users");
@@ -65,7 +64,7 @@ module.exports = {
               }
               count++;
             }).catch(function (err) {
-              req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
               return res.redirect(sails.config.base_url + 'supplier');
             });
           }
@@ -93,20 +92,24 @@ module.exports = {
     ref.once("value", function (snapshot) {
       var user = snapshot.val();
       /* city listing*/
-      var ref = db.ref("countries");
-      ref.orderByChild("is_deleted").equalTo(false)
-        .once("value", function (snapshot) {
-          var countries = snapshot.val();
-          return res.view('view-edit-user', {
-            'title': sails.config.title.view_user,
-            'user': user, errors: errors,
-            'countries': countries,
-            'isEdit': false,
+      if(user != null){
+        var ref = db.ref("countries");
+        ref.orderByChild("is_deleted").equalTo(false)
+          .once("value", function (snapshot) {
+            var countries = snapshot.val();
+            return res.view('view-edit-user', {
+              'title': sails.config.title.view_user,
+              'user': user, errors: errors,
+              'countries': countries,
+              'isEdit': false,
+            });
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
           });
-        }, function (errorObject) {
-          return res.serverError(errorObject.code);
-        });
-
+      }else{
+        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+        res.redirect(sails.config.base_url + 'user');
+      }
     }, function (errorObject) {
       return res.serverError(errorObject.code);
     });
@@ -218,7 +221,7 @@ module.exports = {
                   })
                   .catch(function (err) {
                     console.log("in error-->", err);
-                    req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
                     return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                   });
               } else {
@@ -298,11 +301,11 @@ module.exports = {
                         })
                         .catch(function (err) {
                           console.log("in error-->", err);
-                          req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
                           return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                         });
                     }).catch(function (err) {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.user_edit_error + '</div>');
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
                       return res.redirect(sails.config.base_url + 'user/edit/' + req.params.id);
                     });
                   } else {
@@ -326,22 +329,26 @@ module.exports = {
       var ref = db.ref("users/" + req.params.id);
       ref.once("value", function (snapshot) {
         var user = snapshot.val();
-        /* city listing*/
-        var ref = db.ref("countries");
-        ref.orderByChild("is_deleted").equalTo(false)
-          .once("value", function (snapshot) {
-            var countries = snapshot.val();
-            return res.view('view-edit-user', {
-              'title': sails.config.title.edit_user,
-              'user': user,
-              'errors': errors,
-              'countries': countries,
-              'isEdit': true,
+        if(user != null){
+          /* city listing*/
+          var ref = db.ref("countries");
+          ref.orderByChild("is_deleted").equalTo(false)
+            .once("value", function (snapshot) {
+              var countries = snapshot.val();
+              return res.view('view-edit-user', {
+                'title': sails.config.title.edit_user,
+                'user': user,
+                'errors': errors,
+                'countries': countries,
+                'isEdit': true,
+              });
+            }, function (errorObject) {
+              return res.serverError(errorObject.code);
             });
-          }, function (errorObject) {
-            return res.serverError(errorObject.code);
-          });
-
+        }else{
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          res.redirect(sails.config.base_url + 'user');
+        }
       }, function (errorObject) {
         return res.serverError(errorObject.code);
       });
@@ -446,7 +453,7 @@ function getUserList(snap) {
           }
           count++;
         }).catch(function (err) {
-          //req.flash('flashMessage', '<div class="alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+          //req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           //return res.redirect(sails.config.base_url + 'supplier');
         });
       }

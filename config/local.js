@@ -160,8 +160,8 @@ module.exports = {
         enquiry_list: 'Contact Enqiry List',
         view_enquiry: 'View Enquiry',
         notification_setting: 'Notification Setting',
-      forgot_passwor: "Forgot password",
-      set_new_passwors: "Set new password"
+        forgot_passwor: "Forgot password",
+        set_new_passwors: "Set new password"
     },
 
     flash: {

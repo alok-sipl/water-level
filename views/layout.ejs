@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <link rel="icon" type="image/x-icon" href="<%= sails.config.base_url %>images/favicon.ico" />
   <!--STYLES-->
   
   <!--STYLES END-->
@@ -81,6 +82,9 @@
           <a href="<%= sails.config.base_url %>supplier" title="Manage Supplier"><span
               class="nav-label">Manage Supplier</span></a>
         </li>
+        <li class="<%= (req.options.controller == 'admin') ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>dashboard/admin" title="Manage Admin"><span class="nav-label">Manage Admin</span></a>
+        </li>
         <li class="<%= (req.options.controller == 'user') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>user" title="Manage User"><span class="nav-label">Manage User</span></a>
         </li>
@@ -96,24 +100,24 @@
         </li>
         <li
           class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'setting')) ? 'active' : '' %>">
-          <a href="<%= sails.config.base_url %>dashboard/setting" title="Setting"><span class="nav-label">Setting</span></a>
-        </li>
-        <li
-          class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'profile')) ? 'active' : '' %>">
-          <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile"><span class="nav-label">Profile</span></a>
-        </li>
-        <li
-          class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'changePassword')) ? 'active' : '' %>">
-          <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Change Password"><span
-              class="nav-label">Change Password</span></a>
+          <a href="<%= sails.config.base_url %>dashboard/setting" title="Notification Setting"><span class="nav-label">Setting</span></a>
         </li>
         <li class="dropdown notification-tab">
 
         </li>
-        <li>
-          <a title="Logout" href="<%= sails.config.base_url %>dashboard/logout" logout class="logout">
-            <i class="pe-7s-upload pe-rotate-90"></i>
+        <li class="dropdown">
+          <a title="Setting" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown" aria-expanded="false">
+            <i class="pe-7s-config"></i>
           </a>
+          <ul class="dropdown-menu hdropdown animated flipInX">
+            <li>
+              <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile">Profile</a>
+            </li>
+            <li>
+              <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Profile">Change Password</a>
+              </li>
+            <li><a href="<%= sails.config.base_url %>dashboard/logout" title="Profile">Logout</a></li>
+          </ul>
         </li>
       </ul>
     </div>

@@ -33,7 +33,7 @@ module.exports = {
           return res.serverError(errorObject.code);
         });
       }).catch(function (err) {
-      req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
       return res.redirect('supplier');
     });
   },
@@ -271,7 +271,7 @@ module.exports = {
                       });
 
                     }).catch(function (err) {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.supplier_add_error + '</div>');
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
                       return res.redirect(sails.config.base_url + 'supplier');
                     });
                     } else {
@@ -460,11 +460,11 @@ module.exports = {
                         return res.redirect(sails.config.base_url + 'supplier');
                       })
                       .catch(function (err) {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.supplier_edit_error + '</div>');
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
                         return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
                       });
                   }).catch(function (err) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.supplier_edit_error + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
                     return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
                   });
                   } else {
@@ -496,7 +496,7 @@ module.exports = {
                     res.redirect('supplier');
                   })
                   .catch(function (err) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.supplier_edit_error + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
                     res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
                   });
               }
@@ -515,21 +515,26 @@ module.exports = {
           var ref = db.ref("suppliers/" + req.params.id);
           ref.once("value", function (snapshot) {
             var supplier = snapshot.val();
-            /* city name */
-            var cityId = (supplier.city_id) ? supplier.city_id : 0;
-            var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
-            ref.once("value", function (snapshot) {
-              var cities = snapshot.val();
-              return res.view('add-update-supplier', {
-                title: sails.config.title.edit_supplier,
-                'supplier': supplier,
-                "countries": countries,
-                "cities": cities,
-                "errors": errors
+            if(supplier != null){
+              /* city name */
+              var cityId = (supplier.city_id) ? supplier.city_id : 0;
+              var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
+              ref.once("value", function (snapshot) {
+                var cities = snapshot.val();
+                return res.view('add-update-supplier', {
+                  title: sails.config.title.edit_supplier,
+                  'supplier': supplier,
+                  "countries": countries,
+                  "cities": cities,
+                  "errors": errors
+                });
+              }, function (errorObject) {
+                return res.serverError(errorObject.code);
               });
-            }, function (errorObject) {
-              return res.serverError(errorObject.code);
-            });
+            }else{
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              res.redirect(sails.config.base_url + 'supplier');
+            }
           }, function (errorObject) {
             return res.serverError(errorObject.code);
           });
@@ -559,11 +564,11 @@ module.exports = {
           return res.json({'status': true, message: sails.config.flash.update_successfully});
         })
         .catch(function (err) {
-          req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           res.json({'status': false, message: sails.config.flash.something_went_wronge});
         });
     } else {
-      req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.something_went_wronge + '</div>');
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
 

@@ -48,12 +48,17 @@ module.exports = {
     var ref = db.ref("queries/" + req.params.id);
     ref.once("value", function (snapshot) {
       var contact = snapshot.val();
-      return res.view('view-edit-contact', {
-        'title': sails.config.title.view_enquiry,
-        'contact': contact,
-        'errors': errors,
-        'isEdit': false,
-      });
+      if(contact != null){
+        return res.view('view-edit-contact', {
+          'title': sails.config.title.view_enquiry,
+          'contact': contact,
+          'errors': errors,
+          'isEdit': false,
+        });
+      }else{
+        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+        return res.redirect('contact');
+      }
     }, function (errorObject) {
       return res.serverError(errorObject.code);
     });

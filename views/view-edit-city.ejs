@@ -4,8 +4,7 @@
       <div class="row">
         <div class="col-md-6">
           <h2 class="font-light m-b-xs">
-            <% console.log(city);%>
-            <%= (isEdit) ? "Update" : "View" %> City: <%= (cities[req.params.id].name != undefined) ? cities[req.params.id].name : "" %>
+            <%= (isEdit) ? "Update" : "View" %> City: <%= (cities.name != undefined) ? cities.name : "" %>
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
@@ -39,7 +38,7 @@
                 <%
                 if(countries != undefined && Object.keys(countries).length){
                   for(var key in countries) { %>
-                <option <%= (key == city.country_id) ? "selected" : "" %>
+                <option <%= (key == cities.country_id) ? "selected" : "" %>
                   value="<%= key %>"><%= countries[key].name %></option>
                 <% }
                 } %>
@@ -49,7 +48,7 @@
                 </strong>
               </span>
                 <% }else{ %>
-                <span class="control-label pull-left"><%= (city.country_name != undefined) ? city.country_name : "" %></span>
+                <span class="control-label pull-left"><%= (cities.country_name != undefined) ? cities.country_name : "" %></span>
                 <% } %>
             </div>
           </div>
@@ -58,10 +57,10 @@
             <div class="col-md-6">
               <% if(isEdit){ %>
               <input type="text" name="city" class="form-control" id="city"
-                     value="<%= city.name %>"
+                     value="<%= cities.name %>"
                      placeholder="City"/>
               <% }else{ %>
-              <span class="control-label pull-left"><%= (city.name != undefined) ? city.name : "" %></span>
+              <span class="control-label pull-left"><%= (cities.name != undefined) ? cities.name : "" %></span>
               <% } %>
             </div>
           </div>
@@ -72,16 +71,16 @@
               <% if(isEdit){ %>
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
-                <option <%= (city.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
-                <option <%= (city.is_deleted == false || city.is_deleted == 'false') ? "selected" : "" %> value="false">Active</option>
-                <option <%= (city.is_deleted == true || city.is_deleted == 'true') ? "selected" : "" %> value="true">In Active</option>
+                <option <%= (cities.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                <option <%= (cities.is_deleted == false || cities.is_deleted == 'false') ? "selected" : "" %> value="false">Active</option>
+                <option <%= (cities.is_deleted == true || cities.is_deleted == 'true') ? "selected" : "" %> value="true">In Active</option>
               </select>
               <span class="help-block">
                 <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
                 </strong>
               </span>
                 <% }else{ %>
-                <span class="control-label pull-left"><%= (city.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
+                <span class="control-label pull-left"><%= (cities.is_deleted != undefined) ? ((city.is_deleted) ? "In Active" : "Active") : "Not Selected" %></span>
                 <% } %>
             </div>
           </div>
