@@ -235,7 +235,7 @@
                      title="<%= (supplier.name) ? supplier.name : '' %>"
                      alt="<%= (supplier.name) ? supplier.name : '' %>">
                 <% } %>
-                <input type="file" class="control-label" name="company_image" id="company_image"
+                <input type="file" class="control-label" accept="image/*" name="company_image" id="company_image"
                   <% if(supplier != undefined && !Object.keys(supplier).length){ %>
                        required
                        data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"

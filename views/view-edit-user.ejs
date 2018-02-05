@@ -172,7 +172,7 @@
               <span class=""><img width="100"
                                   src="<%= (user.image != undefined) ? user.image : sails.config.base_url + 'images/profile.png' %>"
                                   title="<%= (user.name != undefined) ? user.name : '' %>" alt="<%= (user.name) ? user.name : '' %>"></span>
-              <input type="file" class="form-control" name="image" id="image"
+              <input type="file" class="form-control" accept="image/*" name="image" id="image"
                      data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"
                      data-parsley-filemimetypes="image/jpeg, image/png"/>
               <span class="help-block">
