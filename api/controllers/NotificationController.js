@@ -20,7 +20,7 @@ module.exports = {
     db.ref('alerts/' + adminId).once('value')
       .then(function (snapshot) {
         var notificationList = snapshot.val();
-        return res.view('notification-listing', {alertList: DateService.reverseObject(notificationList)});
+        return res.view('notification-listing', {title: sails.config.title.alert_list, alertList: DateService.reverseObject(notificationList)});
       }).catch(function (err) {
       return res.serverError(err);
     });

@@ -12,19 +12,6 @@ var CONST = {
 
 
 $(document).ready(function () {
-
-
-  var docElm = document.documentElement;
-  if (docElm.requestFullscreen) {
-    docElm.requestFullscreen();
-  }
-  else if (docElm.mozRequestFullScree) {
-    docElm.mozRequestFullScreen();
-  }
-else if (docElm.webkitRequestFullScreen) {
-    docElm.webkitRequestFullScreen();
-  }
-
   /* Hide server side header messages */
   setTimeout(function () {
     $('div').removeClass('has-error');
@@ -44,6 +31,10 @@ else if (docElm.webkitRequestFullScreen) {
       alert(jqXHR);
       alert(exception);
     }
+  });
+  /* disable paste in field */
+  $('input.disable-paste').bind('paste', function (e) {
+    e.preventDefault();
   });
 })
 /*

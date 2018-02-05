@@ -25,7 +25,7 @@
         <% if (req.session.flash) { %>
         <%- req.flash('flashMessage') %>
         <% } %>
-        <form action="<%= sails.config.base_url %>user/edit/<%= req.params.id %>" method="post"
+        <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" method="post"
               id="profile" class='form-horizontal' data-parsley-validate='true'>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
             <label for="last_name" class="col-md-4 control-label">Name<%= (isEdit) ? '*' : '' %></label>
@@ -101,9 +101,9 @@
               <button type="submit" class="btn btn-primary">
                 Update User
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>dashboard/admin">Cancel</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>admin">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>dashboard/admin">Back</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>admin">Back</a>
               <% } %>
             </div>
           </div>

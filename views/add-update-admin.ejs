@@ -27,14 +27,14 @@
         <%- req.flash('flashMessage') %>
         <% } %>
           <% if(user == undefined || !(Object.keys(user).length)){ %>
-          <form action="<%= sails.config.base_url %>dashboard/createAdmin" method="post"
+          <form action="<%= sails.config.base_url %>admin/add" method="post"
                 id="add-admin" class='form-horizontal' data-parsley-validate='true'>
             <% }else{ %>
-            <form action="<%= sails.config.base_url %>dashboard/editAdmin/<%= req.params.id %>" method="post"
+            <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" method="post"
                   id="add-admin" class='form-horizontal' data-parsley-validate='true'>
               <% } %>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
-            <label for="last_name" class="col-md-4 control-label">Full Name<%= (isEdit) ? '*' : '' %></label>
+            <label for="last_name" class="col-md-4 control-label">Full Name*</label>
             <div class="col-md-6">
               <input type="text" name="name" class="form-control" id="name"
                      value="<%= (user.name) ? (user.name) : (req.param('name')) ? req.param('name') : '' %>"
@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="email" class="col-md-4 control-label">Email<%= (isEdit) ? '*' : '' %></label>
+            <label for="email" class="col-md-4 control-label">Email*</label>
             <div class="col-md-6">
               <input type="email" name="email" class="form-control" id="email" required
                      value="<%= (user.email) ? (user.email) : (req.param('email')) ? req.param('email') : '' %>"
@@ -64,11 +64,10 @@
                      placeholder="Email"/>
             </div>
           </div>
-              <% if(!isEdit){%>
               <div class="form-group">
-                <label for="email" class="col-md-4 control-label">password*</label>
+                <label for="email" class="col-md-4 control-label">Password*</label>
                 <div class="col-md-6">
-                  <input type="password" name="password" class="form-control" id="password"
+                  <input type="password" name="password" class="form-control disable-paste" id="password"
                          value=""
                          maxlength="<%= sails.config.length.max_password %>"
                          required
@@ -78,9 +77,23 @@
                          placeholder="Password"/>
                 </div>
               </div>
-              <% }%>
+              <div class="form-group">
+                <label for="email" class="col-md-4 control-label">Confirm Password*</label>
+                <div class="col-md-6">
+                  <input type="password" name="confirm_password" class="form-control disable-paste" id="confirm_password"
+                         value=""
+                         maxlength="<%= sails.config.length.max_password %>"
+                         required
+                         data-parsley-equalto="#password"
+                         data-parsley-length="[<%= sails.config.length.min_password %>, <%= sails.config.length.max_password %>]"
+                         data-parsley-required-message="<%= User.message.confirm_password_required %>"
+                         data-parsley-length-message="<%= User.message.confirm_password_length %>"
+                         data-parsley-equalto-message="<%= User.message.password_not_same %>"
+                         placeholder="Password"/>
+                </div>
+              </div>
           <div class="form-group <%= (errors.phone != undefined) ? " has-error" : "" %>">
-            <label for="contact_no" class="col-md-4 control-label">Mobile Number<%= (isEdit) ? '*' : '' %></label>
+            <label for="contact_no" class="col-md-4 control-label">Mobile Number*</label>
             <div class="col-md-6">
               <input type="text" name="mobile_number" class="form-control" id="mobile_number"
                      value="<%= (user.phone) ? (user.phone) : (req.param('mobile_number')) ? req.param('phone') : '' %>"
@@ -98,7 +111,7 @@
             </div>
           </div>
           <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
-            <label for="is_active" class="col-md-4 control-label">Status<%= (isEdit) ? '*' : '' %></label>
+            <label for="is_active" class="col-md-4 control-label">Status*</label>
             <div class="col-md-6">
               <select name="status" id="status" class="form-control" required
                       data-parsley-required-message="<%= User.message.status_required %>">
@@ -118,7 +131,7 @@
                 type="submit" class="btn btn-primary">
                 <%= (user != undefined && Object.keys(user).length) ? 'Edit' : 'Add' %> Admin
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
+              <a class="btn btn-primary" href="<%= sails.config.base_url %>admin">Cancel</a>
             </div>
           </div>
         </form>
