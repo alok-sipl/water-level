@@ -402,7 +402,7 @@ $(document).ready(function () {
   var status = false;
   var user_id = false;
   $("#admin-grid").jqGrid({
-    url: BASE_URL + '/dashboard/adminList',
+    url: BASE_URL + '/admin/adminList',
     mtype: "GET",
     datatype: "json",
     colModel: [
