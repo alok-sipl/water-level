@@ -81,13 +81,24 @@
                 <% } %>
             </div>
           </div>
-          <div class="form-group <%= (errors.location != undefined) ? " has-error" : "" %>">
-            <label for="email" class="col-md-4 control-label">Location*</label>
+          <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
+            <label for="area" class="col-md-4 control-label">Location*</label>
             <div class="col-md-6">
               <% if(isEdit){ %>
-              <input type="text" name="location" class="form-control" id="location"
-                     value="<%= locations.name %>"
+              <input type="text" name="area" class="form-control" id="area"
+                     maxlength="<%= sails.config.length.address %>"
+                     data-parsley-required-message="<%= City.message.area_required %>"
+                     data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
+                     placeholder="Location"
+                     value="<%= locations.name != undefined ? locations.name : ''%>"
                      placeholder="Location"/>
+              <input type="hidden" name="latitude" id="latitude"
+                     value="<%= locations.latitude != undefined ? locations.latitude : ''%>"/>
+              <input type="hidden" name="longitude" id="longitude"
+                     value="<%= locations.longitude != undefined ? locations.longitude : ''%>"/>
+              <span class="help-block">
+                  <strong><%= (errors.area != undefined) ? errors.area.message : '' %></strong>
+                </span>
               <% }else{ %>
               <span class="control-label pull-left"><%= (locations.name != undefined) ? locations.name : "" %></span>
               <% } %>

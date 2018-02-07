@@ -130,21 +130,13 @@ module.exports = {
         ref.once("value", function (snapshot) {
           var user = snapshot.val();
           if (user != undefined) {
-            /* city listing*/
-            var ref = db.ref("countries");
-            ref.orderByChild("is_deleted").equalTo(false)
-              .once("value", function (snapshot) {
                 var countries = snapshot.val();
                 return res.view('view-edit-user', {
                   'title': sails.config.title.edit_user,
                   'user': user,
                   'errors': errors,
-                  'countries': countries,
                   'isEdit': true,
                 });
-              }, function (errorObject) {
-                return res.serverError(errorObject.code);
-              });
           } else {
             return res.serverError();
           }
@@ -164,21 +156,12 @@ module.exports = {
             ref.once("value", function (snapshot) {
               var user = snapshot.val();
               if (user != undefined) {
-                /* city listing*/
-                var ref = db.ref("countries");
-                ref.orderByChild("is_deleted").equalTo(false)
-                  .once("value", function (snapshot) {
-                    var countries = snapshot.val();
                     return res.view('view-edit-user', {
                       'title': sails.config.title.edit_user,
                       'user': user,
                       'errors': errors,
-                      'countries': countries,
                       'isEdit': true,
                     });
-                  }, function (errorObject) {
-                    return res.serverError(errorObject.code);
-                  });
               } else {
                 return res.serverError();
               }
@@ -196,14 +179,15 @@ module.exports = {
                 db.ref('users/' + req.params.id)
                   .update({
                     'name': req.param('name').trim(),
-                    'account_number': req.param('account_number').trim(),
-                    'country_id': req.param('country').trim(),
-                    'country_name': req.param('country_name').trim(),
-                    'city_id': req.param('city').trim(),
-                    'city_name': req.param('city_name').trim(),
-                    'area': req.param('area').trim(),
-                    'latitude': parseFloat(req.param('latitude')),
-                    'longitude': parseFloat(req.param('longitude')),
+                    // 'account_number': req.param('account_number').trim(),
+                    // 'country_id': req.param('country').trim(),
+                    // 'country_name': req.param('country_name').trim(),
+                    // 'city_id': req.param('city').trim(),
+                    // 'city_name': req.param('city_name').trim(),
+                    //'area': req.param('area').trim(),
+                    'address': req.param('address').trim(),
+                    //'latitude': parseFloat(req.param('latitude')),
+                    //'longitude': parseFloat(req.param('longitude')),
                     'is_deleted': status
                   })
                   .then(function (res) {
@@ -237,20 +221,20 @@ module.exports = {
               var user = snapshot.val();
               if (user != undefined) {
                 /* city listing*/
-                var ref = db.ref("countries");
-                ref.orderByChild("is_deleted").equalTo(false)
-                  .once("value", function (snapshot) {
-                    var countries = snapshot.val();
+                // var ref = db.ref("countries");
+                // ref.orderByChild("is_deleted").equalTo(false)
+                //   .once("value", function (snapshot) {
+                //     var countries = snapshot.val();
                     return res.view('view-edit-user', {
                       'title': sails.config.title.edit_user,
                       'user': user,
                       'errors': errors,
-                      'countries': countries,
+                      //'countries': countries,
                       'isEdit': true,
                     });
-                  }, function (errorObject) {
-                    return res.serverError(errorObject.code);
-                  });
+                  // }, function (errorObject) {
+                  //   return res.serverError(errorObject.code);
+                  // });
               } else {
                 return res.serverError();
               }
@@ -274,14 +258,15 @@ module.exports = {
                       db.ref('users/' + req.params.id)
                         .update({
                           'name': req.param('name').trim(),
-                          'account_number': req.param('account_number').trim(),
-                          'country_id': req.param('country').trim(),
-                          'country_name': req.param('country_name').trim(),
-                          'city_id': req.param('city').trim(),
-                          'city_name': req.param('city_name').trim(),
-                          'area': req.param('area').trim(),
-                          'latitude': parseFloat(req.param('latitude')),
-                          'longitude': parseFloat(req.param('longitude')),
+                          // 'account_number': req.param('account_number').trim(),
+                          // 'country_id': req.param('country').trim(),
+                          // 'country_name': req.param('country_name').trim(),
+                          // 'city_id': req.param('city').trim(),
+                          // 'city_name': req.param('city_name').trim(),
+                          // 'area': req.param('area').trim(),
+                          // 'latitude': parseFloat(req.param('latitude')),
+                          // 'longitude': parseFloat(req.param('longitude')),
+                          'address': req.param('address').trim(),
                           'is_deleted': status,
                           'image': signedUrls[0],
                           'modified_date': Date.now(),
@@ -331,20 +316,20 @@ module.exports = {
         var user = snapshot.val();
         if(user != null){
           /* city listing*/
-          var ref = db.ref("countries");
-          ref.orderByChild("is_deleted").equalTo(false)
-            .once("value", function (snapshot) {
-              var countries = snapshot.val();
+          // var ref = db.ref("countries");
+          // ref.orderByChild("is_deleted").equalTo(false)
+          //   .once("value", function (snapshot) {
+          //     var countries = snapshot.val();
               return res.view('view-edit-user', {
                 'title': sails.config.title.edit_user,
                 'user': user,
                 'errors': errors,
-                'countries': countries,
+                //'countries': countries,
                 'isEdit': true,
               });
-            }, function (errorObject) {
-              return res.serverError(errorObject.code);
-            });
+            // }, function (errorObject) {
+            //   return res.serverError(errorObject.code);
+            // });
         }else{
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           res.redirect(sails.config.base_url + 'user');

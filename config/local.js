@@ -84,9 +84,9 @@ module.exports = {
 
     app_name: 'Qatrah',
     base_url: 'https://water-level.herokuapp.com/',
-    admin_url: 'https://water-level.herokuapp.com/admin',
+    base_url_js: 'https://water-level.herokuapp.com',
     //base_url: 'http://10.10.100.19:1337/',
-    //admin_url: 'http://10.10.100.19:1337/admin',
+    //base_url_js: 'http://10.10.100.19:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
     admin_email: 'ravi_sipl@systematixindia.com',
     authentication_email: 'ravi_sipl@systematixindia.com',
@@ -162,7 +162,8 @@ module.exports = {
         notification_setting: 'Notification Setting',
         forgot_password: "Forgot password",
         set_new_passwors: "Set new password",
-        alert_list: "Alert List"
+        alert_list: "Alert List",
+
     },
 
     flash: {

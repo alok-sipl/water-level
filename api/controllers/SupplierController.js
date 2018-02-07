@@ -121,10 +121,7 @@ module.exports = {
    */
   add: function (req, res) {
     var isFormError = false;
-    var errors = {};
-    var supplier = {};
-    var countries = {};
-    var cities = {};
+    var errors = supplier = countries = cities = areas = {};
     /* Checking validation if form post */
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
@@ -143,6 +140,7 @@ module.exports = {
                   'supplier': supplier,
                   'countries': countries,
                   'cities': cities,
+                  'areas': areas,
                   'errors': errors,
                   'req': req
                 });
@@ -155,6 +153,7 @@ module.exports = {
                 'supplier': supplier,
                 'countries': countries,
                 'cities': cities,
+                'areas': areas,
                 'errors': errors,
                 'req': req
               });
@@ -186,6 +185,7 @@ module.exports = {
                       'supplier': supplier,
                       'countries': countries,
                       'cities': cities,
+                      'areas': areas,
                       'errors': errors,
                       'req': req
                     });
@@ -205,6 +205,7 @@ module.exports = {
                         'supplier': supplier,
                         'countries': countries,
                         'cities': cities,
+                        'areas': areas,
                         'errors': errors,
                         'req': req
                       });
@@ -223,6 +224,7 @@ module.exports = {
                         'supplier': supplier,
                         'countries': countries,
                         'cities': cities,
+                        'areas': areas,
                         'errors': errors,
                         'req': req
                       });
@@ -241,35 +243,44 @@ module.exports = {
                       action: 'read',
                       expires: '03-09-2491'
                     }).then(function (signedUrls) {
-                      var status = (req.param('status') == "false") ? false : true;
-                      var ref = db.ref("suppliers");
-                      var data = {
-                        company_name: req.param('company_name').trim(),
-                        name: req.param('name').trim(),
-                        email: req.param('email').trim(),
-                        mobile_number: req.param('mobile_number').trim(),
-                        account_number: req.param('account_number').trim(),
-                        tank_size: req.param('tank_size'),
-                        country_id: req.param('country').trim(),
-                        country_name: req.param('country_name').trim(),
-                        city_id: req.param('city').trim(),
-                        city_name: req.param('city_name').trim(),
-                        area: req.param('area').trim(),
-                        latitude: parseFloat(req.param('latitude')),
-                        longitude: parseFloat(req.param('longitude')),
-                        is_deleted: status,
-                        created_date: Date.now(),
-                        modified_date: Date.now(),
-                        image: signedUrls[0],
-                      }
-                      ref.push(data).then(function () {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
-                        return res.redirect(sails.config.base_url + 'supplier');
-                      }, function (error) {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
-                        return res.redirect(sails.config.base_url + 'supplier');
-                      });
-
+                      var ref = db.ref("locations");
+                      ref.orderByChild("city_id").equalTo(req.param('city'))
+                        .once("child_added", function (snapshot) {
+                          var area = snapshot.val();
+                          var latitude = (area.latitude) ? area.latitude : '0';
+                          var longitude = (area.longitude) ? area.longitude : '0';
+                          var status = (req.param('status') == "false") ? false : true;
+                          var ref = db.ref("suppliers");
+                          var data = {
+                            company_name: req.param('company_name').trim(),
+                            name: req.param('name').trim(),
+                            email: req.param('email').trim(),
+                            mobile_number: req.param('mobile_number').trim(),
+                            account_number: req.param('account_number').trim(),
+                            tank_size: req.param('tank_size'),
+                            country_id: req.param('country').trim(),
+                            country_name: req.param('country_name').trim(),
+                            city_id: req.param('city').trim(),
+                            city_name: req.param('city_name').trim(),
+                            area_id: req.param('area').trim(),
+                            area_name: req.param('area_name').trim(),
+                            latitude: parseFloat(latitude),
+                            longitude: parseFloat(longitude),
+                            is_deleted: status,
+                            created_date: Date.now(),
+                            modified_date: Date.now(),
+                            image: signedUrls[0],
+                          }
+                          ref.push(data).then(function () {
+                            req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
+                            return res.redirect(sails.config.base_url + 'supplier');
+                          }, function (error) {
+                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                            return res.redirect(sails.config.base_url + 'supplier');
+                          });
+                        }, function (errorObject) {
+                          return res.serverError(errorObject.code);
+                        });
                     }).catch(function (err) {
                       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
                       return res.redirect(sails.config.base_url + 'supplier');
@@ -298,6 +309,7 @@ module.exports = {
             'supplier': supplier,
             'countries': countries,
             'cities': cities,
+            'areas': areas,
             'errors': errors,
             'req': req
           });
@@ -336,12 +348,21 @@ module.exports = {
               var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
               ref.once("value", function (snapshot) {
                 var cities = snapshot.val();
-                return res.view('add-update-supplier', {
-                  title: sails.config.title.edit_supplier,
-                  'supplier': supplier,
-                  "countries": countries,
-                  "cities": cities,
-                  "errors": errors
+                /* get area */
+                var cityId = (supplier.area_id) ? supplier.area_id : 0;
+                var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
+                ref.once("value", function (snapshot) {
+                  var areas = snapshot.val();
+                  return res.view('add-update-supplier', {
+                    title: sails.config.title.edit_supplier,
+                    'supplier': supplier,
+                    "countries": countries,
+                    "cities": cities,
+                    "areas": areas,
+                    "errors": errors
+                  });
+                }, function (errorObject) {
+                  return res.serverError(errorObject.code);
                 });
               }, function (errorObject) {
                 return res.serverError(errorObject.code);
@@ -377,12 +398,21 @@ module.exports = {
                   var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
                   ref.once("value", function (snapshot) {
                     var cities = snapshot.val();
-                    return res.view('add-update-supplier', {
-                      title: sails.config.title.edit_supplier,
-                      'supplier': supplier,
-                      "countries": countries,
-                      "cities": cities,
-                      "errors": errors
+                    /* get area */
+                    var cityId = (supplier.area_id) ? supplier.area_id : 0;
+                    var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
+                    ref.once("value", function (snapshot) {
+                      var areas = snapshot.val();
+                      return res.view('add-update-supplier', {
+                        title: sails.config.title.edit_supplier,
+                        'supplier': supplier,
+                        "countries": countries,
+                        "cities": cities,
+                        "areas": areas,
+                        "errors": errors
+                      });
+                    }, function (errorObject) {
+                      return res.serverError(errorObject.code);
                     });
                   }, function (errorObject) {
                     return res.serverError(errorObject.code);
@@ -410,12 +440,21 @@ module.exports = {
                     var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
                     ref.once("value", function (snapshot) {
                       var cities = snapshot.val();
-                      return res.view('add-update-supplier', {
-                        title: sails.config.title.edit_supplier,
-                        'supplier': supplier,
-                        "countries": countries,
-                        "cities": cities,
-                        "errors": errors
+                      /* get area */
+                      var cityId = (supplier.area_id) ? supplier.area_id : 0;
+                      var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
+                      ref.once("value", function (snapshot) {
+                        var areas = snapshot.val();
+                        return res.view('add-update-supplier', {
+                          title: sails.config.title.edit_supplier,
+                          'supplier': supplier,
+                          "countries": countries,
+                          "cities": cities,
+                          "areas": areas,
+                          "errors": errors
+                        });
+                      }, function (errorObject) {
+                        return res.serverError(errorObject.code);
                       });
                     }, function (errorObject) {
                       return res.serverError(errorObject.code);
@@ -436,32 +475,42 @@ module.exports = {
                     action: 'read',
                     expires: '03-09-2491'
                   }).then(function (signedUrls) {
-                    var ref = db.ref();
-                    var status = (req.param('status') == "false") ? false : true;
-                    db.ref('suppliers/' + req.params.id)
-                      .update({
-                        'company_name': req.param('company_name').trim(),
-                        'name': req.param('name').trim(),
-                        'mobile_number': req.param('mobile_number').trim(),
-                        'account_number': req.param('account_number').trim(),
-                        'tank_size': req.param('tank_size'),
-                        'country_id': req.param('country').trim(),
-                        'country_name': req.param('country_name').trim(),
-                        'city_id': req.param('city').trim(),
-                        'city_name': req.param('city_name').trim(),
-                        'area': req.param('area').trim(),
-                        'image': signedUrls[0],
-                        'latitude': parseFloat(req.param('latitude')),
-                        'longitude': parseFloat(req.param('longitude')),
-                        'is_deleted': status,
-                      })
-                      .then(function () {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
-                        return res.redirect(sails.config.base_url + 'supplier');
-                      })
-                      .catch(function (err) {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
-                        return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                    var ref = db.ref("locations");
+                    ref.orderByChild("city_id").equalTo(req.param('city'))
+                      .once("child_added", function (snapshot) {
+                        var area = snapshot.val();
+                        var latitude = (area.latitude) ? area.latitude : '0';
+                        var longitude = (area.longitude) ? area.longitude : '0';
+                          var ref = db.ref();
+                          var status = (req.param('status') == "false") ? false : true;
+                          db.ref('suppliers/' + req.params.id)
+                            .update({
+                              'company_name': req.param('company_name').trim(),
+                              'name': req.param('name').trim(),
+                              'mobile_number': req.param('mobile_number').trim(),
+                              'account_number': req.param('account_number').trim(),
+                              'tank_size': req.param('tank_size'),
+                              'country_id': req.param('country').trim(),
+                              'country_name': req.param('country_name').trim(),
+                              'city_id': req.param('city').trim(),
+                              'city_name': req.param('city_name').trim(),
+                              'area_id': req.param('area').trim(),
+                              'area_name': req.param('area_name').trim(),
+                              'image': signedUrls[0],
+                              'latitude': parseFloat(latitude),
+                              'longitude': parseFloat(longitude),
+                              'is_deleted': status,
+                            })
+                            .then(function () {
+                              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
+                              return res.redirect(sails.config.base_url + 'supplier');
+                            })
+                            .catch(function (err) {
+                              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
+                              return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                            });
+                      }, function (errorObject) {
+                        return res.serverError(errorObject.code);
                       });
                   }).catch(function (err) {
                     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
@@ -473,31 +522,41 @@ module.exports = {
                   }
                 });
               } else {
-                var ref = db.ref();
-                var status = (req.param('status') == "false") ? false : true
-                db.ref('suppliers/' + req.params.id)
-                  .update({
-                    'company_name': req.param('company_name').trim(),
-                    'name': req.param('name').trim(),
-                    'mobile_number': req.param('mobile_number').trim(),
-                    'account_number': req.param('account_number').trim(),
-                    'tank_size': req.param('tank_size'),
-                    'country_id': req.param('country').trim(),
-                    'country_name': req.param('country_name').trim(),
-                    'city_id': req.param('city').trim(),
-                    'city_name': req.param('city_name').trim(),
-                    'area': req.param('area').trim(),
-                    'latitude': parseFloat(req.param('latitude')),
-                    'longitude': parseFloat(req.param('longitude')),
-                    'is_deleted': status,
-                  })
-                  .then(function () {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
-                    res.redirect('supplier');
-                  })
-                  .catch(function (err) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
-                    res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                var ref = db.ref("locations");
+                ref.orderByChild("city_id").equalTo(req.param('city'))
+                  .once("child_added", function (snapshot) {
+                    var area = snapshot.val();
+                    var latitude = (area.latitude) ? area.latitude : '0';
+                    var longitude = (area.longitude) ? area.longitude : '0';
+                    var ref = db.ref();
+                    var status = (req.param('status') == "false") ? false : true
+                    db.ref('suppliers/' + req.params.id)
+                      .update({
+                        'company_name': req.param('company_name').trim(),
+                        'name': req.param('name').trim(),
+                        'mobile_number': req.param('mobile_number').trim(),
+                        'account_number': req.param('account_number').trim(),
+                        'tank_size': req.param('tank_size'),
+                        'country_id': req.param('country').trim(),
+                        'country_name': req.param('country_name').trim(),
+                        'city_id': req.param('city').trim(),
+                        'city_name': req.param('city_name').trim(),
+                        'area_id': req.param('area').trim(),
+                        'area_name': req.param('area_name').trim(),
+                        'latitude': parseFloat(latitude),
+                        'longitude': parseFloat(longitude),
+                        'is_deleted': status,
+                      })
+                      .then(function () {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
+                        res.redirect('supplier');
+                      })
+                      .catch(function (err) {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
+                        res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                      });
+                  }, function (errorObject) {
+                    return res.serverError(errorObject.code);
                   });
               }
 
@@ -521,12 +580,21 @@ module.exports = {
               var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
               ref.once("value", function (snapshot) {
                 var cities = snapshot.val();
-                return res.view('add-update-supplier', {
-                  title: sails.config.title.edit_supplier,
-                  'supplier': supplier,
-                  "countries": countries,
-                  "cities": cities,
-                  "errors": errors
+                /* get area */
+                var areaId = (supplier.area_id) ? supplier.area_id : 0;
+                var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
+                ref.once("value", function (snapshot) {
+                  var areas = snapshot.val();
+                  return res.view('add-update-supplier', {
+                    title: sails.config.title.edit_supplier,
+                    'supplier': supplier,
+                    "countries": countries,
+                    "cities": cities,
+                    "areas": areas,
+                    "errors": errors
+                  });
+                }, function (errorObject) {
+                  return res.serverError(errorObject.code);
                 });
               }, function (errorObject) {
                 return res.serverError(errorObject.code);

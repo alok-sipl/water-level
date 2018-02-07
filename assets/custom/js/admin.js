@@ -1,10 +1,6 @@
 /*
  * Main set common settings of the application
  */
-
-var BASE_URL = 'https://water-level.herokuapp.com';
-//var BASE_URL = 'http://10.10.100.19:1337';
-
 /* All message will be declared here */
 var CONST = {
   MSGTIMEOUT: 10000,
@@ -129,16 +125,16 @@ function getCity(coutryId) {
 
         /* get country code*/
         $.ajax({
-            url: BASE_URL + '/city/getCountryCode',
-            data: {id: coutryId},
-            type: 'POST',
-            success: function (result) {
-              $('#country_code').val(result);
-            },
-            error: function (textStatus, errorThrown) {
-              alert('Something went wronge');
-              location.reload();
-            }
+          url: BASE_URL + '/city/getCountryCode',
+          data: {id: coutryId},
+          type: 'POST',
+          success: function (result) {
+            $('#country_code').val(result);
+          },
+          error: function (textStatus, errorThrown) {
+            alert('Something went wronge');
+            location.reload();
+          }
         });
       },
       error: function (textStatus, errorThrown) {
@@ -146,15 +142,39 @@ function getCity(coutryId) {
         location.reload();
       }
     });
-  }else{
+  } else {
     $("#area").prop("disabled", "disabled");
   }
 }
 
 /* On change country get city list */
 function getSubCity(cityId) {
-  if (cityId !== "" || cityId !== undefined) {
-    $('#city_name').val($("#city option:selected").text());
+  if (cityId !== "") {
+    $.ajax({
+      url: BASE_URL + '/city/getLocationByCity',
+      data: {id: cityId},
+      type: 'POST',
+      success: function (result) {
+        $('#area').empty();
+        $('#area').append('<option value="">Select Area</option>');
+        $.each(result, function (i, obj) {
+          $('#area').append('<option value="' + i + '">' + obj.name + '</option>');
+        });
+        $('#city_name').val($("#city option:selected").text());
+      },
+      error: function (textStatus, errorThrown) {
+        alert('Something went wronge');
+        location.reload();
+      }
+    });
+  }
+}
+
+
+/* On change country set location */
+function getLocation(locationId) {
+  if (locationId !== "") {
+    $('#area_name').val($("#area option:selected").text());
   }
 }
 
@@ -409,12 +429,14 @@ $(document).ready(function () {
       {label: 'Name', name: 'name', width: 300, search: true, classes: 'text-break'},
       {label: 'Email', name: 'email', width: 300, search: true, classes: 'text-break'},
       {label: 'Mobile', name: 'phone', width: 300, search: true, classes: 'text-break'},
-      {name: 'id', hidden: true,
+      {
+        name: 'id', hidden: true,
         formatter: function (cellvalue) {
           user_id = cellvalue;
         }
       },
-      {label: 'Status', name: 'is_deleted', width: 100, search: false,
+      {
+        label: 'Status', name: 'is_deleted', width: 100, search: false,
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
@@ -425,7 +447,8 @@ $(document).ready(function () {
           return statusAction;
         }
       },
-      {label: 'Action', name: 'id', search: false, width: 150, align: "right",
+      {
+        label: 'Action', name: 'id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="View Location" href="' + BASE_URL + '/dashboard/viewAdmin/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
@@ -446,7 +469,6 @@ $(document).ready(function () {
   jQuery("#admin-grid").jqGrid('filterToolbar', {
     searchOperators: true, stringResult: true, searchOnEnter: false
   });
-
 
 
   var status = false;
@@ -544,7 +566,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'User Name', name: 'user_name', width: 200 , classes: 'text-break',
+        label: 'User Name', name: 'user_name', width: 200, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
@@ -651,9 +673,9 @@ $(document).ready(function () {
     datatype: "json",
     colModel: [
       {
-        label: ' ', name: 'image', width: 60, search: false, classes: 'user-avatar-cell',
+        label: ' ', name: 'profile_picture', width: 60, search: false, classes: 'user-avatar-cell',
         formatter: function (cellvalue) {
-          if (cellvalue != undefined) {
+          if (cellvalue != undefined && cellvalue != '') {
             return '<span class="user-location" ' + 'style="background-image:url(' + cellvalue + ')">';
           } else {
             return '<span class="user-location" ' + 'style="background-image:url(' + BASE_URL + '/images/avatar.png)">';
@@ -664,9 +686,9 @@ $(document).ready(function () {
       {label: 'Email', name: 'email', width: 280, search: true},
       {label: 'Contact Number', name: 'phone', width: 180, align: "center"},
       {
-        label: 'Location', name: 'area', width: 150, align: "center", search: true, classes: 'text-break',
+        label: 'Address', name: 'address', width: 150, align: "center", search: true, classes: 'text-break',
       },
-      {label: 'City', name: 'city_name', width: 150},
+      /*{label: 'City', name: 'city_name', width: 150},*/
       {
         name: 'user_id', hidden: true,
         formatter: function (cellvalue) {

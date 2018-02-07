@@ -206,26 +206,49 @@
             <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Area*</label>
               <div class="col-md-6">
-                <input type="text" onFocus="geolocate()" name="area" class="form-control" required id="area"
-                       value="<%= (supplier.area) ? (supplier.area) : (req.param('area')) ? req.param('area') : '' %>"
-                       maxlength="<%= sails.config.length.address %>"
-                       data-parsley-required-message="<%= WaterSupplier.message.area_required %>"
-                       data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"
-                       data-parsley-errors-container="#location_message"
-                       placeholder="Area"/>
-                <div id="location_message"></div>
+                <select name="area" onchange="getLocation(this.value)" id="area" class="form-control" required
+                        data-parsley-required-message="<%= WaterSupplier.message.area_required %>">
+                  <option value="">Select Area</option>
+                  <%
+                  if(areas != undefined && Object.keys(areas).length){
+                    for(var key in areas) { %>
+                  <option <%= (supplier.area_id && supplier.area_id == key) ? "selected" : (req.param('area') && req.param('area') == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= areas[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="area_name" id="area_name"
+                       value="<%= (supplier.area_name) ? (supplier.area_name) : '' %>"/>
                 <span class="help-block">
                                         <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
                                         </strong>
                                     </span>
-                <input style="display: none" type="text" name="latitude" id="latitude"
-                       data-parsley-pattern-message="Invalid lat long"
-                       data-parsley-errors-container="#location_message"
-                       value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>
-                <input style="display: none" type="hidden" name="longitude" id="longitude"
-                       value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>
               </div>
             </div>
+            <!--<div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">-->
+              <!--<label for="is_active" class="col-md-4 control-label">Area*</label>-->
+              <!--<div class="col-md-6">-->
+                <!--<input type="text" onFocus="geolocate()" name="area" class="form-control" required id="area"-->
+                       <!--value="<%= (supplier.area) ? (supplier.area) : (req.param('area')) ? req.param('area') : '' %>"-->
+                       <!--maxlength="<%= sails.config.length.address %>"-->
+                       <!--data-parsley-required-message="<%= WaterSupplier.message.area_required %>"-->
+                       <!--data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"-->
+                       <!--data-parsley-errors-container="#location_message"-->
+                       <!--placeholder="Area"/>-->
+                <!--<div id="location_message"></div>-->
+                <!--<span class="help-block">-->
+                                        <!--<strong><%= (errors.area != undefined) ? errors.area.message : '' %>-->
+                                        <!--</strong>-->
+                                    <!--</span>-->
+                <!--<input style="display: none" type="text" name="latitude" id="latitude"-->
+                       <!--data-parsley-pattern-message="Invalid lat long"-->
+                       <!--data-parsley-errors-container="#location_message"-->
+                       <!--value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>-->
+                <!--<input style="display: none" type="hidden" name="longitude" id="longitude"-->
+                       <!--value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>-->
+              <!--</div>-->
+            <!--</div>-->
+
             <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Company Logo*</label>
               <div class="col-md-6">

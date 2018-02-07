@@ -113,9 +113,9 @@ module.exports = {
         ref.once("value", function (snapshot) {
           country = snapshot.val();
           return res.view('add-update-city', {
-            title: sails.config.title.add_city,
-            'countryId': cities.country_id,
-            'cityId': req.params.id,
+            title: sails.config.title.add_location,
+            'countryId': (cities.country_id != undefined) ? cities.country_id : '',
+              'cityId': req.params.id,
             'country': country,
             'cities': cities,
             'type': false,
@@ -132,19 +132,18 @@ module.exports = {
         ref.once("value", function (snapshot) {
           cities = snapshot.val();
           var ref = db.ref('countries');
-          ref.orderByChild("is_deleted").equalTo(false)
-            .once("value", function (snapshot) {
-              country = snapshot.val();
-              return res.view('add-update-city', {
-                title: sails.config.title.add_city,
-                'countryId': cities.country_id,
-                'cityId': req.params.id,
-                'country': country,
-                'cities': cities,
-                'type': false,
-                'errors': errors
-              });
+          ref.once("value", function (snapshot) {
+            country = snapshot.val();
+            return res.view('add-update-city', {
+              title: sails.config.title.add_location,
+              'countryId': (cities.country_id != undefined) ? cities.country_id : '',
+              'cityId': req.params.id,
+              'country': country,
+              'cities': cities,
+              'type': false,
+              'errors': errors
             });
+          });
         });
       } else {
         var status = (req.param('status') == "false") ? false : true
@@ -152,6 +151,8 @@ module.exports = {
         ref.push({
           name: req.param('area'),
           city_id: req.param('city'),
+          latitude: req.param('latitude'),
+          longitude: req.param('longitude'),
           created_date: Date.now(),
           modified_date: Date.now(),
           is_deleted: status
@@ -218,6 +219,41 @@ module.exports = {
   },
 
   /*
+  * Name: getLocationByCity
+  * Created By: A-SIPL
+  * Created Date: 06-feb-2018
+  * Purpose: get area of the selected city
+  * @param  type
+  */
+  getLocationByCity: function (req, res) {
+    if (req.body.id) {
+      const ref = db.ref('locations');
+      ref.orderByChild('city_id')
+        .equalTo(req.body.id)
+        .once("value", function (snapshot) {
+          areaList = snapshot.val();
+          if(areaList != null && Object.keys(areaList).length){
+            for(var key in areaList){
+              if(areaList[key]['is_deleted'] != undefined && (areaList[key]['is_deleted'] == 'true' || areaList[key]['is_deleted'] == true)){
+                delete areaList[key];
+              }
+            }
+            return res.json(areaList);
+          }else{
+            return res.json(areaList);
+          }
+        }, function (errorObject) {
+          cosnole.log(errorObject);
+          return res.serverError(errorObject.code);
+        });
+    } else {
+      return res.json({});
+    }
+  },
+
+
+
+  /*
 * Name: getCountryCode
 * Created By: A-SIPL
 * Created Date: 01-feb-2018
@@ -241,6 +277,8 @@ module.exports = {
       return res.json({});
     }
   },
+
+
 
   /*
    * Name: view
@@ -452,7 +490,6 @@ module.exports = {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
-        var errors = {};
         var ref = db.ref("locations/" + req.params.id);
         ref.once("value", function (snapshot) {
           var locations = snapshot.val();
@@ -467,7 +504,11 @@ module.exports = {
                   var countries = snapshot.val();
                   return res.view('view-edit-location', {
                     title: sails.config.title.edit_location,
-                    'locations': locations, 'cities': cities, countries: countries, errors: errors, isEdit: true,
+                    'locations': locations,
+                    'cities': cities,
+                    countries: countries,
+                    errors: errors,
+                    isEdit: true,
                   });
                 }, function (errorObject) {
                   return res.serverError(errorObject.code);
@@ -484,8 +525,10 @@ module.exports = {
         var ref = db.ref();
         var usersRef = ref.child('locations/' + req.params.id);
         usersRef.update({
-          name: req.param('location'),
+          name: req.param('area'),
           city_id: req.param('city'),
+          latitude: req.param('latitude'),
+          longitude: req.param('longitude'),
           modified_date: Date.now(),
           is_deleted: status
         }).then(function () {

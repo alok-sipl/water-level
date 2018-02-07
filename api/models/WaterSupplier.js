@@ -25,8 +25,8 @@ module.exports = {
     "tank_size_required": "Tank size is required",
     "country_required": "Please select country",
     "city_required": "Please select city",
-    "area_required": "Area is required",
-    "area_maxlength": "Area cannot be max 125 characters long",
+    "area_required": "Please select area",
+    /*"area_maxlength": "Area cannot be max 125 characters long",*/
     "company_image_required": "Company logo is required",
     "company_image_maxsize": "Company logo should not be larger than 4 Mb",
     "invalid_file": "Invalid file format",
