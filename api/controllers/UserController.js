@@ -268,7 +268,7 @@ module.exports = {
                           // 'longitude': parseFloat(req.param('longitude')),
                           'address': req.param('address').trim(),
                           'is_deleted': status,
-                          'image': signedUrls[0],
+                          'profile_picture': signedUrls[0],
                           'modified_date': Date.now(),
                         })
                         .then(function (res) {
