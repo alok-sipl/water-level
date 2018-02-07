@@ -80,8 +80,8 @@ module.exports = {
         ref.push({
           country_id: req.param('country'),
           name: req.param('city'),
-          created_date: Date.now(),
-          modified_date: Date.now(),
+          created_at: Date.now(),
+          modified_at: Date.now(),
           is_deleted: status,
         }).then(function () {
           req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.city_add_success + '</div>');
@@ -153,8 +153,8 @@ module.exports = {
           city_id: req.param('city'),
           latitude: req.param('latitude'),
           longitude: req.param('longitude'),
-          created_date: Date.now(),
-          modified_date: Date.now(),
+          created_at: Date.now(),
+          modified_at: Date.now(),
           is_deleted: status
         }).then(function () {
           req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.location_add_success + '</div>');
@@ -372,7 +372,7 @@ module.exports = {
         //           'country_id': req.param('country'),
         //           'is_deleted': status,
         //           'name': req.param('city'),
-        //           'modified_date': Date.now(),
+        //           'modified_at': Date.now(),
         //         }).then(function () {
         //         req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_edit_success + '</div>');
         //         return res.redirect('city');
@@ -393,7 +393,7 @@ module.exports = {
         //       'country_id': req.param('country'),
         //       'is_deleted': status,
         //       'name': req.param('city'),
-        //       'modified_date': Date.now(),
+        //       'modified_at': Date.now(),
         //     }).then(function () {
         //     req.flash('flashMessage', '<div class="alert alert-success">' + sails.config.flash.city_edit_success + '</div>');
         //     return res.redirect('city');
@@ -411,7 +411,7 @@ module.exports = {
             'country_id': req.param('country'),
             'is_deleted': status,
             'name': req.param('city'),
-            'modified_date': Date.now(),
+            'modified_at': Date.now(),
           }).then(function () {
           if(status == true) {
             /* Update the location status */
@@ -425,7 +425,7 @@ module.exports = {
                   db.ref('locations/' + key)
                     .update({
                       'is_deleted': true,
-                      'modified_date': Date.now(),
+                      'modified_at': Date.now(),
                     }).then(function () {
                   }).catch(function (err) {
                     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.city_edit_error + '</div>');
@@ -529,7 +529,7 @@ module.exports = {
           city_id: req.param('city'),
           latitude: req.param('latitude'),
           longitude: req.param('longitude'),
-          modified_date: Date.now(),
+          modified_at: Date.now(),
           is_deleted: status
         }).then(function () {
           req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.location_edit_success + '</div>');
@@ -622,7 +622,7 @@ module.exports = {
       db.ref('/cities/' + id)
         .update({
           'is_deleted': (status == 'true' || status == true) ? true : false,
-          'modified_date': Date.now(),
+          'modified_at': Date.now(),
         })
         .then(function () {
           if(status == true || status == "true") {
@@ -636,7 +636,7 @@ module.exports = {
                   db.ref('locations/' + key)
                     .update({
                       'is_deleted': true,
-                      'modified_date': Date.now(),
+                      'modified_at': Date.now(),
                     }).then(function () {
                     return res.json({'status': true, message: sails.config.flash.update_successfully});
                   }).catch(function (err) {
@@ -673,7 +673,7 @@ module.exports = {
       db.ref('/locations/' + id)
         .update({
           'is_deleted': (status == 'true' || status == true) ? true : false,
-          'modified_date': Date.now(),
+          'modified_at': Date.now(),
         })
         .then(function () {
           return res.json({'status': true, message: sails.config.flash.update_successfully});
@@ -708,7 +708,7 @@ function getCityList(snap, countries) {
       cities.push(updateCity);
     });
     cities.sort(function (a, b) {
-      return b.created_date - a.created_date;
+      return b.created_at - a.created_at;
     })
     return cities;
   } else {
@@ -736,7 +736,7 @@ function getLocationList(snap, cities) {
       locations.push(updateLocation);
     });
     locations.sort(function (a, b) {
-      return b.created_date - a.created_date;
+      return b.created_at - a.created_at;
     })
     return locations;
   } else {

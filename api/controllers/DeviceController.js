@@ -317,7 +317,7 @@ function getDeviceList(snap) {
       devices.push(updateDevice);
     });
     devices.sort(function (a, b) {
-      return b.created_date - a.created_date;
+      return b.created_at - a.created_at;
     })
     return devices;
   } else {

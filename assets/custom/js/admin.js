@@ -436,7 +436,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, align: "center", search: false,
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {

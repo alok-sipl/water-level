@@ -5,6 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 var db = sails.config.globals.firebasedb();
+var firebase = require("firebase");
 var storageBucket = sails.config.globals.storageBucket();
 var async = require('async');
 
@@ -64,7 +65,7 @@ module.exports = {
         });
       } else {
         var ref = db.ref("users");
-        ref.orderByChild("email").equalTo(req.param('email')).once('child_added')
+        ref.orderByChild("email").equalTo(req.param('email')).once('value')
           .then(function (snapshot) {
             user = snapshot.val();
             if (user) {
@@ -93,8 +94,8 @@ module.exports = {
                     is_admin: true,
                     is_device_notification_enable: true,
                     is_user_notification_enable: true,
-                    created_date: Date.now(),
-                    modified_date: Date.now(),
+                    created_at: Date.now(),
+                    modified_at: Date.now(),
                   }
                   ref.push(data).then(function () {
                     req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.admin_add_success + '</div>');
@@ -195,7 +196,7 @@ module.exports = {
                 'name': req.param('name').trim(),
                 'phone': req.param('mobile_number').trim(),
                 'is_deleted': status,
-                'modified_date': Date.now(),
+                'modified_at': Date.now(),
               })
               .then(function () {
                 req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
@@ -258,7 +259,7 @@ function getAdminList(snap, adminId) {
       }
     });
     admins.sort(function (a, b) {
-      return b.created_date - a.created_date;
+      return b.created_at - a.created_at;
     })
     return admins;
   } else {

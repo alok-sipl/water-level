@@ -267,8 +267,8 @@ module.exports = {
                             latitude: parseFloat(latitude),
                             longitude: parseFloat(longitude),
                             is_deleted: status,
-                            created_date: Date.now(),
-                            modified_date: Date.now(),
+                            created_at: Date.now(),
+                            modified_at: Date.now(),
                             image: signedUrls[0],
                           }
                           ref.push(data).then(function () {

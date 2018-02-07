@@ -269,7 +269,7 @@ module.exports = {
                           'address': req.param('address').trim(),
                           'is_deleted': status,
                           'profile_picture': signedUrls[0],
-                          'modified_date': Date.now(),
+                          'modified_at': Date.now(),
                         })
                         .then(function (res) {
                           if (status != user.is_deleted) {
@@ -356,7 +356,7 @@ module.exports = {
         db.ref('/users/' + id)
           .update({
             'is_deleted': (status == 'true') ? true : false,
-            'modified_date': Date.now(),
+            'modified_at': Date.now(),
           })
           .then(function (res) {
             userinfo = snapshot.val();
@@ -432,7 +432,7 @@ function getUserList(snap) {
           if (snap.numChildren() == count) {
             console.log('In-condition', users);
             // users.sort(function (a, b) {
-            //   return b.created_date - a.created_date;
+            //   return b.created_at - a.created_at;
             // })
             return res.json({'name': 'Alok'});
           }
