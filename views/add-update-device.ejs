@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-md-6">
           <h2 class="font-light m-b-xs">
-            <%= (device != undefined &&Object.keys(device).length) ? 'Edit' : 'Add' %> Device
+            <%= (device != undefined && Object.keys(device).length) ? 'Edit' : 'Add' %> Device
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
@@ -28,26 +28,30 @@
     <div class="hpanel">
       <div class="panel-body">
         <% if(device == undefined || !(Object.keys(device).length)){ %>
-        <form action="<%= sails.config.base_url %>device/add" method="post" id="add-device" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>device/add" method="post" id="add-device"  autocomplete="off" class='form-horizontal form-submit'
+              data-parsley-validate='true'>
           <% }else{ %>
-          <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id%>" method="post" id="edit-device" class='form-horizontal' data-parsley-validate='true'>
-            <% }%>
-          <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
-            <label for="first_name" class="col-md-4 control-label">Device Id*</label>
-            <div class="col-md-6">
-              <input type="text" name="device_id" class="form-control" id="device_id" value="<%= (device.device_id) ? (device.device_id) : (req.param('device_id')) ? req.param('device_id') : '' %>" required
-                     pattern="<%= sails.config.regex.device_id %>"
-                     data-parsley-required-message="<%= Device.message.device_id_required %>"
-                     maxlength="<%= sails.config.length.device_id %>"
-                     data-parsley-device_id-message="<%= Device.message.device_id_size %>"
-                     pattern="<%= sails.config.regex.alpha_numeric %>"
-                     data-parsley-pattern-message="<%= Device.message.device_id_pattern %>" placeholder="Device Id"/>
-              <span class="help-block">
+          <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post"  autocomplete="off" id="edit-device"
+                class='form-horizontal form-submit' data-parsley-validate='true'>
+            <% } %>
+            <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
+              <label for="first_name" class="col-md-4 control-label">Device Id*</label>
+              <div class="col-md-6">
+                <input type="text" name="device_id" class="form-control" id="device_id"
+                       value="<%= (device.device_id) ? (device.device_id) : (req.param('device_id')) ? req.param('device_id') : '' %>"
+                       required
+                       pattern="<%= sails.config.regex.device_id %>"
+                       data-parsley-required-message="<%= Device.message.device_id_required %>"
+                       maxlength="<%= sails.config.length.device_id %>"
+                       data-parsley-device_id-message="<%= Device.message.device_id_size %>"
+                       pattern="<%= sails.config.regex.alpha_numeric %>"
+                       data-parsley-pattern-message="<%= Device.message.device_id_pattern %>" placeholder="Device Id"/>
+                <span class="help-block">
                 <strong><%= (errors.device_id != undefined) ? errors.device_id.message : '' %>
                 </strong>
               </span>
+              </div>
             </div>
-          </div>
             <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Status*</label>
               <div class="col-md-6">
@@ -64,17 +68,19 @@
                 <span class="help-block">
                                         <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
                                         </strong>
+                </span>
               </div>
             </div>
-          <div class="form-group">
-            <div class="col-md-8 col-md-offset-4">
-              <button title="<%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device" type="submit" class="btn btn-primary">
-                <%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device
-              </button>
-              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
+            <div class="form-group">
+              <div class="col-md-8 col-md-offset-4">
+                <button title="<%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device"
+                        type="submit" class="btn btn-primary">
+                  <%= (device != undefined && Object.keys(device).length) ? 'Update' : 'Add' %> Device
+                </button>
+                <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>device">Cancel</a>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
       </div>
     </div>
   </div>

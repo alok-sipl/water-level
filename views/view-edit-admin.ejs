@@ -25,8 +25,8 @@
         <% if (req.session.flash) { %>
         <%- req.flash('flashMessage') %>
         <% } %>
-        <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" method="post"
-              id="profile" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" autocomplete="off"  method="post"
+              id="profile" class='form-horizontal form-submit' data-parsley-validate='true'>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
             <label for="last_name" class="col-md-4 control-label">Name<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">

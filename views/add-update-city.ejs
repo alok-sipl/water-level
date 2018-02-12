@@ -28,11 +28,11 @@
     <div class="hpanel">
       <div class="panel-body">
         <% if(type == true){ %>
-        <form action="<%= sails.config.base_url %>city/addCity" method="post"
-              id="add-city" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>city/addCity" method="post" autocomplete="off"
+              id="add-city" class='form-horizontal form-submit' data-parsley-validate='true'>
           <% }else{ %>
-          <form action="<%= sails.config.base_url %>city/addLocation/<%= cityId %>" method="post"
-                id="add-location" class='form-horizontal' data-parsley-validate='true'>
+          <form action="<%= sails.config.base_url %>city/addLocation/<%= cityId %>" method="post" autocomplete="off"
+                id="add-location" class='form-horizontal form-submit' data-parsley-validate='true'>
             <% } %>
             <input type="hidden" value="<%= req.params.id %>" name="city_id">
             <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">

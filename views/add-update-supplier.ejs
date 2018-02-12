@@ -27,12 +27,11 @@
     <div class="hpanel">
       <div class="panel-body">
         <% if(supplier == undefined || !(Object.keys(supplier).length)){ %>
-        <form action="<%= sails.config.base_url %>supplier/add" method="post" enctype="multipart/form-data"
-              id="add-supplier" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>supplier/add" method="post" autocomplete="off"  enctype="multipart/form-data"
+              id="add-supplier" class='form-horizontal form-submit' data-parsley-validate='true'>
           <% }else{ %>
-          <form action="<%= sails.config.base_url %>supplier/edit/<%= req.params.id %>" method="post"
-                enctype="multipart/form-data"
-                id="add-supplier" class='form-horizontal' data-parsley-validate='true'>
+          <form action="<%= sails.config.base_url %>supplier/edit/<%= req.params.id %>" method="post" autocomplete="off" enctype="multipart/form-data"
+                id="add-supplier" class='form-horizontal form-submit' data-parsley-validate='true'>
             <% } %>
             `
             <div class="form-group <%= (errors.company_name != undefined) ? " has-error" : "" %>">
@@ -251,14 +250,14 @@
 
             <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Company Logo*</label>
-              <div class="col-md-6">
+              <div class="col-md-6 image-overflow">
                 <% if(supplier != undefined && Object.keys(supplier).length){ %>
-                <img width="100"
+                <img width="100" id="image-preview"
                      src="<%= (supplier.image) ? supplier.image : sails.config.base_url + 'images/profile.png' %>"
                      title="<%= (supplier.name) ? supplier.name : '' %>"
                      alt="<%= (supplier.name) ? supplier.name : '' %>">
                 <% } %>
-                <input type="file" class="control-label" accept="image/*" name="company_image" id="company_image"
+                <input type="file" class="control-label" accept="image/*" name="company_image" id="image"
                   <% if(supplier != undefined && !Object.keys(supplier).length){ %>
                        required
                        data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"
@@ -292,9 +291,9 @@
             <div class="form-group <%= (errors.account_number != undefined) ? " has-error" : "" %>">
               <div class="col-md-8 col-md-offset-4">
                 <button
-                  title="<%= (supplier != undefined && Object.keys(supplier).length) ? 'Edit Supplier' : 'Add Supplier' %>"
+                  title="<%= (supplier != undefined && Object.keys(supplier).length) ? 'Update Supplier' : 'Add Supplier' %>"
                   type="submit" class="btn btn-primary">
-                  <%= (supplier != undefined && Object.keys(supplier).length) ? 'Edit' : 'Add' %> Supplier
+                  <%= (supplier != undefined && Object.keys(supplier).length) ? 'Update' : 'Add' %> Supplier
                 </button>
                 <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>supplier">Cancel</a>
               </div>

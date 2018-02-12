@@ -26,8 +26,8 @@
     <% } %>
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>city/editLocation/<%= req.params.id%>" method="post"
-              id="profile" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>city/editLocation/<%= req.params.id%>" autocomplete="off" method="post"
+              id="profile" class='form-horizontal form-submit' data-parsley-validate='true'>
           <input type="hidden" name="city_id" value="<%= req.params.id %>">
           <div class="form-group <%= (errors.country != undefined) ? " has-error" : "" %>">
             <label for="is_active" class="col-md-4 control-label">Country*</label>

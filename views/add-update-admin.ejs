@@ -27,11 +27,11 @@
         <%- req.flash('flashMessage') %>
         <% } %>
           <% if(user == undefined || !(Object.keys(user).length)){ %>
-          <form action="<%= sails.config.base_url %>admin/add" method="post"
-                id="add-admin" class='form-horizontal' data-parsley-validate='true'>
+          <form action="<%= sails.config.base_url %>admin/add" method="post" autocomplete="off"
+                id="add-admin" class='form-horizontal form-submit' data-parsley-validate='true'>
             <% }else{ %>
-            <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" method="post"
-                  id="add-admin" class='form-horizontal' data-parsley-validate='true'>
+            <form action="<%= sails.config.base_url %>admin/edit/<%= req.params.id %>" method="post" autocomplete="off"
+                  id="add-admin" class='form-horizontal form-submit' data-parsley-validate='true'>
               <% } %>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
             <label for="last_name" class="col-md-4 control-label">Full Name*</label>

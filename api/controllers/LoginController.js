@@ -37,6 +37,7 @@ module.exports = {
                     req.session.authenticated = true;
                     req.session.user = user;
                     req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
+                    req.flash('disableBack', true);
                     return res.redirect(sails.config.base_url + 'supplier');
                   } else {
                     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');

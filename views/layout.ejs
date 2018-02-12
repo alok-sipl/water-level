@@ -21,6 +21,20 @@
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/style.css">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
   <script>var BASE_URL = "<%= sails.config.base_url_js %>" </script>
+  <%
+  if(req.session.flash && req.flash('disableBack')[0] == true){ %>
+    <script>
+      /* Disable back button when they login */
+      $(document).ready(function() {alert('Demo');
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+          history.go(1);
+        };
+      });
+    </script>
+  <% }
+  req.flash('disableBack', false);
+  %>
 </head>
 <body class="admin-layout hide-sidebar">
 <!-- Simple splash screen-->

@@ -26,8 +26,8 @@
     <% } %>
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>contact" method="post"
-              id="contact" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>contact" method="post" autocomplete="off"
+              id="contact" class='form-horizontal form-submit' data-parsley-validate='true'>
           <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
             <label for="name" class="col-md-4 control-label">Name</label>
             <div class="col-md-6">

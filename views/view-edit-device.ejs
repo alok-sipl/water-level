@@ -26,8 +26,8 @@
     <% } %>
     <div class="hpanel">
       <div class="panel-body">
-        <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post"
-              id="profile" class='form-horizontal' data-parsley-validate='true'>
+        <form action="<%= sails.config.base_url %>device/edit/<%= req.params.id %>" method="post" autocomplete="off"
+              id="edit-device" class='form-horizontal form-submit' data-parsley-validate='true'>
           <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
             <label for="device_id" class="col-md-4 control-label">Device Id<%= (isEdit) ? '*' : '' %></label>
             <div class="col-md-6">

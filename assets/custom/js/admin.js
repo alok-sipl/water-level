@@ -32,16 +32,9 @@ $(document).ready(function () {
   $('input.disable-paste').bind('paste', function (e) {
     e.preventDefault();
   });
-})
-/*
- *  For manage all actions for the admin
- */
 
-$(document).ready(function () {
   //Grid  Defaul Width Set
   $.jgrid.defaults.width = $(window).width() - 95;
-  console.log($.jgrid.defaults)
-
   /* Check/uncheck the tank type for supplier */
   $('#check_all').click(function () {
     var _this = this;
@@ -104,6 +97,15 @@ $(document).ready(function () {
     var text = $(".search").val('');
     $('button.clr-search-supplier').css("display", "none");
   });
+
+
+  /* On submit form Disable submit button */
+  $(".form-submit").on('submit', function(e){
+    if ($(this).parsley().isValid()) {
+      $(':submit').prop("disabled", "disabled");
+    }
+  });
+
 })
 
 
@@ -177,6 +179,23 @@ function getLocation(locationId) {
     $('#area_name').val($("#area option:selected").text());
   }
 }
+
+/* show image preview on select image*/
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      $('#image-preview').attr('src', e.target.result);
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+$("#image").change(function(){
+  readURL(this);
+});
+
+
 
 /* Admin notification setting on off activity */
 $('.change-notification').click(function () {
@@ -364,9 +383,11 @@ $("body").on("click", ".status-action", function () {
         if (isSupplier == 'true') {
           location.reload();
         } else {
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('clearGridData');
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').jqGrid('setGridParam', {datatype: 'json'});
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid').trigger('reloadGrid');
+          jQuery('[data-original-title="Make Active"]').tooltip('destroy');
+          jQuery('[data-original-title="Make In Active"]').tooltip('destroy');
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').jqGrid('clearGridData');
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').jqGrid('setGridParam', {datatype: 'json'});
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').trigger('reloadGrid');
           helper.hideLoader();
           $(".alert-success").css("display", "block");
           $(".alert-success").html(result.message);
@@ -427,7 +448,7 @@ $(document).ready(function () {
     datatype: "json",
     colModel: [
       {label: 'Name', name: 'name', width: 300, search: true, classes: 'text-break'},
-      {label: 'Email', name: 'email', width: 300, search: true, classes: 'text-break'},
+      {label: 'Email', name: 'email', width: 300, search: true, classes: 'text-break',autocomplete:"off"},
       {label: 'Mobile', name: 'phone', width: 300, search: true, classes: 'text-break'},
       {
         name: 'id', hidden: true,
@@ -451,19 +472,20 @@ $(document).ready(function () {
         label: 'Action', name: 'id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
-          action += '<span><a title="View Location" href="' + BASE_URL + '/dashboard/viewAdmin/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
-          action += '<span><a title="Edit City" href="' + BASE_URL + '/dashboard/editAdmin/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a title="View Admin" href="' + BASE_URL + '/admin/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="Edit Admin" href="' + BASE_URL + '/admin/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
           action += '</div>';
           return action;
         }
       }
     ],
     viewrecords: true,
-    //width: 1110,
+    autocomplete:"off",
     height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
+    rowList: [10, 20, 50],
     pager: "#admin-grid-pager",
   });
   jQuery("#admin-grid").jqGrid('filterToolbar', {
@@ -509,11 +531,12 @@ $(document).ready(function () {
       }
     ],
     viewrecords: true,
-    //width: 1110,
+    autocomplete:"off",
     height: 480,
     rowNum: 10,
     loadonce: true,
     gridview: true,
+    rowList: [10, 20, 50],
     pager: "#city-grid-pager",
   });
   jQuery("#city-grid").jqGrid('filterToolbar', {
@@ -545,6 +568,7 @@ $(document).ready(function () {
     rowNum: 10,
     loadonce: true,
     gridview: true,
+    rowList: [10, 20, 50],
     pager: "#contact-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
@@ -612,6 +636,7 @@ $(document).ready(function () {
     rowNum: 10,
     loadonce: true,
     gridview: true,
+    rowList: [10, 20, 50],
     pager: "#device-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
@@ -660,6 +685,7 @@ $(document).ready(function () {
     rowNum: 10,
     loadonce: true,
     gridview: true,
+    rowList: [10, 20, 50],
     pager: "#location-grid-pager",
     /*guiStyle: "bootstrap",*/
   });
@@ -731,7 +757,7 @@ $(document).ready(function () {
     //width: 1110,
     height: 480,
     rowNum: 10,
-    rowList: [10, 20, 50, 100],
+    rowList: [10, 20, 50],
     loadonce: true,
     gridview: true,
     pager: "#user-grid-pager",
@@ -739,4 +765,7 @@ $(document).ready(function () {
   });
   jQuery("#user-grid").jqGrid('filterToolbar', {searchOperators: true, stringResult: true, searchOnEnter: false});
 
+  /*Disable auto complete of on the input filed of the grid */
+  $(".ui-widget-content").attr("autocomplete", "off");
 });
+
