@@ -221,7 +221,7 @@ module.exports = {
         var user = snapshot.val();
         if(user != null){
           return res.view('add-update-admin', {
-            'title': sails.config.title.edit_user,
+            'title': sails.config.title.edit_admin,
             'user': user,
             'errors': errors,
             'isEdit': true,
