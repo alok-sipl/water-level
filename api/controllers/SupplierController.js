@@ -52,7 +52,7 @@ module.exports = {
     db.ref('suppliers').once('value').then(function (snapshot) {
       supplierCount = snapshot.numChildren();
       var ref = db.ref("suppliers");
-      ref.orderByChild('company_name').once("value", function (snapshot) {
+      ref.orderByChild('company_name').limitToLast(supplierCount).once("value", function (snapshot, previousChildKey) {
         return res.json(formatSnapsort(snapshot));
       }, function (errorObject) {
         return res.json({});
@@ -251,8 +251,9 @@ module.exports = {
                           var longitude = (area.longitude) ? area.longitude : '0';
                           var status = (req.param('status') == "false") ? false : true;
                           var ref = db.ref("suppliers");
+                          var company_name = req.param('company_name').trim()
                           var data = {
-                            company_name: req.param('company_name').trim(),
+                            company_name: company_name.charAt(0).toUpperCase() + company_name.slice(1),
                             name: req.param('name').trim(),
                             email: req.param('email').trim(),
                             mobile_number: req.param('mobile_number').trim(),
@@ -483,9 +484,10 @@ module.exports = {
                         var longitude = (area.longitude) ? area.longitude : '0';
                           var ref = db.ref();
                           var status = (req.param('status') == "false") ? false : true;
+                          var company_name = req.param('company_name').trim();
                           db.ref('suppliers/' + req.params.id)
                             .update({
-                              'company_name': req.param('company_name').trim(),
+                              'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
                               'name': req.param('name').trim(),
                               'mobile_number': req.param('mobile_number').trim(),
                               'account_number': req.param('account_number').trim(),
@@ -530,9 +532,10 @@ module.exports = {
                     var longitude = (area.longitude) ? area.longitude : '0';
                     var ref = db.ref();
                     var status = (req.param('status') == "false") ? false : true
+                    var company_name = req.param('company_name').trim()
                     db.ref('suppliers/' + req.params.id)
                       .update({
-                        'company_name': req.param('company_name').trim(),
+                        'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
                         'name': req.param('name').trim(),
                         'mobile_number': req.param('mobile_number').trim(),
                         'account_number': req.param('account_number').trim(),
@@ -661,6 +664,10 @@ function formatSnapsort(snap) {
       updateLocation.id = childSnap.key;
       locations.push(updateLocation);
     });
+    console.log(locations);
+    // locations.sort(function (a, b) {
+    //   return a.created_at - b.created_at;
+    // })
     return locations;
   } else {
     locations = {}
