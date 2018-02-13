@@ -8,7 +8,7 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   <link rel="icon" type="image/x-icon" href="<%= sails.config.base_url %>images/favicon.ico" />
   <!--STYLES-->
-  
+
   <!--STYLES END-->
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
 <!--  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">-->
@@ -115,9 +115,11 @@
           class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'setting')) ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>dashboard/setting" title="Notification Setting"><span class="nav-label">Setting</span></a>
         </li>
+        <% if((req.session.user != undefined) && req.session.user.uid == 'hGdy6bYg8dQtscAlET3Mis1Hysm2'){ %>
         <li class="dropdown notification-tab <%= ((req.options.controller == 'notification')) ? 'active' : '' %>">
 
         </li>
+        <% }%>
         <li class="dropdown <%= ((req.options.controller == 'dashboard') && (req.options.action == 'profile' || req.options.action == 'changePassword')) ? 'active' : '' %>">
           <a title="Setting" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown" aria-expanded="false">
             <i class="pe-7s-config"></i>

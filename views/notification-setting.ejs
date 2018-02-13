@@ -23,7 +23,7 @@
             <span class="badge">
             <div class="btn-group btn-toggle change-notification is-user-notification">
               <button class="btn btn-lg <%= (userDetail.is_user_notification_enable == 'true' || userDetail.is_user_notification_enable == true) ? "btn-primary active" : "btn-default" %>" data-value="true">Yes</button>
-              <button class="btn btn-lg <%= (userDetail.is_user_notification_enable == 'false' || userDetail.is_user_notification_enable == 'false') ? "btn-primary active" : "btn-default" %>" data-value="false">No</button>
+              <button class="btn btn-lg <%= (userDetail.is_user_notification_enable == 'false' || userDetail.is_user_notification_enable == false) ? "btn-primary active" : "btn-default" %>" data-value="false">No</button>
             </div>
             </span>
               <h6>Notification for Users</h6>

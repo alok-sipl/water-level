@@ -270,9 +270,10 @@ setting: function (req, res) {
 updateSetting: function (req, res) {
   if (req.body.type == 'is_device_notification') {
     var ref = db.ref();
+    var status = (req.body.value == "false") ? false : true;
     db.ref('/users/' + req.session.userid)
       .update({
-        'is_device_notification_enable': req.body.value
+        'is_device_notification_enable': status
       })
       .then(function () {
         return res.json({'status': true, message: sails.config.flash.update_successfully});
@@ -284,7 +285,7 @@ updateSetting: function (req, res) {
     var ref = db.ref();
     db.ref('/users/' + req.session.userid)
       .update({
-        'is_user_notification_enable': req.body.value
+        'is_user_notification_enable': status
       })
       .then(function () {
         return res.json({'status': true, message: sails.config.flash.update_successfully});

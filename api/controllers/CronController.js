@@ -19,8 +19,9 @@ module.exports = {
       ref.orderByChild("is_admin").equalTo(true)
         .once("child_added", function (snapshot) {
           var userInfore = snapshot.val();
+          console.log(userInfore);
           var adminId =  (userInfore.id != undefined) ? userInfore.id : '';
-          if(userInfore.is_device_notification_enable != undefined && userInfore.is_device_notification_enable == true) {
+          if(userInfore.is_device_notification_enable != undefined && (userInfore.is_device_notification_enable == true || userInfore.is_device_notification_enable == 'true')) {
             db.ref('devices').once('child_added')
               .then(function (snapshot) {
                 deviceDetail = snapshot.val();
@@ -39,12 +40,18 @@ module.exports = {
                       }, function (error) {
                         res.json({'msg': error})
                       });
+                    }else{
+                      res.json({'msg': 'Already sent'})
                     }
                   }
+                }else{
+                  res.json({'msg': 'These has no inactive record'})
                 }
               }).catch(function (err) {
               res.json({'msg': err})
             });
+          }else{
+            res.json({'msg': 'Admin disable setting'})
           }
         }, function (errorObject) {
           return res.serverError(errorObject.code);
