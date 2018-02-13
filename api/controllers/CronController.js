@@ -19,7 +19,6 @@ module.exports = {
       ref.orderByChild("is_admin").equalTo(true)
         .once("child_added", function (snapshot) {
           var userInfore = snapshot.val();
-          console.log(userInfore);
           var adminId =  (userInfore.id != undefined) ? userInfore.id : '';
           if(userInfore.is_device_notification_enable != undefined && (userInfore.is_device_notification_enable == true || userInfore.is_device_notification_enable == 'true')) {
             db.ref('devices').once('child_added')
@@ -33,7 +32,8 @@ module.exports = {
                       var ref = db.ref("alerts/" + adminId);
                       var data = {
                         message: 'Device ' + deviceDetail[key].device_name + ' (' + deviceDetail[key].device_id + ') is not working properly. Please check',
-                        type: 'device_issue'
+                        type: 'device_issue',
+                        device_id:key
                       }
                       ref.push(data).then(function () {
                         res.json({'msg': 'Alert added sucesfully'})
