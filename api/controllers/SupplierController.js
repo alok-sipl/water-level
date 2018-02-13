@@ -664,10 +664,6 @@ function formatSnapsort(snap) {
       updateLocation.id = childSnap.key;
       locations.push(updateLocation);
     });
-    console.log(locations);
-    // locations.sort(function (a, b) {
-    //   return a.created_at - b.created_at;
-    // })
     return locations;
   } else {
     locations = {}

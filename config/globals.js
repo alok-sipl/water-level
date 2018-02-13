@@ -70,6 +70,7 @@ module.exports.globals = {
   firebasedb: firebasedb,
   firebaseAuth: firebaseAuth,
   storageBucket: storageBucket,
+  firebaseAdmin: firebaseAdmin
   //getAdminNotification: getAdminNotification,
 };
 
@@ -92,6 +93,18 @@ function firebasedb() {
   return db;
 }
 
+
+function firebaseAdmin() {
+  var admin = require("firebase-admin");
+  var serviceAccount = require('./../serviceAccountKey.json');
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: alokApp.credential.cert(serviceAccount),
+      databaseURL: "https://waterleveldetector-db2b3.firebaseio.com"
+    });
+  }
+  return admin;
+}
 
 /*
      * Name: firebaseAuth

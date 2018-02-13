@@ -83,6 +83,9 @@ module.exports = {
           user = firebaseAuth.auth().currentUser;
         })
           .then(function () {
+            user.updateProfile({
+              displayName: req.param('name')
+            });
             req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.profile_update_success + '</div>');
             return res.redirect(sails.config.base_url + 'dashboard/profile');
           })

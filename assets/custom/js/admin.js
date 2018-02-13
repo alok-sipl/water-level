@@ -239,7 +239,7 @@ function initAutocomplete() {
   };
   autocomplete = new google.maps.places.Autocomplete(
     (document.getElementById('area')),
-    options);
+    {types: ['geocode']});
   autocomplete.addListener('place_changed', fillInAddress);
 }
 
