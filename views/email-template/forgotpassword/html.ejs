@@ -5,122 +5,101 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/>
   <meta name="viewport" content="width=device-width"/>
-  <title><%= typeof title == 'undefined' ? 'New Sails App' : sails.config.app_name + ' | ' + title %></title>
+  <title>Qatrah</title>
   <style type="text/css">
     .MBemail a, a.MBemail, .grn {
       color: #789A1D;
       text-decoration: none;
     }
-
+    .heroImg{
+      margin-left:10px;
+    }
     .MBemail a:hover, a.MBemail:hover {
       color: #789A1D;
       text-decoration: underline;
     }
-
     @media only screen and (max-width: 900px) {
       td[class=headerBG] {
         width: 100%;
       }
     }
-
     @media only screen and (max-width: 640px) {
       body {
         width: auto;
       }
-
       .BoxWrap, td[class=hero], img[class=heroImg] {
         width: 440px !important;
       }
-
       div.h2-center, div.h3-center {
         text-align: center;
       }
-
       /* Show/Hide  */
       .RespoHideMedium {
         display: none;
       }
-
       .RespoShowMedium {
         display: block;
       }
-
       .RespoCenterMedium {
         text-align: center;
       }
-
       td[class=headerBG] {
         width: 100%;
       }
-
       img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
         max-width: 440px !important;
         height: 212px !important;
       }
-
       img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
         max-width: 440px !important;
         height: 335px !important;
       }
     }
-
     @media only screen and (max-width: 479px) {
       body {
         width: auto;
       }
-
       .BoxWrap, td[class=hero], img[class=heroImg] {
         max-width: 280px !important;
         width: 95%;
       }
-
       /* Hide  */
       .RespoHideSmall, .BoxHeadRight {
         display: none;
       }
-
       .RespoCenterSmall {
         text-align: center;
       }
-
       img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
         max-width: 280px !important;
         height: 135px !important;
       }
-
       img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
         max-width: 280px !important;
         height: 213px !important;
       }
     }
-
     @media only screen and (max-width: 319px) {
       body {
         width: auto;
       }
-
       .BoxWrap, td[class=hero], img[class=heroImg] {
         max-width: 230px !important;
       }
-
       div#em-hd {
         font-size: 28px;
       }
-
       /* Hide  */
       .RespoHideSmall, .BoxHeadRight {
         display: none;
       }
-
       .RespoCenterSmall {
         text-align: center;
       }
-
       img[class=RespoImage_HalfW], img[class=RespoImage_Half] {
         max-width: 230px !important;
         height: 135px !important;
       }
-
       img[class=RespoImage_ThirdW], img[class=RespoImage_Third] {
         max-width: 230px !important;
         height: 213px !important;
@@ -133,16 +112,16 @@
 <table width="100%" bgcolor="#e2e5e5" cellpadding="0" cellspacing="0" align="center">
   <tbody>
   <tr>
-    <td bgcolor="#337ab7">
-      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" style="clear:both;">
+    <td>
+      <table bgcolor="#2eb9f9" width="600" border="0" cellpadding="0" cellspacing="0" align="center" style="clear:both;">
         <tbody>
         <tr>
           <td width="100%" valign="top" style="background-size: 100% auto;">
-            <table class="BoxWrap" width="600" align="center" cellpadding="0" cellspacing="0">
+            <table class="BoxWrap" width="600" align="center" cellpadding="10" cellspacing="0">
               <tbody>
               <tr>
-                <td class="hero"><img width="200px" class="heroImg"
-                                      src="<%= sails.config.base_url %>images/logo.png">
+                <td class="hero"><img height="40" width="121" style="margin-left:10px;"  class="heroImg"
+                                      src="<%= sails.config.base_url %>images/mail-logo.png">
                 </td>
               </tr>
               </tbody>
@@ -154,14 +133,12 @@
     </td>
   </tr>
   <tr>
-
-
     <td valign="top" style="-webkit-text-size-adjust: none;">
       <table width="600" class="BoxWrap" align="center" cellpadding="0" cellspacing="0" border="0">
         <tbody>
         <tr mc:repeatable="zigzag" mc:variant="ltr">
           <td class="Content_Color01" bgcolor="#ffffff" style="-webkit-text-size-adjust: none;">
-            <table class="BoxWrap" width="401" align="left" cellpadding="20" cellspacing="0">
+            <table class="BoxWrap" width="600" align="left" cellpadding="20" cellspacing="0">
               <tbody>
               <tr>
                 <td width="100%" style="-webkit-text-size-adjust: none;">
@@ -204,28 +181,22 @@
       </table>
     </td>
   </tr>
+
   <tr>
-    <td valign="top" style="-webkit-text-size-adjust: none;">
-      <table class="BoxWrap" width="600" align="center" cellpadding="0" cellspacing="0">
+    <td>
+      <table bgcolor="#2eb9f9" width="600" border="0" cellpadding="0" cellspacing="0" align="center" style="clear:both;">
         <tbody>
         <tr>
-          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
-        </tr>
-        <tr>
-          <td width="100%" height="1" bgcolor="#799a1d" style="-webkit-text-size-adjust: none;"></td>
-        </tr>
-        <tr>
-          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
-        </tr>
-        <tr>
-          <td style="-webkit-text-size-adjust: none;"><h3 mc:edit="footer_txt01"
-                                                          style="font-size: 11px;margin: 5px 0 5px 0;color: #a19f9f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 14px;">
-              You've received this email as part of your <strong><%= sails.config.base_url %></strong>.<br/>
-              <br/>
-              If you want to contact just drop us a line using the contact form on the site.</h3></td>
-        </tr>
-        <tr>
-          <td width="100%" height="20" style="-webkit-text-size-adjust: none;"></td>
+          <td width="100%" valign="top" style="background-size: 100% auto;">
+            <table class="BoxWrap" width="600" align="center" cellpadding="10" cellspacing="0">
+              <tbody>
+              <tr>
+                <td mc:edit class="hero" style="color: white;" align="center">© <%= new Date().getFullYear() %> Qatrah All Rights Reserved.
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
         </tr>
         </tbody>
       </table>
