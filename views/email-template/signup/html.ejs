@@ -144,7 +144,7 @@
                 <td width="100%" style="-webkit-text-size-adjust: none;">
                   <p mc:edit
                      style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    Hello <%= (name != undefined) ? name.charAt(0).toUpperCase() : 'User'%>, </p>
+                    Hello <%= (name != undefined) ? name.charAt(0).toUpperCase()+ name.slice(1) : 'User'%>, </p>
                   <p mc:edit
                      style="font-size: 18px;margin: 10px 0 10px 0;color: #151516;text-align: left;font-weight: bold;line-height: 20px;text-decoration: none;font-family: Helvetica, Arial, sans-serif;">
                     Your membership email is: <br/>
