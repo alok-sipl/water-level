@@ -45,8 +45,9 @@ module.exports = {
           tempBinRecords.push(val)
         });
         async.forEach(tempBinRecords, function (childSnap, callback) {
-          var deviceList = ''
-          if (childSnap.id != undefined) {
+          var deviceList = '';
+          console.log(childSnap.is_verified);
+          if (childSnap.id != undefined && childSnap.is_verified) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var devices = snapshot.val();
@@ -69,6 +70,8 @@ module.exports = {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
               return res.redirect(sails.config.base_url + 'supplier');
             });
+          }else{
+            count++;
           }
           callback();
         });
