@@ -96,7 +96,7 @@ module.exports = {
     min_battery_level: 16,
     min_device_battery_level: 10,
     device_reading_alert_time: 1,
-    notification_limit : 4,
+    notification_limit : 5,
     password_link_expired_min : 60,
 
     /* Validation message setting */
@@ -157,7 +157,7 @@ module.exports = {
         location_list: 'Location List',
         add_location: 'Add Location',
         edit_location: 'Edit Location',
-        enquiry_list: 'Contact Enqiry List',
+        enquiry_list: 'Contact Enquiry List',
         view_enquiry: 'View Enquiry',
         notification_setting: 'Notification Setting',
         forgot_password: "Forgot password",
@@ -167,7 +167,7 @@ module.exports = {
     },
 
     flash: {
-        invalid_email_password: "Invalid email or/and password",
+        invalid_email_password: "Invalid email or password",
         image_not_upload: "No file was uploaded",
         incorrect_file_format: "File type is not supported!",
         email_already_exist: " email already registered",
@@ -208,7 +208,8 @@ module.exports = {
         paramter_missing: "Required parameter is mising",
         invalid_email: "This email is not registered",
         account_inactive: "Your account is inactived by admin",
-        forgot_mail_send_success: "We have send mail please check mail and follow the steps"
+        forgot_mail_send_success: "We have sent mail please check email and follow the steps",
+        same_password_warning: "Current password and new password cannot be same"
     },
 
     email_message: {

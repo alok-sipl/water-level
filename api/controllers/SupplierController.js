@@ -249,7 +249,7 @@ module.exports = {
                           var area = snapshot.val();
                           var latitude = (area.latitude) ? area.latitude : '0';
                           var longitude = (area.longitude) ? area.longitude : '0';
-                          var status = (req.param('status') == "false") ? false : true;
+                          var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
                           var ref = db.ref("suppliers");
                           var company_name = req.param('company_name').trim()
                           var data = {
@@ -483,7 +483,7 @@ module.exports = {
                         var latitude = (area.latitude) ? area.latitude : '0';
                         var longitude = (area.longitude) ? area.longitude : '0';
                           var ref = db.ref();
-                          var status = (req.param('status') == "false") ? false : true;
+                          var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
                           var company_name = req.param('company_name').trim();
                           db.ref('suppliers/' + req.params.id)
                             .update({
@@ -531,7 +531,7 @@ module.exports = {
                     var latitude = (area.latitude) ? area.latitude : '0';
                     var longitude = (area.longitude) ? area.longitude : '0';
                     var ref = db.ref();
-                    var status = (req.param('status') == "false") ? false : true
+                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
                     var company_name = req.param('company_name').trim()
                     db.ref('suppliers/' + req.params.id)
                       .update({
@@ -628,7 +628,7 @@ module.exports = {
     if (id != '') {
       db.ref('/suppliers/' + id)
         .update({
-          'is_deleted': (status == 'true') ? true : false
+          'is_deleted': (status == 'true' || status == true) ? true : false
         })
         .then(function () {
           req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.update_successfully + '</div>');

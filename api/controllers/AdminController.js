@@ -82,7 +82,7 @@ module.exports = {
                   user = firebase.auth().currentUser;
                 })
                 .then(function () {
-                  var status = (req.param('status') == "false") ? false : true;
+                  var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
                   var ref = db.ref("users");
                   var data = {
                     id: user.uid,
@@ -252,7 +252,7 @@ module.exports = {
       if (snapshot.val()) {
         db.ref('/users/' + id)
           .update({
-            'is_deleted': (status == 'true') ? true : false,
+            'is_deleted': (status == 'true' || status == true) ? true : false,
             'modified_at': Date.now(),
           })
           .then(function () {

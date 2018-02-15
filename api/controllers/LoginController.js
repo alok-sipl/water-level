@@ -34,11 +34,16 @@ module.exports = {
                 var userKey = Object.keys(adminDetail)[0];
                 if (adminDetail) {
                   if (adminDetail[userKey].is_admin != undefined && adminDetail[userKey].is_admin == true) {
-                    req.session.authenticated = true;
-                    req.session.user = user;
-                    req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
-                    req.flash('disableBack', true);
-                    return res.redirect(sails.config.base_url + 'supplier');
+                    if(adminDetail[userKey].is_deleted != undefined && adminDetail[userKey].is_deleted == false){
+                      req.session.authenticated = true;
+                      req.session.user = user;
+                      req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
+                      req.flash('disableBack', true);
+                      return res.redirect(sails.config.base_url + 'supplier');
+                    }else{
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
+                      return res.redirect(sails.config.base_url);
+                    }
                   } else {
                     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
                     return res.redirect(sails.config.base_url);
@@ -89,12 +94,10 @@ module.exports = {
         //var ref = db.ref("users");
         firebase.auth().sendPasswordResetEmail(req.param('email').trim())
           .then(function () {
-            console.log('Success...')
             req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.forgot_mail_send_success + '</div>');
             return res.redirect(sails.config.base_url + 'login');
           })
           .catch(function (error) {
-            console.log('Error....',error.message);
             req.flash('flashMessage', '<div class="flash-message alert alert-danger">'+ error.message +'</div>');
             return res.redirect(sails.config.base_url + 'login/forgotPassword');
           })
@@ -122,6 +125,77 @@ module.exports = {
         errors: errors,
         title: sails.config.title.forgot_password
       });
+    }
+  },
+
+  /*
+     * Name: accountConfirmation
+     * Created By: A-SIPL
+     * Created Date: 29-jan-2018
+     * Purpose: check link and set the password
+     */
+  accountConfirmation: function (req, res, mode, oobCode) {
+    if (req.param('id') != undefined && req.param('id') != '') {
+      var email = CryptoService.decrypt(req.param('id'));
+      var ref = db.ref("users");
+      ref.orderByChild('email').equalTo(email).once('child_added', function (snap) {
+        if (Object.keys(snap).length) {
+          var errors = {};
+          if (req.method == "POST") {
+            errors = ValidationService.validate(req);
+            if (Object.keys(errors).length) {
+              es.locals.layout = 'layout-login';
+              return res.view('set-password', {
+                id: id,
+                errors: errors,
+                title: sails.config.title.set_new_passwors
+              });
+            } else {
+              userInfo = snap.val();
+              console.log('User info------>', userInfo);
+              firebase.auth().updateUser(userInfo.id, {
+                password: req.param('password').trim(),
+              }).then(function (userRecord) {
+                var ref = db.ref();
+                var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+                db.ref('users/' + snap.key)
+                  .update({
+                    'password': req.param('new_password').trim()
+                  })
+                  .then(function () {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_set_success + '</div>');
+                    return res.redirect(sails.config.base_url + 'login');
+                  })
+                  .catch(function (err) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-error">' + sails.config.flash.password_change_error + '</div>');
+                    return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                  });
+              })
+                .then(function (userRecord) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_set_success + '</div>');
+                  return res.redirect(sails.config.base_url + 'login');
+                })
+                .catch(function (error) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_set_error + '</div>');
+                  return res.redirect(sails.config.base_url + 'login');
+                });
+            }
+          } else {
+            res.locals.layout = 'layout-login';
+            return res.view('set-password', {
+              id: req.param('id'),
+              errors: errors,
+              title: sails.config.title.set_new_passwors
+            });
+          }
+        } else {
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.invalid_email + '</div>');
+          return res.redirect(sails.config.base_url + 'login');
+        }
+      })
+    } else {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+      return res.redirect(sails.config.base_url + 'login');
     }
   },
 
@@ -155,7 +229,7 @@ module.exports = {
                 password: req.param('password').trim(),
               }).then(function (userRecord) {
                 var ref = db.ref();
-                var status = (req.param('status') == "false") ? false : true;
+                var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
                 db.ref('users/' + snap.key)
                   .update({
                     'password': req.param('new_password').trim()
@@ -254,6 +328,31 @@ module.exports = {
       res.redirect('supplier');
     }
   },
+
+
+  /*
+* Name: getAdminNotification
+* Created By: A-SIPL
+* Created Date: 23-jan-2018
+* Purpose: get notification of the admin
+* @param  req
+*/
+  getAdminNotification: function (req, res) {
+    var adminId = (req.session.user != undefined) ? req.session.user.uid : '';
+    if(adminId != ''){
+      db.ref('alerts/' + adminId).limitToLast(sails.config.notification_limit).once('value')
+        .then(function (snapshot) {
+          var notificationList = snapshot.val();
+          res.locals.layout = '';
+          return res.view('notification', {alertList: DateService.reverseObject(notificationList)});
+        }).catch(function (err) {
+        return res.view('notification', {alertList: {}});
+      });
+    }else{
+      return res.view('notification', {alertList: {}});
+    }
+  },
+
 
 
   filter: function (req, res) {

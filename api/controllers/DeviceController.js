@@ -125,7 +125,7 @@ module.exports = {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/add');
             } else {
-              var status = (req.param('status') == "false") ? false : true;
+              var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
               var ref = db.ref().child("master_devices");
               var data = {
                 device_id: req.param('device_id'),
@@ -176,7 +176,7 @@ module.exports = {
           return res.serverError(errorObject.code);
         });
       } else {
-        var status = (req.param('status') == "false") ? false : true
+        var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
         var ref = db.ref("master_devices/" + req.params.id);
         ref.once("value", function (snapshot) {
           var device = snapshot.val();

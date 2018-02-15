@@ -15,7 +15,7 @@
           <form method="post" action="<%= sails.config.base_url %>login" data-parsley-validate novalidate="" name="loginForm" autocomplete="off" id="loginForm">
             <div class="form-group <%= (errors.email != undefined) ? " has-error" : "" %>">
               <label class="control-label" for="email">Email*</label>
-              <input type="email" name="email" class="form-control" id="email"
+              <input type="email" name="email" class="form-control" id="email" autocomplete="off"
                      required
                      maxlength="<%= sails.config.length.email %>"
                      data-parsley-type="email"
@@ -30,7 +30,7 @@
             </div>
             <div class="form-group <%= (errors.password != undefined) ? " has-error" : "" %>">
               <label class="control-label" for="password">Password*</label>
-              <input type="password" name="password" class="form-control" id="password"
+              <input type="password" name="password" class="form-control" id="password" autocomplete="off"
                      required
                      data-parsley-length="[<%= sails.config.length.min_password %>, <%= sails.config.length.max_password %>]"
                      data-parsley-required-message="<%= User.message.password_required %>"
@@ -42,7 +42,9 @@
               </span>
             </div>
             <button class="btn btn btn-primary btn-block admin-login-btn" title="Login"><span>Login</span></button>
-            <span class="forgot"><a href="<%= sails.config.base_url %>login/forgotPassword" title="Forgot Password">Forgot Password?</a></span>
+            <div class="forgot text-center m-t-sm">
+              <a href="<%= sails.config.base_url %>login/forgotPassword" title="Forgot Password">Forgot Password?</a>
+            </div>
           </form>
         </div>
       </div>

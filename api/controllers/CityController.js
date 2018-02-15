@@ -75,7 +75,7 @@ module.exports = {
             });
           });
       } else {
-        var status = (req.param('status') == "false") ? false : true;
+        var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
         var ref = db.ref("cities");
         ref.push({
           country_id: req.param('country'),
@@ -146,7 +146,7 @@ module.exports = {
           });
         });
       } else {
-        var status = (req.param('status') == "false") ? false : true
+        var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
         var ref = db.ref("locations");
         ref.push({
           name: req.param('area'),
@@ -521,7 +521,7 @@ module.exports = {
           return res.serverError(errorObject.code);
         });
       } else {
-        var status = (req.param('status') == "false") ? false : true
+        var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
         var ref = db.ref();
         var usersRef = ref.child('locations/' + req.params.id);
         usersRef.update({

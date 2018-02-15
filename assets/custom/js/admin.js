@@ -19,7 +19,7 @@ $(document).ready(function () {
   }, 8000);
 
   $.ajax({
-    url: BASE_URL + '/dashboard/getAdminNotification',
+    url: BASE_URL + '/login/getAdminNotification',
     type: 'POST',
     success: function (response) {
       $('.notification-tab').html(response)

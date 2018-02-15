@@ -46,7 +46,6 @@ module.exports = {
         });
         async.forEach(tempBinRecords, function (childSnap, callback) {
           var deviceList = '';
-          console.log(childSnap.is_verified);
           if (childSnap.id != undefined && childSnap.is_verified) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
@@ -388,7 +387,7 @@ module.exports = {
       if (snapshot.val()) {
         db.ref('/users/' + id)
           .update({
-            'is_deleted': (status == 'true') ? true : false,
+            'is_deleted': (status == 'true' || status == true) ? true : false,
             'modified_at': Date.now(),
           })
           .then(function (res) {
@@ -410,6 +409,24 @@ module.exports = {
       }
     }, function (errorObject) {
       return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
+    });
+  },
+
+
+
+  testFunction: function () {
+    firebaseAdmin.auth().getUser('hGdy6bYg8dQtscAlET3Mis1Hysm2')
+      .then(function (userRecord) {
+        firebaseAdmin.auth().updateUser('hGdy6bYg8dQtscAlET3Mis1Hysm2', {
+          password: 'sipl@1234',
+        }).then(function (userRecord) {
+            console.log('update Success');
+        })
+          .catch(function (error) {
+            console.log('update error', error);
+          });
+      }).catch(function (error) {
+      console.log('update error2', error);
     });
   }
 };

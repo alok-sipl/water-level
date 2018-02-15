@@ -23,6 +23,7 @@ module.exports = {
     "confirm_password_required": "Confirm password is required",
     "confirm_password_length": "Confirm password should be between 6 and 16 characters long",
     "password_not_same": "New password and confirm password must be same",
+    "confirm_password_not_same": "Password and confirm password must be same",
     "mobile_number_required": "Mobile number is required",
     "mobile_number_maxlength": "Mobile number cannot be max 13 digit long",
     "mobile_number_pattern": "Provide correct mobile number",

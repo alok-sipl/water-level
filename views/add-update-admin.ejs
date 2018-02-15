@@ -72,8 +72,8 @@
                          maxlength="<%= sails.config.length.max_password %>"
                          required
                          data-parsley-length="[<%= sails.config.length.min_password %>, <%= sails.config.length.max_password %>]"
-                         data-parsley-required-message="<%= User.message.current_password_required %>"
-                         data-parsley-length-message="<%= User.message.current_password_length %>"
+                         data-parsley-required-message="<%= User.message.password_required %>"
+                         data-parsley-length-message="<%= User.message.password_length %>"
                          placeholder="Password"/>
                 </div>
               </div>
@@ -88,7 +88,7 @@
                          data-parsley-length="[<%= sails.config.length.min_password %>, <%= sails.config.length.max_password %>]"
                          data-parsley-required-message="<%= User.message.confirm_password_required %>"
                          data-parsley-length-message="<%= User.message.confirm_password_length %>"
-                         data-parsley-equalto-message="<%= User.message.password_not_same %>"
+                         data-parsley-equalto-message="<%= User.message.confirm_password_not_same %>"
                          placeholder="Confirm Password"/>
                 </div>
               </div>

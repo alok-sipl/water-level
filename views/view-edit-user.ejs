@@ -8,7 +8,12 @@
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>Supplier">Dashboard</a></li>
+              <% if(req.query.notification != undefined){  %>
+              <li><a title="Alerts" href="<%= sails.config.base_url %>notification">Alerts</a></li>
+              <% }else{ %>
+              <li><a title="User List" href="<%= sails.config.base_url %>user">User List</a></li>
+              <% }%>
               <li class="active"> <%= (isEdit) ? "Update" : "View" %> User
               </li>
             </ol>
@@ -231,9 +236,9 @@
               <button type="submit" class="btn btn-primary">
                 Update User
               </button>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>user">Cancel</a>
               <% }else{ %>
-              <a class="btn btn-primary" href="<%= sails.config.base_url %>user">Back</a>
+              <a title="Back" class="btn btn-primary" href="<%= (req.query.notification != undefined) ? sails.config.base_url+'notification' : sails.config.base_url+'user' %>">Back</a>
               <% } %>
             </div>
           </div>

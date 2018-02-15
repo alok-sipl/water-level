@@ -29,17 +29,24 @@ module.exports = {
                     var date = new Date();
                     var beforeDate = date.setHours(date.getHours() - sails.config.device_reading_alert_time);
                     if (beforeDate > deviceDetail[key].updated_at) {
-                      var ref = db.ref("alerts/" + adminId);
-                      var data = {
-                        message: 'Device ' + deviceDetail[key].device_name + ' (' + deviceDetail[key].device_id + ') is not working properly. Please check',
-                        type: 'device_issue',
-                        device_id:key
-                      }
-                      ref.push(data).then(function () {
-                        res.json({'msg': 'Alert added sucesfully'})
-                      }, function (error) {
-                        res.json({'msg': error})
-                      });
+                      var ref = db.ref("master_devices");
+                      ref.orderByChild("id").equalTo(key)
+                        .once("child_added", function (snapshot) {
+                          var deviceId = snapshot.key;
+                          var data = {
+                            message: 'Device ' + deviceDetail[key].device_name + ' (' + deviceDetail[key].device_id + ') is not working properly. Please check',
+                            type: 'device_issue',
+                            device_id:deviceId
+                          }
+                          var ref = db.ref("alerts/" + adminId);
+                          ref.push(data).then(function () {
+                            res.json({'msg': 'Alert added sucesfully'})
+                          }, function (error) {
+                            res.json({'msg': error})
+                          });
+                        }, function (errorObject) {
+                          return res.serverError(errorObject.code);
+                        });
                     }else{
                       res.json({'msg': 'Already sent'})
                     }

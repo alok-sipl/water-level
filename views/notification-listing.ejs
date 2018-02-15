@@ -40,7 +40,7 @@
           <tbody>
           <tr>
             <td><%= (alertList[key].message) ? alertList[key].message : '' %></td>
-            <td><a title="View" class="btn btn-primary" href="<%= (alertList[key].type == 'device_issue') ? sails.config.base_url + 'device/view/'+ alertList[key].device_id : sails.config.base_url + 'user/view/'+ alertList[key].user_id %>">View</a>
+            <td><a title="View" class="btn btn-primary" href="<%= (alertList[key].type == 'device_issue') ? sails.config.base_url + 'device/view/'+ alertList[key].device_id + '?notification=true' : sails.config.base_url + 'user/view/'+ alertList[key].user_id + '?notification=true' %>">View</a>
             </td>
           </tr>
           <tr>

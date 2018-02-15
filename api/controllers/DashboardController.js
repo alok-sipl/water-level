@@ -155,41 +155,61 @@ changePassword: function (req, res) {
         'errors': errors
       });
     } else {
-      var user = firebaseAuth.auth().currentUser;
-      if (user) {
-        var credentials = firebaseAuth.auth.EmailAuthProvider.credential(
-          user.email,
-          req.param('current_password')
-        );
-        user.reauthenticateWithCredential(credentials).then(function () {
-          user.updatePassword(req.param('new_password').trim()).then(function () {
-            var ref = db.ref();
-            var status = (req.param('status') == "false") ? false : true;
-            db.ref('users/' + req.session.userid)
-              .update({
-                'password': req.param('new_password').trim()
-              })
-              .then(function () {
-                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_change_success + '</div>');
+      if (req.session.userid !== undefined && req.session.userid) {
+        var ref = db.ref("users/" + req.session.userid);
+        ref.once("value", function (snapshot) {
+          var user = snapshot.val();
+          if(user != null){
+            if(user.password == req.param('new_password').trim()){
+              req.flash('flashMessage', '<div class="flash-message alert alert-warning">' + sails.config.flash.same_password_warning + '</div>');
+              return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+            }else{
+              var user = firebaseAuth.auth().currentUser;
+              if (user) {
+                var credentials = firebaseAuth.auth.EmailAuthProvider.credential(
+                  user.email,
+                  req.param('current_password')
+                );
+                user.reauthenticateWithCredential(credentials).then(function () {
+                  user.updatePassword(req.param('new_password').trim()).then(function () {
+                    var ref = db.ref();
+                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+                    db.ref('users/' + req.session.userid)
+                      .update({
+                        'password': req.param('new_password').trim()
+                      })
+                      .then(function () {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_change_success + '</div>');
+                        return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                      })
+                      .catch(function (err) {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_change_error + '</div>');
+                        return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                      });
+                  }).then(function () {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_change_success + '</div>');
+                    return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                  }).catch(function (error) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_change_error + '</div>');
+                    return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                  });
+                }).catch(function (error) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.old_password_unmatch + '</div>');
+                  return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+                });
+              } else {
                 return res.redirect(sails.config.base_url + 'dashboard/changePassword');
-              })
-              .catch(function (err) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_change_error + '</div>');
-                return res.redirect(sails.config.base_url + 'dashboard/changePassword');
-              });
-          }).then(function () {
-            req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.password_change_success + '</div>');
-            return res.redirect(sails.config.base_url + 'dashboard/changePassword');
-          }).catch(function (error) {
-            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.password_change_error + '</div>');
-            return res.redirect(sails.config.base_url + 'dashboard/changePassword');
-          });
-        }).catch(function (error) {
-          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.old_password_unmatch + '</div>');
-          return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+              }
+            }
+          }else{
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.profile_update_error + '</div>');
+            return res.redirect(sails.config.base_url + 'supplier');
+          }
+        }, function (errorObject) {
+          return res.serverError(errorObject.code);
         });
       } else {
-        return res.redirect(sails.config.base_url + 'dashboard/changePassword');
+        return res.redirect(sails.config.base_url + 'login');
       }
     }
   } else {
@@ -273,7 +293,7 @@ setting: function (req, res) {
 updateSetting: function (req, res) {
   if (req.body.type == 'is_device_notification') {
     var ref = db.ref();
-    var status = (req.body.value == "false") ? false : true;
+    var status = (req.body.value == "false" || req.body.value == false) ? false : true;
     db.ref('/users/' + req.session.userid)
       .update({
         'is_device_notification_enable': status
@@ -299,25 +319,6 @@ updateSetting: function (req, res) {
   }
 }
 ,
-
-/*
-* Name: getAdminNotification
-* Created By: A-SIPL
-* Created Date: 23-jan-2018
-* Purpose: get notification of the admin
-* @param  req
-*/
-getAdminNotification: function (req, res) {
-  var adminId = (req.session.user != undefined) ? req.session.user.uid : '1';
-  db.ref('alerts/' + adminId).limitToLast(sails.config.notification_limit).once('value')
-    .then(function (snapshot) {
-      var notificationList = snapshot.val();
-      res.locals.layout = '';
-      return res.view('notification', {alertList: DateService.reverseObject(notificationList)});
-    }).catch(function (err) {
-    return res.view('notification', {alertList: {}});
-  });
-}
 
 }
 ;
