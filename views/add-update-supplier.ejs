@@ -247,22 +247,6 @@
                        <!--value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>-->
               <!--</div>-->
             <!--</div>-->
-            <div class="demo"></div>
-            <button class="basic-result">Result</button>
-            <script>
-              $uploadCrop = $('#upload-demo').croppie({
-                enableExif: true,
-                viewport: {
-                  width: 200,
-                  height: 200,
-                  type: 'circle'
-                },
-                boundary: {
-                  width: 300,
-                  height: 300
-                }
-              });
-            </script>
             <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Company Logo*</label>
               <div class="col-md-6 image-overflow">
@@ -272,7 +256,7 @@
                      title="<%= (supplier.name) ? supplier.name : '' %>"
                      alt="<%= (supplier.name) ? supplier.name : '' %>">
                 <% } %>
-                <input type="file" class="control-label" accept="image/*" name="company_image" id="upload-demo"
+                <input type="file" class="control-label" accept="image/*" name="company_image" id="image"
                   <% if(supplier != undefined && !Object.keys(supplier).length){ %>
                        required
                        data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"
