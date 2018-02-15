@@ -29,9 +29,9 @@ $(document).ready(function () {
     }
   });
   /* disable paste in field */
-  $('input.disable-paste').bind('paste', function (e) {
-    e.preventDefault();
-  });
+  // $('input.disable-paste').bind('paste', function (e) {
+  //   e.preventDefault();
+  // });
 
   //Grid  Defaul Width Set
   $.jgrid.defaults.width = $(window).width() - 95;
