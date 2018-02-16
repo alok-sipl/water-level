@@ -75,10 +75,10 @@
 
         <span class="img-circle m-b">
           <-% if(image != ''){ %->
-          <img width="80px" alt="<-%= company_name %->"
+          <img alt="<-%= company_name %->"
                src="<-%= image %->">
             <-% }else{ %->
-            <img width="80px" alt="<-%= company_name %->"
+            <img alt="<-%= company_name %->"
                  src="<%= sails.config.base_url %>images/logo.png">
             <-% } %->
        </span>

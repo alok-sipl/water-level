@@ -124,6 +124,14 @@ module.exports = {
     var errors = supplier = countries = cities = areas = {};
     /* Checking validation if form post */
     if (req.method == "POST") {
+//       var imagepath= req.body.image[0];
+//       var base64Data = imagepath.replace(/^data:image\/png;base64,/, "");
+//       require("fs").writeFile("assets/images/"+ Date.now()+ '.png', base64Data, 'base64', function(err) {
+//         console.log('IN erro---->',err);
+//       });
+// return false;
+
+
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         /* country listing*/
@@ -162,138 +170,126 @@ module.exports = {
             return res.serverError(errorObject.code);
           });
       } else {
-        var allowExts = ['image/png', 'image/jpg', 'image/jpeg'];
         var ref = db.ref("/suppliers");
         ref.orderByChild("email").equalTo(req.param('email')).once('value')
           .then(function (snapshot) {
             supplierdata = snapshot.val();
-            req.file('company_image').upload({
-              saveAs: function (file, handler) {
-                handler(null, '../../assets/images' + "/" + file.filename);
-              },
-              maxBytes: sails.config.length.max_file_upload
-            }, function whenDone(err, uploadedFiles) {
-              if (err) {
-                errors['company_image'] = {message: err}
-                /* country listing*/
-                var ref = db.ref("countries");
-                ref.orderByChild("is_deleted").equalTo(false)
-                  .once("value", function (snapshot) {
-                    var countries = snapshot.val();
-                    return res.view('add-update-supplier', {
-                      'title': sails.config.title.add_supplier,
-                      'supplier': supplier,
-                      'countries': countries,
-                      'cities': cities,
-                      'areas': areas,
-                      'errors': errors,
-                      'req': req
+            console.log(supplierdata);
+            if (supplierdata == null) {
+              if (req.body.image != undefined && req.body.image[0] != undefined) {
+                var imagepath = req.body.image[0];
+                var base64Data = imagepath.replace(/^data:image\/png;base64,/, "");
+                var imagename = Date.now() + '.png';
+                var imagePath = "assets/images/" + imagename;
+                require("fs").writeFile(imagePath, base64Data, 'base64', function (err) {
+                  if (err == null) {
+                    storageBucket.upload(imagePath, function (err, file) {
+                      if (!err) {
+                        var ref = db.ref();
+                        const file = storageBucket.file(imagename);
+                        return file.getSignedUrl({
+                          action: 'read',
+                          expires: '03-09-2491'
+                        }).then(function (signedUrls) {
+                          var ref = db.ref("locations");
+                          ref.orderByChild("city_id").equalTo(req.param('city'))
+                            .once("child_added", function (snapshot) {
+                              var area = snapshot.val();
+                              var latitude = (area.latitude) ? area.latitude : '0';
+                              var longitude = (area.longitude) ? area.longitude : '0';
+                              var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+                              var ref = db.ref("suppliers");
+                              var company_name = req.param('company_name').trim()
+                              var data = {
+                                company_name: company_name.charAt(0).toUpperCase() + company_name.slice(1),
+                                name: req.param('name').trim(),
+                                email: req.param('email').trim(),
+                                mobile_number: req.param('mobile_number').trim(),
+                                account_number: req.param('account_number').trim(),
+                                tank_size: req.param('tank_size'),
+                                country_id: req.param('country').trim(),
+                                country_name: req.param('country_name').trim(),
+                                city_id: req.param('city').trim(),
+                                city_name: req.param('city_name').trim(),
+                                area_id: req.param('area').trim(),
+                                area_name: req.param('area_name').trim(),
+                                latitude: parseFloat(latitude),
+                                longitude: parseFloat(longitude),
+                                is_deleted: status,
+                                created_at: Date.now(),
+                                modified_at: Date.now(),
+                                image: signedUrls[0],
+                              }
+                              ref.push(data).then(function () {
+                                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
+                                return res.redirect(sails.config.base_url + 'supplier');
+                              }, function (error) {
+                                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                                return res.redirect(sails.config.base_url + 'supplier');
+                              });
+                            }, function (errorObject) {
+                              return res.serverError(errorObject.code);
+                            });
+                        }).catch(function (err) {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                          return res.redirect(sails.config.base_url + 'supplier');
+                        });
+                      } else {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + err + '</div>');
+                        return res.redirect(sails.config.base_url + 'supplier');
+                      }
+                    });
+                  } else {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                    return res.redirect(sails.config.base_url + 'supplier');
+                  }
+                });
+              } else {
+
+                var ref = db.ref("locations");
+                ref.orderByChild("city_id").equalTo(req.param('city'))
+                  .once("child_added", function (snapshot) {
+                    var area = snapshot.val();
+                    var latitude = (area.latitude) ? area.latitude : '0';
+                    var longitude = (area.longitude) ? area.longitude : '0';
+                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+                    var ref = db.ref("suppliers");
+                    var company_name = req.param('company_name').trim()
+                    var data = {
+                      company_name: company_name.charAt(0).toUpperCase() + company_name.slice(1),
+                      name: req.param('name').trim(),
+                      email: req.param('email').trim(),
+                      mobile_number: req.param('mobile_number').trim(),
+                      account_number: req.param('account_number').trim(),
+                      tank_size: req.param('tank_size'),
+                      country_id: req.param('country').trim(),
+                      country_name: req.param('country_name').trim(),
+                      city_id: req.param('city').trim(),
+                      city_name: req.param('city_name').trim(),
+                      area_id: req.param('area').trim(),
+                      area_name: req.param('area_name').trim(),
+                      latitude: parseFloat(latitude),
+                      longitude: parseFloat(longitude),
+                      is_deleted: status,
+                      created_at: Date.now(),
+                      modified_at: Date.now(),
+                      image: sails.config.base_url + 'images/no-image.png',
+                    }
+                    ref.push(data).then(function () {
+                      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
+                      return res.redirect(sails.config.base_url + 'supplier');
+                    }, function (error) {
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                      return res.redirect(sails.config.base_url + 'supplier');
                     });
                   }, function (errorObject) {
                     return res.serverError(errorObject.code);
                   });
-              } else {
-                if (uploadedFiles.length === 0) {
-                  errors['company_image'] = {message: WaterSupplier.message.company_image_required}
-                  /* country listing*/
-                  var ref = db.ref("countries");
-                  ref.orderByChild("is_deleted").equalTo(false)
-                    .once("value", function (snapshot) {
-                      var countries = snapshot.val();
-                      return res.view('add-update-supplier', {
-                        'title': sails.config.title.add_supplier,
-                        'supplier': supplier,
-                        'countries': countries,
-                        'cities': cities,
-                        'areas': areas,
-                        'errors': errors,
-                        'req': req
-                      });
-                    }, function (errorObject) {
-                      return res.serverError(errorObject.code);
-                    });
-                } else if (allowExts.indexOf(uploadedFiles[0].type) == -1) {
-                  errors['company_image'] = {message: WaterSupplier.message.invalid_file}
-                  /* country listing*/
-                  var ref = db.ref("countries");
-                  ref.orderByChild("is_deleted").equalTo(false)
-                    .once("value", function (snapshot) {
-                      var countries = snapshot.val();
-                      return res.view('add-update-supplier', {
-                        'title': sails.config.title.add_supplier,
-                        'supplier': supplier,
-                        'countries': countries,
-                        'cities': cities,
-                        'areas': areas,
-                        'errors': errors,
-                        'req': req
-                      });
-                    }, function (errorObject) {
-                      return res.serverError(errorObject.code);
-                    });
-                } else if (supplierdata) {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist + '</div>');
-                  return res.redirect(sails.config.base_url + 'supplier/add');
-                } else {
-                  storageBucket.upload('assets/images/'+uploadedFiles[0].filename, function (err, file) {
-                    if (!err) {
-                    var ref = db.ref();
-                    const file = storageBucket.file(uploadedFiles[0].filename);
-                    return file.getSignedUrl({
-                      action: 'read',
-                      expires: '03-09-2491'
-                    }).then(function (signedUrls) {
-                      var ref = db.ref("locations");
-                      ref.orderByChild("city_id").equalTo(req.param('city'))
-                        .once("child_added", function (snapshot) {
-                          var area = snapshot.val();
-                          var latitude = (area.latitude) ? area.latitude : '0';
-                          var longitude = (area.longitude) ? area.longitude : '0';
-                          var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
-                          var ref = db.ref("suppliers");
-                          var company_name = req.param('company_name').trim()
-                          var data = {
-                            company_name: company_name.charAt(0).toUpperCase() + company_name.slice(1),
-                            name: req.param('name').trim(),
-                            email: req.param('email').trim(),
-                            mobile_number: req.param('mobile_number').trim(),
-                            account_number: req.param('account_number').trim(),
-                            tank_size: req.param('tank_size'),
-                            country_id: req.param('country').trim(),
-                            country_name: req.param('country_name').trim(),
-                            city_id: req.param('city').trim(),
-                            city_name: req.param('city_name').trim(),
-                            area_id: req.param('area').trim(),
-                            area_name: req.param('area_name').trim(),
-                            latitude: parseFloat(latitude),
-                            longitude: parseFloat(longitude),
-                            is_deleted: status,
-                            created_at: Date.now(),
-                            modified_at: Date.now(),
-                            image: signedUrls[0],
-                          }
-                          ref.push(data).then(function () {
-                            req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_add_success + '</div>');
-                            return res.redirect(sails.config.base_url + 'supplier');
-                          }, function (error) {
-                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
-                            return res.redirect(sails.config.base_url + 'supplier');
-                          });
-                        }, function (errorObject) {
-                          return res.serverError(errorObject.code);
-                        });
-                    }).catch(function (err) {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
-                      return res.redirect(sails.config.base_url + 'supplier');
-                    });
-                    } else {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + err + '</div>');
-                      return res.redirect(sails.config.base_url + 'supplier');
-                    }
-                  });
-                }
               }
-            });
+            }else {
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist + '</div>');
+              return res.redirect(sails.config.base_url + 'supplier/add');
+            }
           }).catch(function (err) {
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'supplier');
@@ -375,197 +371,112 @@ module.exports = {
             return res.serverError(errorObject.code);
           });
       } else {
-        var allowExts = ['image/png', 'image/jpg', 'image/jpeg'];
-        req.file('company_image').upload({
-          saveAs: function (file, handler) {
-            handler(null, '../../assets/images' + "/" + file.filename);
-          },
-          //dirname: sails.config.base_url + 'assets/images',
-          maxBytes: sails.config.length.max_file_upload
-        }, function whenDone(err, uploadedFiles) {
-          if (err) {
-            errors['company_image'] = {message: err}
-            /* country listing*/
-            var ref = db.ref("countries");
-            ref.orderByChild("is_deleted").equalTo(false)
-              .once("value", function (snapshot) {
-                var countries = snapshot.val();
-                /* supplier detail */
-                var ref = db.ref("suppliers/" + req.params.id);
-                ref.once("value", function (snapshot) {
-                  var supplier = snapshot.val();
-                  /* city name */
-                  var cityId = (supplier.city_id) ? supplier.city_id : 0;
-                  var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
-                  ref.once("value", function (snapshot) {
-                    var cities = snapshot.val();
-                    /* get area */
-                    var cityId = (supplier.area_id) ? supplier.area_id : 0;
-                    var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
-                    ref.once("value", function (snapshot) {
-                      var areas = snapshot.val();
-                      return res.view('add-update-supplier', {
-                        title: sails.config.title.edit_supplier,
-                        'supplier': supplier,
-                        "countries": countries,
-                        "cities": cities,
-                        "areas": areas,
-                        "errors": errors
-                      });
-                    }, function (errorObject) {
-                      return res.serverError(errorObject.code);
-                    });
-                  }, function (errorObject) {
-                    return res.serverError(errorObject.code);
-                  });
-                }, function (errorObject) {
-                  return res.serverError(errorObject.code);
-                });
-              }, function (errorObject) {
-                return res.serverError(errorObject.code);
-              });
-          } else {
-            if ((Object.keys(uploadedFiles).length) && (allowExts.indexOf(uploadedFiles[0].type) == -1)) {
-              errors['company_image'] = {message: WaterSupplier.message.invalid_file}
-              /* country listing*/
-              var ref = db.ref("countries");
-              ref.orderByChild("is_deleted").equalTo(false)
-                .once("value", function (snapshot) {
-                  var countries = snapshot.val();
-                  /* supplier detail */
-                  var ref = db.ref("suppliers/" + req.params.id);
-                  ref.once("value", function (snapshot) {
-                    var supplier = snapshot.val();
-                    /* city name */
-                    var cityId = (supplier.city_id) ? supplier.city_id : 0;
-                    var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
-                    ref.once("value", function (snapshot) {
-                      var cities = snapshot.val();
-                      /* get area */
-                      var cityId = (supplier.area_id) ? supplier.area_id : 0;
-                      var ref = db.ref("locations").orderByChild('city_id').equalTo(cityId);
-                      ref.once("value", function (snapshot) {
-                        var areas = snapshot.val();
-                        return res.view('add-update-supplier', {
-                          title: sails.config.title.edit_supplier,
-                          'supplier': supplier,
-                          "countries": countries,
-                          "cities": cities,
-                          "areas": areas,
-                          "errors": errors
-                        });
-                      }, function (errorObject) {
-                        return res.serverError(errorObject.code);
-                      });
-                    }, function (errorObject) {
-                      return res.serverError(errorObject.code);
-                    });
-                  }, function (errorObject) {
-                    return res.serverError(errorObject.code);
-                  });
-                }, function (errorObject) {
-                  return res.serverError(errorObject.code);
-                });
-            } else {
-              if (uploadedFiles[0] != undefined && uploadedFiles[0] != '') {
-                storageBucket.upload('assets/images/'+uploadedFiles[0].filename, function (err, file) {
-                  if (!err) {
+        if (req.body.image != undefined && req.body.image[0] != undefined) {
+          var imagepath = req.body.image[0];
+          var base64Data = imagepath.replace(/^data:image\/png;base64,/, "");
+          var imagename = Date.now() + '.png';
+          var imagePath = "assets/images/" + imagename;
+          require("fs").writeFile(imagePath, base64Data, 'base64', function (err) {
+            if (err == null) {
+              storageBucket.upload(imagePath, function (err, file) {
+                if (!err) {
                   var ref = db.ref();
-                  const file = storageBucket.file(uploadedFiles[0].filename);
+                  const file = storageBucket.file(imagename);
                   return file.getSignedUrl({
                     action: 'read',
                     expires: '03-09-2491'
                   }).then(function (signedUrls) {
-                    var ref = db.ref("locations");
-                    ref.orderByChild("city_id").equalTo(req.param('city'))
-                      .once("child_added", function (snapshot) {
-                        var area = snapshot.val();
-                        var latitude = (area.latitude) ? area.latitude : '0';
-                        var longitude = (area.longitude) ? area.longitude : '0';
-                          var ref = db.ref();
-                          var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
-                          var company_name = req.param('company_name').trim();
-                          db.ref('suppliers/' + req.params.id)
-                            .update({
-                              'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
-                              'name': req.param('name').trim(),
-                              'mobile_number': req.param('mobile_number').trim(),
-                              'account_number': req.param('account_number').trim(),
-                              'tank_size': req.param('tank_size'),
-                              'country_id': req.param('country').trim(),
-                              'country_name': req.param('country_name').trim(),
-                              'city_id': req.param('city').trim(),
-                              'city_name': req.param('city_name').trim(),
-                              'area_id': req.param('area').trim(),
-                              'area_name': req.param('area_name').trim(),
-                              'image': signedUrls[0],
-                              'latitude': parseFloat(latitude),
-                              'longitude': parseFloat(longitude),
-                              'is_deleted': status,
-                            })
-                            .then(function () {
-                              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
-                              return res.redirect(sails.config.base_url + 'supplier');
-                            })
-                            .catch(function (err) {
-                              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
-                              return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
-                            });
-                      }, function (errorObject) {
-                        return res.serverError(errorObject.code);
-                      });
+                  var ref = db.ref("locations");
+                  ref.orderByChild("city_id").equalTo(req.param('city'))
+                    .once("child_added", function (snapshot) {
+                      var area = snapshot.val();
+                      var latitude = (area.latitude) ? area.latitude : '0';
+                      var longitude = (area.longitude) ? area.longitude : '0';
+                      var ref = db.ref();
+                      var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
+                      var company_name = req.param('company_name').trim()
+                      db.ref('suppliers/' + req.params.id)
+                        .update({
+                          'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
+                          'name': req.param('name').trim(),
+                          'mobile_number': req.param('mobile_number').trim(),
+                          'account_number': req.param('account_number').trim(),
+                          'tank_size': req.param('tank_size'),
+                          'country_id': req.param('country').trim(),
+                          'country_name': req.param('country_name').trim(),
+                          'city_id': req.param('city').trim(),
+                          'city_name': req.param('city_name').trim(),
+                          'area_id': req.param('area').trim(),
+                          'area_name': req.param('area_name').trim(),
+                          'latitude': parseFloat(latitude),
+                          'longitude': parseFloat(longitude),
+                          'image': signedUrls[0],
+                          'is_deleted': status,
+                        })
+                        .then(function () {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
+                          res.redirect('supplier');
+                        })
+                        .catch(function (err) {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
+                          res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                        });
+                    }, function (errorObject) {
+                      return res.serverError(errorObject.code);
+                    });
                   }).catch(function (err) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
-                    return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+                    return res.redirect(sails.config.base_url + 'supplier');
                   });
-                  } else {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + err + '</div>');
-                    return res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
-                  }
-                });
-              } else {
-                var ref = db.ref("locations");
-                ref.orderByChild("city_id").equalTo(req.param('city'))
-                  .once("child_added", function (snapshot) {
-                    var area = snapshot.val();
-                    var latitude = (area.latitude) ? area.latitude : '0';
-                    var longitude = (area.longitude) ? area.longitude : '0';
-                    var ref = db.ref();
-                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
-                    var company_name = req.param('company_name').trim()
-                    db.ref('suppliers/' + req.params.id)
-                      .update({
-                        'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
-                        'name': req.param('name').trim(),
-                        'mobile_number': req.param('mobile_number').trim(),
-                        'account_number': req.param('account_number').trim(),
-                        'tank_size': req.param('tank_size'),
-                        'country_id': req.param('country').trim(),
-                        'country_name': req.param('country_name').trim(),
-                        'city_id': req.param('city').trim(),
-                        'city_name': req.param('city_name').trim(),
-                        'area_id': req.param('area').trim(),
-                        'area_name': req.param('area_name').trim(),
-                        'latitude': parseFloat(latitude),
-                        'longitude': parseFloat(longitude),
-                        'is_deleted': status,
-                      })
-                      .then(function () {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
-                        res.redirect('supplier');
-                      })
-                      .catch(function (err) {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
-                        res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
-                      });
-                  }, function (errorObject) {
-                    return res.serverError(errorObject.code);
-                  });
-              }
-
+                } else {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + err + '</div>');
+                  return res.redirect(sails.config.base_url + 'supplier');
+                }
+              });
+            } else {
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_add_error + '</div>');
+              return res.redirect(sails.config.base_url + 'supplier');
             }
+          });
+        } else {
+          var ref = db.ref("locations");
+          ref.orderByChild("city_id").equalTo(req.param('city'))
+            .once("child_added", function (snapshot) {
+              var area = snapshot.val();
+              var latitude = (area.latitude) ? area.latitude : '0';
+              var longitude = (area.longitude) ? area.longitude : '0';
+              var ref = db.ref();
+              var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
+              var company_name = req.param('company_name').trim()
+              db.ref('suppliers/' + req.params.id)
+                .update({
+                  'company_name': company_name.charAt(0).toUpperCase() + company_name.slice(1),
+                  'name': req.param('name').trim(),
+                  'mobile_number': req.param('mobile_number').trim(),
+                  'account_number': req.param('account_number').trim(),
+                  'tank_size': req.param('tank_size'),
+                  'country_id': req.param('country').trim(),
+                  'country_name': req.param('country_name').trim(),
+                  'city_id': req.param('city').trim(),
+                  'city_name': req.param('city_name').trim(),
+                  'area_id': req.param('area').trim(),
+                  'area_name': req.param('area_name').trim(),
+                  'latitude': parseFloat(latitude),
+                  'longitude': parseFloat(longitude),
+                  'is_deleted': status,
+                })
+                .then(function () {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.supplier_edit_success + '</div>');
+                  res.redirect('supplier');
+                })
+                .catch(function (err) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.supplier_edit_error + '</div>');
+                  res.redirect(sails.config.base_url + 'supplier/edit/' + req.params.id);
+                });
+            }, function (errorObject) {
+              return res.serverError(errorObject.code);
+            });
           }
-        });
       }
     } else {
       /* country listing*/
@@ -577,7 +488,7 @@ module.exports = {
           var ref = db.ref("suppliers/" + req.params.id);
           ref.once("value", function (snapshot) {
             var supplier = snapshot.val();
-            if(supplier != null){
+            if (supplier != null) {
               /* city name */
               var cityId = (supplier.city_id) ? supplier.city_id : 0;
               var ref = db.ref("cities").orderByChild('country_id').equalTo((supplier.country_id != undefined) ? supplier.country_id : '');
@@ -602,7 +513,7 @@ module.exports = {
               }, function (errorObject) {
                 return res.serverError(errorObject.code);
               });
-            }else{
+            } else {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
               res.redirect(sails.config.base_url + 'supplier');
             }

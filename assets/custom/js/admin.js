@@ -28,6 +28,12 @@ $(document).ready(function () {
       alert(exception);
     }
   });
+
+  /* fir image buttom at cropping*/
+  $('#sample_input').awesomeCropper(
+    {width: 150, height: 150, debug: true}
+  )
+
   /* disable paste in field */
   // $('input.disable-paste').bind('paste', function (e) {
   //   e.preventDefault();

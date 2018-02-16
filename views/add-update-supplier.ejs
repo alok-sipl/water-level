@@ -27,10 +27,12 @@
     <div class="hpanel">
       <div class="panel-body">
         <% if(supplier == undefined || !(Object.keys(supplier).length)){ %>
-        <form action="<%= sails.config.base_url %>supplier/add" method="post" autocomplete="off"  enctype="multipart/form-data"
+        <form action="<%= sails.config.base_url %>supplier/add" method="post" autocomplete="off"
+              enctype="multipart/form-data"
               id="add-supplier" class='form-horizontal form-submit' data-parsley-validate='true'>
           <% }else{ %>
-          <form action="<%= sails.config.base_url %>supplier/edit/<%= req.params.id %>" method="post" autocomplete="off" enctype="multipart/form-data"
+          <form action="<%= sails.config.base_url %>supplier/edit/<%= req.params.id %>" method="post" autocomplete="off"
+                enctype="multipart/form-data"
                 id="add-supplier" class='form-horizontal form-submit' data-parsley-validate='true'>
             <% } %>
             `
@@ -225,48 +227,40 @@
               </div>
             </div>
             <!--<div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">-->
-              <!--<label for="is_active" class="col-md-4 control-label">Area*</label>-->
-              <!--<div class="col-md-6">-->
-                <!--<input type="text" onFocus="geolocate()" name="area" class="form-control" required id="area"-->
-                       <!--value="<%= (supplier.area) ? (supplier.area) : (req.param('area')) ? req.param('area') : '' %>"-->
-                       <!--maxlength="<%= sails.config.length.address %>"-->
-                       <!--data-parsley-required-message="<%= WaterSupplier.message.area_required %>"-->
-                       <!--data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"-->
-                       <!--data-parsley-errors-container="#location_message"-->
-                       <!--placeholder="Area"/>-->
-                <!--<div id="location_message"></div>-->
-                <!--<span class="help-block">-->
-                                        <!--<strong><%= (errors.area != undefined) ? errors.area.message : '' %>-->
-                                        <!--</strong>-->
-                                    <!--</span>-->
-                <!--<input style="display: none" type="text" name="latitude" id="latitude"-->
-                       <!--data-parsley-pattern-message="Invalid lat long"-->
-                       <!--data-parsley-errors-container="#location_message"-->
-                       <!--value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>-->
-                <!--<input style="display: none" type="hidden" name="longitude" id="longitude"-->
-                       <!--value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>-->
-              <!--</div>-->
+            <!--<label for="is_active" class="col-md-4 control-label">Area*</label>-->
+            <!--<div class="col-md-6">-->
+            <!--<input type="text" onFocus="geolocate()" name="area" class="form-control" required id="area"-->
+            <!--value="<%= (supplier.area) ? (supplier.area) : (req.param('area')) ? req.param('area') : '' %>"-->
+            <!--maxlength="<%= sails.config.length.address %>"-->
+            <!--data-parsley-required-message="<%= WaterSupplier.message.area_required %>"-->
+            <!--data-parsley-maxlength-message="<%= WaterSupplier.message.area_maxlength %>"-->
+            <!--data-parsley-errors-container="#location_message"-->
+            <!--placeholder="Area"/>-->
+            <!--<div id="location_message"></div>-->
+            <!--<span class="help-block">-->
+            <!--<strong><%= (errors.area != undefined) ? errors.area.message : '' %>-->
+            <!--</strong>-->
+            <!--</span>-->
+            <!--<input style="display: none" type="text" name="latitude" id="latitude"-->
+            <!--data-parsley-pattern-message="Invalid lat long"-->
+            <!--data-parsley-errors-container="#location_message"-->
+            <!--value="<%= (supplier.latitude) ? (supplier.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"/>-->
+            <!--<input style="display: none" type="hidden" name="longitude" id="longitude"-->
+            <!--value="<%= (supplier.longitude) ? (supplier.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"/>-->
             <!--</div>-->
-            <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
+            <!--</div>-->
+             <div class="form-group <%= (errors.image != undefined) ? " has-error" : "" %>">
               <label for="is_active" class="col-md-4 control-label">Company Logo*</label>
-              <div class="col-md-6 image-overflow">
+              <div class="col-md-6">
                 <% if(supplier != undefined && Object.keys(supplier).length){ %>
-                <img width="100" id="image-preview"
+                <img width="150" id="image-preview" class="uploaded-image"
                      src="<%= (supplier.image) ? supplier.image : sails.config.base_url + 'images/profile.png' %>"
                      title="<%= (supplier.name) ? supplier.name : '' %>"
                      alt="<%= (supplier.name) ? supplier.name : '' %>">
                 <% } %>
-                <input type="file" class="control-label" accept="image/*" name="company_image" id="image"
-                  <% if(supplier != undefined && !Object.keys(supplier).length){ %>
-                       required
-                       data-parsley-required-message="<%= WaterSupplier.message.company_image_required %>"
-                  <% } %>
-                       data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"
-                       data-parsley-filemimetypes="image/jpeg, image/png"/>
-                <span class="help-block">
-                                        <strong><%= (errors.company_image != undefined) ? errors.company_image.message : '' %>
-                                        </strong>
-                                    </span>
+                <div class="container-narrow">
+                    <input id="sample_input" type="hidden" name="image">
+                </div>
               </div>
             </div>
             <div class="form-group <%= (errors.status != undefined) ? " has-error" : "" %>">
