@@ -8,7 +8,7 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   <link rel="icon" type="image/x-icon" href="<%= sails.config.base_url %>images/favicon.ico" />
   <!--STYLES-->
-  
+
   <!--STYLES END-->
   <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
 <!--  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">-->
@@ -193,6 +193,14 @@
 <% if(req.options.controller == 'supplier'){ %>
 <script src="<%= sails.config.base_url %>custom/js/jquery.imgareaselect.js"></script>
 <script src="<%= sails.config.base_url %>custom/js/jquery.awesome-cropper.js"></script>
+<script>
+  /* fir image buttom at cropping*/
+  $(document).ready(function () {
+  $('#sample_input').awesomeCropper(
+    {width: 150, height: 150, debug: true}
+  )
+  })
+</script>
 <% } %>
 
 <script src="<%= sails.config.base_url %>custom/js/admin.js"></script>
