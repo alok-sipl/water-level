@@ -41,12 +41,13 @@ module.exports = {
         snap = snap.val();
         var tempBinRecords = [];
         _.map(snap, function (val, user_key) {
+          console.log('user_key->',user_key);
           val.user_key = user_key;
           tempBinRecords.push(val)
         });
         async.forEach(tempBinRecords, function (childSnap, callback) {
           var deviceList = '';
-          if (childSnap.id != undefined && childSnap.is_verified) {
+          if (childSnap.id != undefined && childSnap.is_verified != undefined && childSnap.is_verified) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var devices = snapshot.val();

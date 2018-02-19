@@ -131,6 +131,15 @@ module.exports = {
         errors['device_id'] = {message: Device.message.device_id_pattern}
       }
     }
+    if (req.param('device_id_iphone') != undefined) {
+      if (validator.isEmpty(req.param('device_id_iphone'))) {
+        errors['device_id_iphone'] = {message: Device.message.device_id_required}
+      } else if (validator.isLength(req.param('device_id_iphone', {min: sails.config.length.device_id_iphone, max: sails.config.length.device_id_iphone}))) {
+        errors['device_id_iphone'] = {message: Device.message.device_id_size}
+      } else if (!validator.matches(req.param('device_id_iphone'), sails.config.regex.device_id_iphone)) {
+        errors['device_id_iphone'] = {message: Device.message.device_id_pattern}
+      }
+    }
     return errors;
   },
 
