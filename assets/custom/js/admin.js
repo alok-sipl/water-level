@@ -585,21 +585,22 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Device Id', name: 'device_id', width: 180, search: true},
+      {label: 'Device Id (Android)', name: 'device_id', width: 200, search: true},
+      {label: 'Device Id (IPhone)', name: 'device_id_iphone', width: 420, search: true},
       {
-        label: 'Device Name', name: 'device_name', width: 200, search: true, classes: 'text-break',
+        label: 'Device Name', name: 'device_name', width: 180, search: true, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'User Name', name: 'user_name', width: 200, classes: 'text-break',
+        label: 'User Name', name: 'user_name', width: 180, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'Last Reading Time', name: 'last_reading', width: 150, search: false,
+        label: 'Last Reading Time', name: 'last_reading', width: 180, search: false,
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
@@ -611,7 +612,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false, align: "center",
+        label: 'Status', name: 'is_deleted', width: 80, search: false, align: "center",
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
@@ -623,7 +624,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Action', name: 'device_key', search: false, width: 150, align: "right",
+        label: 'Action', name: 'device_key', search: false, width: 120, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
