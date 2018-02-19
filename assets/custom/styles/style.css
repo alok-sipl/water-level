@@ -108,4 +108,11 @@ body.blank {background-color: #f1f3f6;}
 .btn-group a {
   margin: 12px;
 }
-.modal-body .col-md-3 {padding-left: 0px;padding-top: 15px;}
+
+.awesome-cropper .control-label{ margin-top: -20px;}
+.awesome-cropper img{ margin-bottom: 25px;}
+.imgareaselect-border4{ position:relative !important; top:15px  !important;}
+.image-cropping-body{ padding-top: 15px  !important;}
+.awesome-cropper .modal-dialog {
+  width: 600px !important;
+}

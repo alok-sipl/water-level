@@ -22,7 +22,9 @@ $(document).ready(function () {
     url: BASE_URL + '/login/getAdminNotification',
     type: 'POST',
     success: function (response) {
-      $('.notification-tab').html(response)
+      if(response.indexOf('<title>') !== -1){
+        $('.notification-tab').html(response)
+      }
     }, error: function (jqXHR, exception) {
       alert(jqXHR);
       alert(exception);

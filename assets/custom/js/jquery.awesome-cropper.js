@@ -65,14 +65,14 @@
     }));
     $container.append($progressBar);
     // Result Image
-    
+
     // Modal dialog with cropping
     $sourceIm = image();
     $applyButton = a('Apply').addClass('btn yes btn-primary');
     $cancelButton = a('Cancel').addClass('btn btn-primary').attr({
       'data-dismiss': "modal"
     });
-    $imagesContainer = div().append(div().addClass('modal-dialog').append(div().addClass('modal-content').append(div().addClass('modal-body').append(div().addClass('col-md-9 image-popup').append($sourceIm)).append(div().addClass('col-md-3').append($cropSandbox)).append(div().addClass('clearfix')), div().addClass('modal-footer').append(div().addClass('btn-group').append($cancelButton).append($applyButton))))).addClass('modal').attr({
+    $imagesContainer = div().append(div().addClass('modal-dialog').append(div().addClass('modal-content').append(div().addClass('modal-body image-cropping-body').append(div().addClass('col-md-9 image-popup').append($sourceIm)).append(div().addClass('col-md-3').append($cropSandbox)).append(div().addClass('clearfix')), div().addClass('modal-footer').append(div().addClass('btn-group').append($cancelButton).append($applyButton))))).addClass('modal').attr({
       role: 'dialog'
     });
     $container.append($imagesContainer);
@@ -248,7 +248,7 @@
     return $applyButton.on('click', function() {
       saveCrop();
       $('.uploaded-image').hide();
-      return $imagesContainer.modal('hide'); 
+      return $imagesContainer.modal('hide');
     });
   };
 
