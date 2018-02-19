@@ -126,6 +126,7 @@ module.exports = {
     if (req.method == "POST") {
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
+        console.log('In error');
         /* country listing*/
         var ref = db.ref("countries");
         ref.orderByChild("is_deleted").equalTo(false)
@@ -162,13 +163,16 @@ module.exports = {
             return res.serverError(errorObject.code);
           });
       } else {
+        console.log('In process');
         var ref = db.ref("suppliers");
         ref.orderByChild("email").equalTo(req.param('email')).once('value')
           .then(function (snapshot) {
             supplierdata = snapshot.val();
             console.log('Old supplier detail--->',supplierdata);
             if (supplierdata == null) {
+              console.log('Supplier not exist');
               if (req.body.image != undefined && req.body.image[0] != undefined) {
+                console.log('Image upload');
                 var imagepath = req.body.image[0];
                 var base64Data = imagepath.replace(/^data:image\/png;base64,/, "");
                 var imagename = Date.now() + '.png';
@@ -237,7 +241,7 @@ module.exports = {
                   }
                 });
               } else {
-
+                console.log('Image not uploaded');
                 var ref = db.ref("locations");
                 ref.orderByChild("city_id").equalTo(req.param('city'))
                   .once("child_added", function (snapshot) {
@@ -279,10 +283,12 @@ module.exports = {
                   });
               }
             }else {
+              console.log('Supplier already');
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'supplier/add');
             }
           }).catch(function (err) {
+          console.log('In error 111', err);
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'supplier');
         });

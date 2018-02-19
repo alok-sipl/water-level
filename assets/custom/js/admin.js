@@ -23,6 +23,8 @@ $(document).ready(function () {
     type: 'POST',
     success: function (response) {
       if(response.indexOf('<title>') !== -1){
+        $('.notification-tab').html('')
+      }else{
         $('.notification-tab').html(response)
       }
     }, error: function (jqXHR, exception) {
