@@ -35,7 +35,7 @@
                 class='form-horizontal form-submit' data-parsley-validate='true'>
             <% } %>
             <div class="form-group <%= (errors.device_id != undefined) ? " has-error" : "" %>">
-              <label for="first_name" class="col-md-4 control-label">Device Id*</label>
+              <label for="first_name" class="col-md-4 control-label">Device Id (Android)*</label>
               <div class="col-md-6">
                 <input type="text" name="device_id" class="form-control" id="device_id"
                        value="<%= (device.device_id) ? (device.device_id) : (req.param('device_id')) ? req.param('device_id') : '' %>"
@@ -44,7 +44,23 @@
                        data-parsley-required-message="<%= Device.message.device_id_required %>"
                        maxlength="<%= sails.config.length.device_id %>"
                        data-parsley-device_id-message="<%= Device.message.device_id_size %>"
-                       pattern="<%= sails.config.regex.alpha_numeric %>"
+                       data-parsley-pattern-message="<%= Device.message.device_id_pattern %>" placeholder="Device Id"/>
+                <span class="help-block">
+                <strong><%= (errors.device_id != undefined) ? errors.device_id.message : '' %>
+                </strong>
+              </span>
+              </div>
+            </div>
+            <div class="form-group <%= (errors.device_id_iphone != undefined) ? " has-error" : "" %>">
+              <label for="first_name" class="col-md-4 control-label">Device Id (IPhone)*</label>
+              <div class="col-md-6">
+                <input type="text" name="device_id_iphone" class="form-control" id="device_id_iphone"
+                       value="<%= (device.device_id_iphone) ? (device.device_id_iphone) : (req.param('device_id_iphone')) ? req.param('device_id_iphone') : '' %>"
+                       required
+                       pattern="<%= sails.config.regex.device_id_iphone %>"
+                       data-parsley-required-message="<%= Device.message.device_id_required %>"
+                       maxlength="<%= sails.config.length.device_id_iphone %>"
+                       data-parsley-device_id-message="<%= Device.message.device_id_size %>"
                        data-parsley-pattern-message="<%= Device.message.device_id_pattern %>" placeholder="Device Id"/>
                 <span class="help-block">
                 <strong><%= (errors.device_id != undefined) ? errors.device_id.message : '' %>

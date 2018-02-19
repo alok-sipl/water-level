@@ -124,14 +124,6 @@ module.exports = {
     var errors = supplier = countries = cities = areas = {};
     /* Checking validation if form post */
     if (req.method == "POST") {
-//       var imagepath= req.body.image[0];
-//       var base64Data = imagepath.replace(/^data:image\/png;base64,/, "");
-//       require("fs").writeFile("assets/images/"+ Date.now()+ '.png', base64Data, 'base64', function(err) {
-//         console.log('IN erro---->',err);
-//       });
-// return false;
-
-
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         /* country listing*/
@@ -170,11 +162,11 @@ module.exports = {
             return res.serverError(errorObject.code);
           });
       } else {
-        var ref = db.ref("/suppliers");
+        var ref = db.ref("suppliers");
         ref.orderByChild("email").equalTo(req.param('email')).once('value')
           .then(function (snapshot) {
             supplierdata = snapshot.val();
-            console.log(supplierdata);
+            console.log('Old supplier detail--->',supplierdata);
             if (supplierdata == null) {
               if (req.body.image != undefined && req.body.image[0] != undefined) {
                 var imagepath = req.body.image[0];

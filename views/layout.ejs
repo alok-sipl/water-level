@@ -100,7 +100,7 @@
           <a href="<%= sails.config.base_url %>supplier" title="Manage Supplier"><span
               class="nav-label">Manage Supplier</span></a>
         </li>
-        <% if((req.session.user != undefined) && req.session.user.uid == 'hGdy6bYg8dQtscAlET3Mis1Hysm2'){ %>
+        <% if((req.session.user != undefined) && req.session.user.uid == 'ggC1xEKesAewALK34z3lI3pKKy93'){ %>
         <li class="<%= (req.options.controller == 'admin') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>admin" title="Manage Admin"><span class="nav-label">Manage Admin</span></a>
         </li>
@@ -122,7 +122,7 @@
           class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'setting')) ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>dashboard/setting" title="Notification Setting"><span class="nav-label">Setting</span></a>
         </li>
-        <% if((req.session.user != undefined) && req.session.user.uid == 'hGdy6bYg8dQtscAlET3Mis1Hysm2'){ %>
+        <% if((req.session.user != undefined) && req.session.user.uid == 'ggC1xEKesAewALK34z3lI3pKKy93'){ %>
         <li class="dropdown notification-tab <%= ((req.options.controller == 'notification')) ? 'active' : '' %>">
 
         </li>

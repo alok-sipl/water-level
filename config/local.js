@@ -85,8 +85,8 @@ module.exports = {
     app_name: 'Qatrah',
     base_url: 'https://water-level.herokuapp.com/',
     base_url_js: 'https://water-level.herokuapp.com',
-    //base_url: 'http://10.10.100.19:1337/',
-    //base_url_js: 'http://10.10.100.19:1337',
+    //base_url: 'http://localhost:1337/',
+    //base_url_js: 'http://localhost:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
     admin_email: 'ravi_sipl@systematixindia.com',
     authentication_email: 'ravi_sipl@systematixindia.com',
@@ -112,6 +112,7 @@ module.exports = {
         min_password: 6,
         max_password: 16,
         device_id: 17,
+        device_id_iphone: 36,
         max_file_upload: 4194304,
         max_file_upload_kb: 4194,
     },
@@ -122,6 +123,7 @@ module.exports = {
         alpha_numeric: "^[a-zA-Z0-9]*$",
         mobile_number: /^(\+\d{1,3}[-]?)?\d{10,13}$/,
         device_id: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
+        device_id_iphone: /[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}/,
         lat_long: /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/
     },
 
