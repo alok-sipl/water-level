@@ -28,33 +28,39 @@ module.exports = {
         } else {
           firebaseAuth.auth().signInWithEmailAndPassword(req.param('email'), req.param('password'))
             .then(function (user) {
-              var ref = db.ref("users").orderByChild('id').equalTo(user.uid);
-              ref.once("value", function (snapshot) {
-                var adminDetail = snapshot.val();
-                var userKey = Object.keys(adminDetail)[0];
-                if (adminDetail) {
-                  if (adminDetail[userKey].is_admin != undefined && adminDetail[userKey].is_admin == true) {
-                    if(adminDetail[userKey].is_deleted != undefined && adminDetail[userKey].is_deleted == false){
-                      req.session.authenticated = true;
-                      req.session.user = user;
-                      req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
-                      req.flash('disableBack', true);
-                      return res.redirect(sails.config.base_url + 'supplier');
-                    }else{
-                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
+              if(user){
+                var ref = db.ref("users").orderByChild('id').equalTo(user.uid);
+                ref.once("value", function (snapshot) {
+                  var adminDetail = snapshot.val();
+                  var userKey = Object.keys(adminDetail)[0];
+                  if (adminDetail && Object.keys(adminDetail)[0] != undefined && Object.keys(adminDetail)[0] != null) {
+                    if (adminDetail[userKey].is_admin != undefined && adminDetail[userKey].is_admin == true) {
+                      if(adminDetail[userKey].is_deleted != undefined && adminDetail[userKey].is_deleted == false){
+                        req.session.authenticated = true;
+                        req.session.user = user;
+                        req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
+                        req.flash('disableBack', true);
+                        return res.redirect(sails.config.base_url + 'supplier');
+                      }else{
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
+                        return res.redirect(sails.config.base_url);
+                      }
+                    } else {
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
                       return res.redirect(sails.config.base_url);
                     }
                   } else {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
                     return res.redirect(sails.config.base_url);
                   }
-                } else {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                  return res.redirect(sails.config.base_url);
-                }
-              }, function (errorObject) {
-                return res.serverError(errorObject.code);
-              });
+                }, function (errorObject) {
+                  return res.serverError(errorObject.code);
+                });
+              }else{
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                return res.redirect(sails.config.base_url);
+              }
+
             }).catch(function (error) {
             if (error.code == "auth/invalid-email") {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
