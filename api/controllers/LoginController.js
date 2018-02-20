@@ -32,8 +32,9 @@ module.exports = {
                 var ref = db.ref("users").orderByChild('id').equalTo(user.uid);
                 ref.once("value", function (snapshot) {
                   var adminDetail = snapshot.val();
-                  var userKey = Object.keys(adminDetail)[0];
+
                   if (adminDetail && Object.keys(adminDetail)[0] != undefined && Object.keys(adminDetail)[0] != null) {
+                    var userKey = Object.keys(adminDetail)[0];
                     if (adminDetail[userKey].is_admin != undefined && adminDetail[userKey].is_admin == true) {
                       if(adminDetail[userKey].is_deleted != undefined && adminDetail[userKey].is_deleted == false){
                         req.session.authenticated = true;
