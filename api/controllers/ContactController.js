@@ -63,6 +63,38 @@ module.exports = {
       return res.serverError(errorObject.code);
     });
   },
+
+  /*
+* Name: updateStatus
+* Created By: A-SIPL
+* Created Date: 26-dec-2017
+* Purpose: UPdate
+* @param  req
+*/
+  updateStatus: function (req, res) {
+    var id = req.body.id;
+    var status = req.body.is_active;
+    var ref = db.ref('/queries/' + id);
+    ref.once("value", function (snapshot) {
+      if (snapshot.val()) {
+        db.ref('/queries/' + id)
+          .update({
+            'is_deleted': (status == 'true' || status == true) ? true : false,
+            'modified_at': Date.now(),
+          })
+          .then(function () {
+            return res.json({'status': true, message: sails.config.flash.update_successfully});
+          })
+          .catch(function (err) {
+            return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
+          });
+      } else {
+        return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
+      }
+    }, function (errorObject) {
+      return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
+    });
+  },
 };
 
 

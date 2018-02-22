@@ -19,6 +19,11 @@
            href="javascript:void(0);" data-original-title="Make Supplier In Active">Active</a>
         <% } %>
 
+        <a data-tooltip
+           data-url="<%= sails.config.base_url %>supplier/delete/<%= key %>"
+           class="label label-success pull-right status-label status-action" data-id="<%= key %>"
+           href="javascript:void(0);" data-original-title="Delete Supplier">Delete</a>
+
         <span class="img-circle m-b">
           <img alt="<%= (suppliers[key]['company_name'] != undefined) ? suppliers[key]['company_name'] : '' %>"
                src="<%= (suppliers[key]['compnay_image'] != undefined) ? suppliers[key]['compnay_image'] : sails.config.base_url + 'images/profile.png' %>">

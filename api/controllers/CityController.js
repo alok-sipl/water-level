@@ -115,7 +115,7 @@ module.exports = {
           return res.view('add-update-city', {
             title: sails.config.title.add_location,
             'countryId': (cities.country_id != undefined) ? cities.country_id : '',
-              'cityId': req.params.id,
+            'cityId': req.params.id,
             'country': country,
             'cities': cities,
             'type': false,
@@ -199,14 +199,14 @@ module.exports = {
         .equalTo(req.body.id)
         .once("value", function (snapshot) {
           cityList = snapshot.val();
-          if(cityList != null && Object.keys(cityList).length){
-            for(var key in cityList){
-              if(cityList[key]['is_deleted'] != undefined && (cityList[key]['is_deleted'] == 'true' || cityList[key]['is_deleted'] == true)){
+          if (cityList != null && Object.keys(cityList).length) {
+            for (var key in cityList) {
+              if (cityList[key]['is_deleted'] != undefined && (cityList[key]['is_deleted'] == 'true' || cityList[key]['is_deleted'] == true)) {
                 delete cityList[key];
               }
             }
             return res.json(cityList);
-          }else{
+          } else {
             return res.json(cityList);
           }
         }, function (errorObject) {
@@ -232,14 +232,14 @@ module.exports = {
         .equalTo(req.body.id)
         .once("value", function (snapshot) {
           areaList = snapshot.val();
-          if(areaList != null && Object.keys(areaList).length){
-            for(var key in areaList){
-              if(areaList[key]['is_deleted'] != undefined && (areaList[key]['is_deleted'] == 'true' || areaList[key]['is_deleted'] == true)){
+          if (areaList != null && Object.keys(areaList).length) {
+            for (var key in areaList) {
+              if (areaList[key]['is_deleted'] != undefined && (areaList[key]['is_deleted'] == 'true' || areaList[key]['is_deleted'] == true)) {
                 delete areaList[key];
               }
             }
             return res.json(areaList);
-          }else{
+          } else {
             return res.json(areaList);
           }
         }, function (errorObject) {
@@ -252,7 +252,6 @@ module.exports = {
   },
 
 
-
   /*
 * Name: getCountryCode
 * Created By: A-SIPL
@@ -262,12 +261,12 @@ module.exports = {
 */
   getCountryCode: function (req, res) {
     if (req.body.id) {
-      const ref = db.ref('countries/'+ req.body.id)
+      const ref = db.ref('countries/' + req.body.id)
         .once("value", function (snapshot) {
           country = snapshot.val();
-          if(country != null && Object.keys(country).length){
+          if (country != null && Object.keys(country).length) {
             return res.json(country.code);
-          }else{
+          } else {
             return res.json({});
           }
         }, function (errorObject) {
@@ -277,7 +276,6 @@ module.exports = {
       return res.json({});
     }
   },
-
 
 
   /*
@@ -293,18 +291,12 @@ module.exports = {
     var ref = db.ref("cities/" + req.params.id);
     ref.once("value", function (snapshot) {
       var cities = snapshot.val();
-      if(cities != null){
+      if (cities != null) {
         /* countries listing*/
         var ref = db.ref("countries");
         ref.orderByChild("is_deleted").equalTo(false)
           .once("value", function (snapshot) {
             var countries = snapshot.val();
-            console.log({
-              title: sails.config.title.location_list,
-              cityId: req.params.id,
-              cities: cities,
-              countries: countries
-            });
             return res.view('location-listing', {
               title: sails.config.title.location_list,
               cityId: req.params.id,
@@ -314,7 +306,7 @@ module.exports = {
           }, function (errorObject) {
             return res.serverError(errorObject.code);
           });
-      }else{
+      } else {
         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
         return res.redirect('city');
       }
@@ -413,7 +405,7 @@ module.exports = {
             'name': req.param('city'),
             'modified_at': Date.now(),
           }).then(function () {
-          if(status == true) {
+          if (status == true) {
             /* Update the location status */
             var ref = db.ref('locations');
             ref.orderByChild("city_id").equalTo(req.param('city_id')).once("value", function (citySnapshot) {
@@ -452,7 +444,7 @@ module.exports = {
       var ref = db.ref("cities/" + req.params.id);
       ref.once("value", function (snapshot) {
         var cities = snapshot.val();
-        if(cities != null){
+        if (cities != null) {
           /* city listing*/
           var ref = db.ref("countries");
           ref.orderByChild("is_deleted").equalTo(false)
@@ -468,7 +460,7 @@ module.exports = {
             }, function (errorObject) {
               return res.serverError(errorObject.code);
             });
-        }else{
+        } else {
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect('city');
         }
@@ -545,7 +537,7 @@ module.exports = {
       var ref = db.ref("locations/" + req.params.id);
       ref.once("value", function (snapshot) {
         var locations = snapshot.val();
-        if(locations != null){
+        if (locations != null) {
           var ref = db.ref("cities");
           ref.once("value", function (snapshot) {
             var cities = snapshot.val();
@@ -564,7 +556,7 @@ module.exports = {
           }, function (errorObject) {
             return res.serverError(errorObject.code);
           });
-        }else{
+        } else {
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect('city');
         }
@@ -625,7 +617,7 @@ module.exports = {
           'modified_at': Date.now(),
         })
         .then(function () {
-          if(status == true || status == "true") {
+          if (status == true || status == "true") {
             /* Update the location status */
             var ref = db.ref('locations');
             ref.orderByChild("city_id").equalTo(req.body.id).once("value", function (citySnapshot) {
@@ -647,7 +639,7 @@ module.exports = {
             }).catch(function (err) {
               res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
             });
-          }else{
+          } else {
             return res.json({'status': true, message: sails.config.flash.update_successfully});
           }
         })
@@ -682,6 +674,106 @@ module.exports = {
           res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
         });
     } else {
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+    }
+  },
+
+  /*
+   * Name: delete
+   * Created By: A-SIPL
+   * Created Date: 20-feb-2018
+   * Purpose: delete city
+   * @param  req
+   */
+  delete: function (req, res) {
+    var id = req.body.id;
+    var status = req.body.is_active;
+    if (id != '') {
+      db.ref('locations').orderByChild("city_id").equalTo(id)
+        .once("value", function (snapshot) {
+          var locationResult = snapshot.val();
+          if (locationResult != null) {
+            for (var key in locationResult) {
+              db.ref('suppliers').orderByChild("area_id").equalTo(key)
+                .once("value", function (snapshot) {
+                  var supplierResult = snapshot.val();
+                  if (supplierResult != null) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.can_not_delete_location + '</div>');
+                    res.json({'status': false, message: sails.config.flash.can_not_delete_city});
+                  }
+                }, function (errorObject) {
+                  console.log('Error in 777777--->', errorObject);
+                  return res.serverError(errorObject.code);
+                });
+            }
+            db.ref('/cities/' + id)
+              .remove()
+              .then(function () {
+                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                return res.json({'status': true, message: sails.config.flash.delete_successfully});
+              })
+              .catch(function (err) {
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              });
+          } else {
+            db.ref('/cities/' + id)
+              .remove()
+              .then(function () {
+                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                return res.json({'status': true, message: sails.config.flash.delete_successfully});
+              })
+              .catch(function (err) {
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              });
+          }
+        }, function (errorObject) {
+          console.log('Error in 777777--->', errorObject);
+          return res.serverError(errorObject.code);
+        });
+    } else {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+    }
+  },
+
+  /*
+ * Name: delete
+ * Created By: A-SIPL
+ * Created Date: 20-feb-2018
+ * Purpose: delete location
+ * @param  req
+ */
+  deleteLocation: function (req, res) {
+    var id = req.body.id;
+    var status = req.body.is_active;
+    if (id != '') {
+      db.ref('suppliers').orderByChild("area_id").equalTo(id)
+        .once("value", function (snapshot) {
+          var supplierResult = snapshot.val();
+          console.log('supplierResult-->', supplierResult);
+          if (supplierResult != null) {
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.can_not_delete_area + '</div>');
+            res.json({'status': false, message: sails.config.flash.can_not_delete_area});
+          } else {
+            db.ref('/locations/' + id)
+              .remove()
+              .then(function () {
+                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                return res.json({'status': true, message: sails.config.flash.delete_successfully});
+              })
+              .catch(function (err) {
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              });
+          }
+        }, function (errorObject) {
+          console.log('Error in 777777--->', errorObject);
+          return res.serverError(errorObject.code);
+        });
+    } else {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
   },

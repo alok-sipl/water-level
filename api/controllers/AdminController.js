@@ -267,7 +267,34 @@ module.exports = {
     }, function (errorObject) {
       return res.json({'status': false, 'message': sails.config.flash.something_went_wronge});
     });
-  }
+  },
+
+  /*
+   * Name: delete
+   * Created By: A-SIPL
+   * Created Date: 20-feb-2018
+   * Purpose: delete admin
+   * @param  req
+   */
+  delete: function (req, res) {
+    var id = req.body.id;
+    var status = req.body.is_active;
+    if (id != '') {
+      db.ref('/users/' + id)
+        .remove()
+        .then(function () {
+          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+          return res.json({'status': true, message: sails.config.flash.delete_successfully});
+        })
+        .catch(function (err) {
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          res.json({'status': false, message: sails.config.flash.something_went_wronge});
+        });
+    } else {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+    }
+  },
 
 };
 

@@ -182,6 +182,7 @@ module.exports = {
         old_password_unmatch: "Incorrect current password",
         something_went_wronge: "Something went wronge",
         update_successfully: "Status updated successfully",
+        delete_successfully: "Record delete successfully",
         supplier_add_success: "Supplier added successfully",
         supplier_add_error: "Error in adding supplier",
         supplier_edit_success: "Supplier updated successfully",
@@ -211,7 +212,10 @@ module.exports = {
         invalid_email: "This email is not registered",
         account_inactive: "Your account is inactived by admin",
         forgot_mail_send_success: "We have sent mail please check email and follow the steps",
-        same_password_warning: "Current password and new password cannot be same"
+        same_password_warning: "Current password and new password cannot be same",
+        can_not_delete_city: "This city is attched with supplier so you can't delete this",
+        can_not_delete_area: "This area is attched with supplier so you can't delete this",
+
     },
 
     email_message: {

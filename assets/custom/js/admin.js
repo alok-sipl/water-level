@@ -232,7 +232,7 @@ $('.change-notification').click(function () {
   });
   setTimeout(function () {
     $('div.alert').css('display', "none");
-  }, 6000);
+  }, 8000);
 });
 
 
@@ -392,9 +392,9 @@ $("body").on("click", ".status-action", function () {
         } else {
           jQuery('[data-original-title="Make Active"]').tooltip('destroy');
           jQuery('[data-original-title="Make In Active"]').tooltip('destroy');
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').jqGrid('clearGridData');
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').jqGrid('setGridParam', {datatype: 'json'});
-          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #admin-grid').trigger('reloadGrid');
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #contact-grid, #admin-grid').jqGrid('clearGridData');
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #contact-grid, #admin-grid').jqGrid('setGridParam', {datatype: 'json'});
+          jQuery('#city-grid, #device-grid, #location-grid, #user-grid, #contact-grid, #admin-grid').trigger('reloadGrid');
           helper.hideLoader();
           $(".alert-success").css("display", "block");
           $(".alert-success").html(result.message);
@@ -411,6 +411,36 @@ $("body").on("click", ".status-action", function () {
     }, 6000);
   }
 })
+
+
+
+$("body").on("click", ".delete-action", function () {
+  if (confirm($(this).attr('data-alert-message'))) {
+    helper.showLoader();
+    var url = $(this).attr('data-url');
+    var id = $(this).attr('data-id');
+    if (id != '' && url != '') {
+      var formData = {
+        id: id
+      };
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        success: function (result) {
+          location.reload();
+        },
+        error: function (textStatus, errorThrown) {
+          helper.hideLoader();
+          $(".alert-danger").css("display", "block");
+          $(".alert-danger").html(textStatus);
+        }
+      });
+    }
+  }
+});
+
+
 
 
 /* supplier pagination code */
@@ -481,6 +511,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Admin" href="' + BASE_URL + '/admin/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit Admin" href="' + BASE_URL + '/admin/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a data-alert-message="Are you sure you want to delete this admin?" title="Delete Admin" href="' + BASE_URL + '/admin/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -521,7 +552,7 @@ $(document).ready(function () {
           if (cellvalue == 'true' || cellvalue == true) {
             statusAction += '<a data-tooltip="" title="Make Active" data-status="true" data-url="' + BASE_URL + '/city/updateStatus" class="button status-action active" data-id="' + city_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            statusAction += '<a data-tooltip="" title="Make In Active" data-status="false" data-url="' + BASE_URL + '/city/updateStatus" class="button status-action active" data-id="' + city_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+            statusAction += '<a title="Make In Active" data-status="false" data-url="' + BASE_URL + '/city/updateStatus" class="button status-action active" data-id="' + city_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
           return statusAction;
         }
@@ -532,6 +563,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated area will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -559,6 +591,24 @@ $(document).ready(function () {
       {label: 'Name', name: 'name', width: 250, search: true, classes: 'text-break'},
       {label: 'Email', name: 'email', width: 300, search: true},
       {label: 'Query', name: 'query', width: 450, classes: 'text-break'},
+      {
+        name: 'contact_id', hidden: true,
+        formatter: function (cellvalue) {
+          contact_id = cellvalue;
+        }
+      },
+      {
+        label: 'Status', name: 'is_deleted', width: 100, search: false, align: "center",
+        formatter: function (cellvalue) {
+          statusAction = ''
+          if (cellvalue == 'true' || cellvalue == true) {
+            statusAction += '<a data-tooltip="" title="Mark As Incomplete" data-status="true" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+          } else {
+            statusAction += '<a data-tooltip="" title="Mark As Complete" data-status="false" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+          }
+          return statusAction;
+        }
+      },
       {
         label: 'Action', name: 'contact_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
@@ -590,21 +640,21 @@ $(document).ready(function () {
     datatype: "json",
     colModel: [
       {label: 'Device Id (Android)', name: 'device_id', width: 200, search: true},
-      {label: 'Device Id (IPhone)', name: 'device_id_iphone', width: 420, search: true},
+      {label: 'Device Id (IPhone)', name: 'device_id_iphone', width: 410, search: true},
       {
-        label: 'Device Name', name: 'device_name', width: 180, search: true, classes: 'text-break',
+        label: 'Device Name', name: 'device_name', width: 150, search: true, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'User Name', name: 'user_name', width: 180, classes: 'text-break',
+        label: 'User Name', name: 'user_name', width: 150, classes: 'text-break',
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
       },
       {
-        label: 'Last Reading Time', name: 'last_reading', width: 180, search: false,
+        label: 'Last Reading Time', name: 'last_reading', width: 190, search: false,
         formatter: function (cellvalue) {
           return (cellvalue == undefined) ? "NA" : cellvalue;
         }
@@ -616,7 +666,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 80, search: false, align: "center",
+        label: 'Status', name: 'is_deleted', width: 90, search: false, align: "center",
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
@@ -633,6 +683,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);"  data-alert-message="Are you sure you want to delete this device? By deleting the device all associated device reading will be deleted." title="Delete Device" data-url="' + BASE_URL + '/device/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -683,6 +734,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="Edit Location" href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this location?" title="Delete Location" data-url="' + BASE_URL + '/city/deleteLocation/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -716,9 +768,9 @@ $(document).ready(function () {
           }
         }
       },
-      {label: 'Name', name: 'name', width: 180, search: true, classes: 'text-break'},
+      {label: 'Name', name: 'name', width: 170, search: true, classes: 'text-break'},
       {label: 'Email', name: 'email', width: 280, search: true},
-      {label: 'Contact Number', name: 'phone', width: 180, align: "center"},
+      {label: 'Contact Number', name: 'phone', width: 150, align: "center"},
       {
         label: 'Address', name: 'address', width: 150, align: "center", search: true, classes: 'text-break',
       },
@@ -751,11 +803,12 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Action', name: 'user_id', search: false, width: 90, align: "right",
+        label: 'Action', name: 'user_id', search: false, width: 120, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a data-id="' + cellvalue + '" data-alert-message="Are you sure you want to delete this user by deleting the user all associated device will be deleted" data-url="' + BASE_URL + '/user/delete/' + cellvalue + '" class="delete-action" title="Delete User" href="javascript:void(0);" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }

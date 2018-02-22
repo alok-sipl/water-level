@@ -291,9 +291,9 @@ setting: function (req, res) {
    * @param  req
    */
 updateSetting: function (req, res) {
+  var status = (req.body.value == "false" || req.body.value == false) ? false : true;
   if (req.body.type == 'is_device_notification') {
     var ref = db.ref();
-    var status = (req.body.value == "false" || req.body.value == false) ? false : true;
     db.ref('/users/' + req.session.userid)
       .update({
         'is_device_notification_enable': status
