@@ -563,7 +563,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated area will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated location will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -602,9 +602,9 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
-            statusAction += '<a data-tooltip="" title="Mark As Incomplete" data-status="true" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+            statusAction += '<a title="Mark As Incomplete" data-status="true" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
           } else {
-            statusAction += '<a data-tooltip="" title="Mark As Complete" data-status="false" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+            statusAction += '<a title="Mark As Complete" data-status="false" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
           }
           return statusAction;
         }
@@ -718,7 +718,7 @@ $(document).ready(function () {
         }
       },
       {
-        label: 'Status', name: 'is_deleted', width: 100, search: false,
+        label: 'Status', name: 'is_deleted', width: 100, search: false, align: "center",
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {

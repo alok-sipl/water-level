@@ -287,31 +287,24 @@ module.exports = {
    */
   signUp: function (req, res) {
     if (!req.session.authenticated) {
-      firebase.auth().createUserWithEmailAndPassword('admin@qatrah.com', 'admin@1234')
+      firebase.auth().createUserWithEmailAndPassword('alok@gmail.com', '123456')
         .then(function () {
           user = firebase.auth().currentUser;
         }).then(function () {
         user.updateProfile({
-          displayName: "Durgesh",
-          photoURL: 'http://localhost:1337/images/profile.png'
+          displayName: "Alok",
         });
       }).then(function () {
         var ref = db.ref().child("users");
         var data = {
-          email: 'admin@qatrah.com',
-          password: 'admin@1234',
-          name: "Sipl Admin",
-          account_number: 6304544275,
-          area: "PU 4 Behind C21 Mall",
-          city_id: "",
-          city_name: "CL",
-          country_id: "-L0E-tknbeJKkXDSQHzr",
-          country_name: "United States",
-          is_online: true,
+          email: 'alok@gmail.com',
+          password: '123456',
+          name: "Alok",
           is_admin: false,
           phone: "9713997998",
           id: user.uid,
           is_deleted: false,
+          is_verified: true,
           is_user_notification_enable: true,
           is_device_notification_enable: true,
           created_at: Date.now(),

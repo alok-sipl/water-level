@@ -84,7 +84,7 @@ module.exports = {
 
     app_name: 'Qatrah',
     base_url: 'https://water-level.herokuapp.com/',
-    base_url_js: 'https://water-level.herokuapp.com',
+    base_url_js: 'https://water-level.herokuapp.com/',
     //base_url: 'http://localhost:1337/',
     //base_url_js: 'http://localhost:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
@@ -213,8 +213,8 @@ module.exports = {
         account_inactive: "Your account is inactived by admin",
         forgot_mail_send_success: "We have sent mail please check email and follow the steps",
         same_password_warning: "Current password and new password cannot be same",
-        can_not_delete_city: "This city is attched with supplier so you can't delete this",
-        can_not_delete_area: "This area is attched with supplier so you can't delete this",
+        can_not_delete_city: "You can't delete this city because it is added with supplier",
+        can_not_delete_area: "You can't delete this location because it is added with supplier",
 
     },
 

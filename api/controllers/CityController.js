@@ -689,33 +689,12 @@ module.exports = {
     var id = req.body.id;
     var status = req.body.is_active;
     if (id != '') {
-      db.ref('locations').orderByChild("city_id").equalTo(id)
+      db.ref('suppliers').orderByChild("city_id").equalTo(id)
         .once("value", function (snapshot) {
-          var locationResult = snapshot.val();
-          if (locationResult != null) {
-            for (var key in locationResult) {
-              db.ref('suppliers').orderByChild("area_id").equalTo(key)
-                .once("value", function (snapshot) {
-                  var supplierResult = snapshot.val();
-                  if (supplierResult != null) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.can_not_delete_location + '</div>');
-                    res.json({'status': false, message: sails.config.flash.can_not_delete_city});
-                  }
-                }, function (errorObject) {
-                  console.log('Error in 777777--->', errorObject);
-                  return res.serverError(errorObject.code);
-                });
-            }
-            db.ref('/cities/' + id)
-              .remove()
-              .then(function () {
-                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                return res.json({'status': true, message: sails.config.flash.delete_successfully});
-              })
-              .catch(function (err) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                res.json({'status': false, message: sails.config.flash.something_went_wronge});
-              });
+          var supplierResult = snapshot.val();
+          if (supplierResult != null) {
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.can_not_delete_city + '</div>');
+            res.json({'status': false, message: sails.config.flash.can_not_delete_city});
           } else {
             db.ref('/cities/' + id)
               .remove()
@@ -729,8 +708,8 @@ module.exports = {
               });
           }
         }, function (errorObject) {
-          console.log('Error in 777777--->', errorObject);
-          return res.serverError(errorObject.code);
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.json({'status': false, message: sails.config.flash.something_went_wronge});
         });
     } else {
       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
@@ -752,7 +731,6 @@ module.exports = {
       db.ref('suppliers').orderByChild("area_id").equalTo(id)
         .once("value", function (snapshot) {
           var supplierResult = snapshot.val();
-          console.log('supplierResult-->', supplierResult);
           if (supplierResult != null) {
             req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.can_not_delete_area + '</div>');
             res.json({'status': false, message: sails.config.flash.can_not_delete_area});
@@ -769,8 +747,8 @@ module.exports = {
               });
           }
         }, function (errorObject) {
-          console.log('Error in 777777--->', errorObject);
-          return res.serverError(errorObject.code);
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.json({'status': false, message: sails.config.flash.something_went_wronge});
         });
     } else {
       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');

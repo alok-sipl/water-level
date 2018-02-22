@@ -119,6 +119,8 @@ body.blank {background-color: #f1f3f6;}
 
 pre{
   display: block;
+  white-space: inherit;
+  overflow: inherit;
   padding: 0;
   margin: 0 0 10px;
   font-size: 13px;

@@ -31,7 +31,7 @@ module.exports = {
     var ref = db.ref("master_devices");
     ref.once('value', function (snap) {
       if (Object.keys(snap).length) {
-        var count = 1;
+        var count = 0;
         var tempSnap = snap;
         snap = snap.val();
         var tempBinRecords = [];
@@ -47,31 +47,114 @@ module.exports = {
             var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var deviceDetail = snapshot.val();
-              deviceName = (deviceDetail != null && deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
-              lastReading = (deviceDetail != null && deviceDetail.updated_at != undefined) ? deviceDetail.updated_at : 0;
-              var ref = db.ref('users/');
-              ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
-              }).then(function (userSnapshot) {
-                var userDetail = userSnapshot.val();
-                userName = (userDetail.name != undefined) ? userDetail.name : '';
-              }).catch(function (err) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                return res.redirect(sails.config.base_url + 'supplier');
-              });
-            }).then(function (snapshot) {
-              updateUser = childSnap;
-              updateUser.device_name = deviceName;
-              updateUser.user_name = userName;
-              updateUser.last_reading = DateService.timeSince(lastReading);
-              devices.push(updateUser);
-              if (tempSnap.numChildren() == count) {
-                return res.json({'rows': devices});
+              if(deviceDetail != null && deviceDetail.device_name != undefined && deviceDetail.updated_at != undefined){
+                deviceName = deviceDetail.device_name
+                lastReading = deviceDetail.updated_at;
+                var ref = db.ref('users/');
+                ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
+                  var userDetail = firstSnapshot.val();
+                  if(userDetail != null && userDetail.name != undefined){
+                    userName = userDetail.name;
+                    updateUser = childSnap;
+                    updateUser.device_name = deviceName;
+                    updateUser.user_name = userName;
+                    updateUser.last_reading = DateService.timeSince(lastReading);
+                    devices.push(updateUser);
+                    count++;
+                  }else{
+                    userName = '';
+                    updateUser = childSnap;
+                    updateUser.device_name = deviceName;
+                    updateUser.user_name = userName;
+                    updateUser.last_reading = DateService.timeSince(lastReading);
+                    devices.push(updateUser);
+                    count++;
+                  }
+                  if (tempSnap.numChildren() == count) {
+                    return res.json({'rows': devices});
+                  }
+                }, function (errorObject) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                  return res.redirect(sails.config.base_url + 'device');
+                });
+              }else{
+                deviceName = '';
+                lastReading = 0;
+                updateUser = childSnap;
+                updateUser.device_name = deviceName;
+                updateUser.user_name = userName;
+                updateUser.last_reading = DateService.timeSince(lastReading);
+                devices.push(updateUser);
+                count++;
+                if (tempSnap.numChildren() == count) {
+                  return res.json({'rows': devices});
+                }
               }
-              count++;
-            }).catch(function (err) {
+            }, function (errorObject) {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-              return res.redirect(sails.config.base_url + 'supplier');
-            });
+              return res.redirect(sails.config.base_url + 'device');
+          });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
+            // ref.once("value", function (snapshot) {
+            //   var deviceDetail = snapshot.val();
+            //   deviceName = (deviceDetail != null && deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+            //   lastReading = (deviceDetail != null && deviceDetail.updated_at != undefined) ? deviceDetail.updated_at : 0;
+            //   var ref = db.ref('users/');
+            //   ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
+            //   }).then(function (userSnapshot) {
+            //     var userDetail = userSnapshot.val();
+            //     userName = (userDetail.name != undefined) ? userDetail.name : '';
+            //   }).catch(function (err) {
+            //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+            //     return res.redirect(sails.config.base_url + 'supplier');
+            //   });
+            // }).then(function (snapshot) {
+            //   updateUser = childSnap;
+            //   updateUser.device_name = deviceName;
+            //   updateUser.user_name = userName;
+            //   updateUser.last_reading = DateService.timeSince(lastReading);
+            //   devices.push(updateUser);
+            //   if (tempSnap.numChildren() == count) {
+            //     return res.json({'rows': devices});
+            //   }
+            //   count++;
+            // }).catch(function (err) {
+            //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+            //   return res.redirect(sails.config.base_url + 'supplier');
+            // });
+
+
+
+
           } else {
             updateUser = childSnap;
             updateUser.device_name = '';
@@ -241,14 +324,41 @@ module.exports = {
           })
       }
     } else {
-      /* supplier detail */
       var ref = db.ref("master_devices/" + req.params.id);
       ref.once("value", function (snapshot) {
         var device = snapshot.val();
         if (device != null) {
-          return res.view('view-edit-device', {
-            title: sails.config.title.edit_device, 'device': device, errors: errors, isEdit: true,
-          });
+          if (Object.keys(device).length && device.user_id != undefined && device.id != undefined) {
+            var ref = db.ref('/devices/' + device.user_id).orderByChild("userId").equalTo(device.user_id)
+              .once("child_added", function (snapshot) {
+                var deviceDetail = snapshot.val();
+                device.device_name = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+                device.location = (deviceDetail.tank_location != undefined) ? deviceDetail.tank_location : 0;
+                var ref = db.ref('users').orderByChild("id").equalTo(device.user_id)
+                  .once("child_added", function (snapshot) {
+                    var userDetail = snapshot.val();
+                    if(userDetail != null && userDetail.name != undefined){
+                      device.user_name = userDetail.name;
+                      return res.view('view-edit-device', {
+                        title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: true,
+                      });
+                    }else{
+                      return res.view('view-edit-device', {
+                        title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: true,
+                      });
+                    }
+                  }, function (errorObject) {
+                    return res.serverError(errorObject.code);
+                  });
+              }, function (errorObject) {
+                return res.serverError(errorObject.code);
+              });
+
+          } else {
+            return res.view('view-edit-device', {
+              title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: true,
+            });
+          }
         } else {
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'device');
@@ -274,22 +384,31 @@ module.exports = {
       var device = snapshot.val();
       if (device != null) {
         if (Object.keys(device).length && device.user_id != undefined && device.id != undefined) {
-          var ref = db.ref('/devices/' + device.user_id + '/' + device.id);
-          ref.once("value", function (snapshot) {
-          }).then(function (snapshot) {
-            var deviceDetail = snapshot.val();
-            deviceName = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
-            tankLocation = (deviceDetail.tank_location != undefined) ? deviceDetail.tank_location : 0;
-          }).then(function (snapshot) {
-            device.device_name = deviceName;
-            device.location = tankLocation;
-            return res.view('view-edit-device', {
-              title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
+          var ref = db.ref('/devices/' + device.user_id).orderByChild("userId").equalTo(device.user_id)
+            .once("child_added", function (snapshot) {
+              var deviceDetail = snapshot.val();
+              device.device_name = (deviceDetail.device_name != undefined) ? deviceDetail.device_name : '';
+              device.location = (deviceDetail.tank_location != undefined) ? deviceDetail.tank_location : 0;
+              var ref = db.ref('users').orderByChild("id").equalTo(device.user_id)
+                .once("child_added", function (snapshot) {
+                  var userDetail = snapshot.val();
+                  if(userDetail != null && userDetail.name != undefined){
+                    device.user_name = userDetail.name;
+                    return res.view('view-edit-device', {
+                      title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
+                    });
+                  }else{
+                    return res.view('view-edit-device', {
+                      title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
+                    });
+                  }
+                }, function (errorObject) {
+                  return res.serverError(errorObject.code);
+                });
+          }, function (errorObject) {
+              return res.serverError(errorObject.code);
             });
-          }).catch(function (err) {
-            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-            return res.redirect(sails.config.base_url + 'device');
-          });
+
         } else {
           return res.view('view-edit-device', {
             title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
