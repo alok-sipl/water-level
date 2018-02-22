@@ -84,7 +84,7 @@ module.exports = {
 
     app_name: 'Qatrah',
     base_url: 'https://water-level.herokuapp.com/',
-    base_url_js: 'https://water-level.herokuapp.com/',
+    base_url_js: 'https://water-level.herokuapp.com',
     //base_url: 'http://localhost:1337/',
     //base_url_js: 'http://localhost:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
