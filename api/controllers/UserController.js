@@ -46,7 +46,8 @@ module.exports = {
         });
         async.forEach(tempBinRecords, function (childSnap, callback) {
           var deviceList = '';
-          if (childSnap.id != undefined && childSnap.is_verified != undefined && childSnap.is_verified) {
+          /*if (childSnap.id != undefined && childSnap.is_verified != undefined && childSnap.is_verified) { */
+          if (childSnap.id != undefined) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var devices = snapshot.val();
@@ -430,12 +431,15 @@ module.exports = {
             var userId = userDetail.id;
             firebaseAdmin.auth().deleteUser(userId).then(function () {
                 db.ref('users/' + id).remove().then(function () {
-                  db.ref('users').orderByChild("is_superadmin").equalTo(true)
-                    .once("child_added", function (userSnapshot) {
-                      var superAdmin = userSnapshot.val();
-                      if (superAdmin != null && superAdmin.id != undefined) {
-                        db.ref('alerts/' + superAdmin.id).orderByChild("user_id").equalTo(userId).once('value', function (alertSnapshot) {
-                          alertSnapshot.ref.remove().then(function () {
+
+                  // db.ref('users').orderByChild("is_superadmin").equalTo(true)
+                  //   .once("child_added", function (userSnapshot) {
+                  //     var superAdmin = userSnapshot.val();
+                  //     if (superAdmin != null && superAdmin.id != undefined) {
+                  //       db.ref('alerts/' + superAdmin.id).orderByChild("user_id").equalTo(userId).once('value', function (alertSnapshot) {
+                  //         alertSnapshot.ref.remove().then(function () {
+
+
                             db.ref('devices/' + userId).remove().then(function () {
                               db.ref('master_devices').orderByChild("user_id").equalTo(userId)
                                 .once('value', function (snapshot) {
@@ -461,7 +465,7 @@ module.exports = {
                                                 });
                                             }
                                             req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                            return res.redirect(sails.config.base_url + 'user');
+                                            res.json({'status': false,message: sails.config.flash.delete_successfully});
                                           } else {
                                             db.ref('tokens/' + key).remove().then(function () {
                                               }, function (errorObject) {
@@ -492,11 +496,11 @@ module.exports = {
                                                   });
                                               }
                                               req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                              return res.redirect(sails.config.base_url + 'user');
+                                              res.json({'status': false,message: sails.config.flash.delete_successfully});
                                             } else {
                                               db.ref('tokens/' + key).remove().then(function () {
                                                   req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                                  return res.redirect(sails.config.base_url + 'user');
+                                                res.json({'status': false,message: sails.config.flash.delete_successfully});
                                                 }, function (errorObject) {
                                                   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
                                                   res.json({'status': false,message: sails.config.flash.something_went_wronge});
@@ -516,24 +520,36 @@ module.exports = {
                                   res.json({'status': false, message: sails.config.flash.something_went_wronge});
                                 });
                             })
-                          }, function (errorObject) {
-                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                            res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                          });
 
-                        }, function (errorObject) {
-                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                          res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                        });
 
-                      } else {
-                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                        res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                      }
-                    }, function (errorObject) {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                      res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    });
+
+
+
+                    //       }, function (errorObject) {
+                    //         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                    //         res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                    //       });
+                    //
+                    //     }, function (errorObject) {
+                    //       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                    //       res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                    //     });
+                    //
+                    //   } else {
+                    //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                    //     res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                    //   }
+                    // }, function (errorObject) {
+                    //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                    //   res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                    // });
+
+
+
+
+
+
+
                 }, function (errorObject) {
                   console.log('Error in BBB');
                   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');

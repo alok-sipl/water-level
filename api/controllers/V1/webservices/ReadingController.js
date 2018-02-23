@@ -703,43 +703,42 @@ module.exports = {
     console.log('Cron is runnig for reminder...');
     var currentDate = Date.now();
     var currentDateObj = new Date();
+    var loopCount = 0;
     var ref = db.ref("devices");
     ref.once("value", function (snapshotWards) {
-      console.log('**********', snapshotWards.val(), '**********');
+      var counteNumber = snapshotWards.numChildren();
+      console.log('111');
+
       _.map(snapshotWards.val(), function (val, user_key) {
+        loopCount++;
+        console.log('222');
         _.map(val, function (val2, device_key) {
+          console.log('333');
           if (val2.settings != undefined && val2.settings.from_date != undefined) {
-            console.log('in if condition');
+            console.log('444');
             var fromDate = new Date(val2.settings.from_date);
+            console.log('in if condition', val2);
+            console.log(currentDateObj.getTime(), fromDate.getTime());
             var lastNotificationSendMinutesAgo = Math.floor((currentDate - val2.settings.last_notification_time) / 1000);
-            //console.log(val2);
-            //console.log("user_key===",user_key);
-            //console.log("device_key==",device_key);
-            //console.log("currentDateObj.getTime()===",currentDateObj.getTime());
-            //console.log("fromDate.getTime()==",fromDate.getTime());
-            //console.log("val2.repeat==",val2.settings.repeat);
-            //console.log("val2.tank_status.percentage==",val2.tank_status.percentage);
-            //console.log(" val2.settings.alert_level_changes===", val2.settings.alert_level_change);
-            //console.log("val2.settings.send_notificaiton_count==",val2.settings.send_notificaiton_count);
-            //console.log(" val2.settings.repeat_duration ==", val2.settings.repeat_duration);
-            //console.log("lastNotificationSendMinutesAgo==",lastNotificationSendMinutesAgo);
-            //console.log("val2.settings.interval_in_minutes ==",val2.settings.interval_in_minutes );
-            //console.log(val2.tank_status.percentage , parseFloat(val2.settings.alert_level_change));
-            if (val2 != undefined && val2 != null && Object.keys(val2).length && currentDateObj.getTime() > fromDate.getTime() && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && (val2.settings.send_notificaiton_count == undefined || val2.settings.send_notificaiton_count < parseInt(val2.settings.repeat_duration))) {
-              console.log('in inner if condition');
+            if (val2 != undefined && val2 != null && Object.keys(val2).length && currentDateObj.getTime() > fromDate.getTime() && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && val2.settings.repeat_duration != undefined &&  lastNotificationSendMinutesAgo >= val2.settings.repeat_duration) {
               // Already working code with pass user_key.
               var ref = db.ref("users");
               ref.orderByChild("id").equalTo(user_key).once("child_added",
                 function (snapshot) {
+                  console.log('666');
                   var userInfo = snapshot.val();
                   //console.log('User infor...', userInfo);
                   if (userInfo != undefined && userInfo != null) {
+                    console.log('7777');
                     var userKey = snapshot.key;
                     if (userInfo.is_user_notification != undefined && userInfo.is_user_notification == true) {
+                      console.log('888');
                       var ref = db.ref("tokens/" + user_key);
                       ref.once("value", function (snapshot) {
+                        console.log('999');
                         var deviceDetail = snapshot.val();
                         if (deviceDetail != undefined && Object.keys(deviceDetail).length) {
+                          console.log('aaa');
                           //console.log('true111...');
                           var info = {
                             userId: user_key,
@@ -749,18 +748,20 @@ module.exports = {
                             data: {}
                           }
                           for (var key in deviceDetail) {
+                            console.log('bbb');
                             info.token = deviceDetail[key].device_token;
                             console.log('Notification--->', info);
                             NotificationService.sendNotification(info);
                           }
+                          console.log('ccc');
                           db.ref('devices/' + user_key + '/' + device_key + '/settings')
                             .update({
-                              'send_notificaiton_count': (val2.settings.send_notificaiton_count != undefined) ? val2.settings.send_notificaiton_count + 1 : 1,
                               'last_notification_time': Date.now()
                             }).then(function (res) {
+                            console.log('ddd');
                           }, function (errorObject) {
-                            console.log('kkkk', errorObject);
-                            return res.serverError(errorObject.code);
+                            console.log('eee');
+                            return res.json([]);
                           })
                           var ref = db.ref("alerts/" + user_key);
                           var data = {
@@ -769,38 +770,24 @@ module.exports = {
                             type: 'update_device_setting',
                           }
                           ref.push(data).then(function () {
+                            console.log('fff');
                             return res.json([]);
                           }, function (errorObject) {
                             console.log('llll', errorObject);
-                            return res.serverError(errorObject.code);
+                            return res.json([]);
                           });
-                        } else {
-                          console.log('mmmm...');
-                          return res.json([]);
                         }
                       }, function (errorObject) {
                         console.log('nnnn', errorObject);
-                        return res.serverError(errorObject.code);
+                        return res.json([]);
                       });
-                    } else {
-                      console.log('oooo');
-                      return res.json([]);
                     }
-                  } else {
-                    console.log('pppp');
-                    return res.json([]);
                   }
                 }, function (errorObject) {
                   console.log('qqqq', errorObject);
-                  return res.serverError(errorObject.code);
+                  return res.json([]);
                 });
-            } else {
-              console.log("there is not record for send device token");
-              return res.json([]);
             }
-          } else {
-            console.log("there is not record for send device token");
-            return res.json([]);
           }
         }, function(err){
           console.log('805', err);
@@ -808,6 +795,10 @@ module.exports = {
       }, function(err){
         console.log('herer', err);
       });
+      if(loopCount == counteNumber){
+        console.log("there is not record for send device token");
+        return res.json([]);
+      }
     }, function (errorObject) {
       console.log('rrrr', errorObject);
       return res.serverError(errorObject.code);
@@ -976,9 +967,7 @@ module.exports = {
           var userInfo = snapshot.val();
           if (userInfo != undefined && userInfo != null) {
             var userKey = snapshot.key ? snapshot.key : 0;
-            console.log('userKey....', userKey);
             if (userInfo.is_user_notification != undefined && userInfo.is_user_notification == true) {
-              console.log('111111');
               var ref = db.ref("tokens/" + req.body.userId);
               ref.once("value", function (snapshot) {
                 var deviceDetail = snapshot.val();
@@ -1002,7 +991,6 @@ module.exports = {
                     }
                     ref.push(data).then(function () {
                     }, function (errorObject) {
-                      console.log('xxxx', errorObject);
                       return res.json([]);
                     });
                   }
@@ -1025,7 +1013,6 @@ module.exports = {
                     }
                     ref.push(data).then(function () {
                     }, function (errorObject) {
-                      console.log('AAAA', errorObject);
                       return res.json([]);
                     });
                   }
@@ -1048,13 +1035,11 @@ module.exports = {
                     }
                     ref.push(data).then(function () {
                     }, function (errorObject) {
-                      console.log('BBBB', errorObject);
                       return res.json([]);
                     });
                   }
                 }
               }, function (errorObject1) {
-                console.log('CCCC', errorObject1);
                 return res.json([]);
               });
             } else {
@@ -1064,11 +1049,9 @@ module.exports = {
             return res.json([]);
           }
         }, function (errorObject) {
-          console.log('DDDD', errorObject);
           return res.json([]);
         });
     } else {
-      console.log('false...');
       return res.json([]);
     }
   },

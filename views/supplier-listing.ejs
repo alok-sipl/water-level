@@ -32,6 +32,7 @@
 <% } %>
 <div class="alert alert-success" style="display: none"></div>
 <div class="alert alert-danger" style="display: none"></div>
+<% if (count != undefined && count > 0) { %>
 <div class="row">
   <div class="col-lg-3">
     <div class="hpanel">
@@ -52,6 +53,7 @@
     </div>
   </div>
 </div>
+<% } %>
 <div class="row supplier-block">
   <div id="movies" class="clearfix supplier-list">
   </div>

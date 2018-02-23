@@ -287,21 +287,21 @@ module.exports = {
    */
   signUp: function (req, res) {
     if (!req.session.authenticated) {
-      firebase.auth().createUserWithEmailAndPassword('alok@gmail.com', '123456')
+      firebase.auth().createUserWithEmailAndPassword('macksoni006@gmail.com', 'Aa@123456')
         .then(function () {
           user = firebase.auth().currentUser;
         }).then(function () {
         user.updateProfile({
-          displayName: "Alok",
+          displayName: "Piyush",
         });
       }).then(function () {
         var ref = db.ref().child("users");
         var data = {
-          email: 'alok@gmail.com',
-          password: '123456',
-          name: "Alok",
+          email: 'macksoni006@gmail.com',
+          password: 'Aa@123456',
+          name: "Piyush",
           is_admin: false,
-          phone: "9713997998",
+          phone: "+8989501861",
           id: user.uid,
           is_deleted: false,
           is_verified: true,

@@ -12,11 +12,11 @@ $(document).ready(function () {
   setTimeout(function () {
     $('div').removeClass('has-error');
     $('.form-group').find('.help-block').hide();
-  }, 8000);
+  }, 10000);
 
   setTimeout(function () {
     $('.flash-message').remove();
-  }, 8000);
+  }, 10000);
 
   $.ajax({
     url: BASE_URL + '/login/getAdminNotification',
@@ -511,7 +511,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Admin" href="' + BASE_URL + '/admin/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit Admin" href="' + BASE_URL + '/admin/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this admin?"  title="Delete Admin" data-url="' + BASE_URL + '/admin/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this admin?"  title="Delete Admin" data-url="' + BASE_URL + '/admin/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -563,7 +563,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated location will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated location will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -602,9 +602,9 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           statusAction = ''
           if (cellvalue == 'true' || cellvalue == true) {
-            statusAction += '<a title="Mark As Incomplete" data-status="true" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle in-active"></i></a>';
+            statusAction += '<a title="Mark As Incomplete" data-status="true" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="In Active"><i class="fa fa-circle active"></i></a>';
           } else {
-            statusAction += '<a title="Mark As Complete" data-status="false" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle active"></i></a>';
+            statusAction += '<a title="Mark As Complete" data-status="false" data-url="' + BASE_URL + '/contact/updateStatus" class="button status-action active" data-id="' + contact_id + '" href="javascript:void(0);" data-original-title="Active"><i class="fa fa-circle in-active"></i></a>';
           }
           return statusAction;
         }
@@ -683,7 +683,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Device Detail" href="' + BASE_URL + '/device/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit Device Detail" href="' + BASE_URL + '/device/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);"  data-alert-message="Are you sure you want to delete this device? By deleting the device all associated device reading will be deleted." title="Delete Device" data-url="' + BASE_URL + '/device/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);"  data-alert-message="Are you sure you want to delete this device? By deleting the device all associated device reading will be deleted." title="Delete Device" data-url="' + BASE_URL + '/device/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -734,7 +734,7 @@ $(document).ready(function () {
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
           action += '<span><a title="Edit Location" href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this location?" title="Delete Location" data-url="' + BASE_URL + '/city/deleteLocation/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this location?" title="Delete Location" data-url="' + BASE_URL + '/city/deleteLocation/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -808,7 +808,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a data-id="' + cellvalue + '" data-alert-message="Are you sure you want to delete this user by deleting the user all associated device will be deleted" data-url="' + BASE_URL + '/user/delete/' + cellvalue + '" class="delete-action" title="Delete User" href="javascript:void(0);" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a data-id="' + cellvalue + '" data-alert-message="Are you sure you want to delete this user by deleting the user all associated device will be deleted" data-url="' + BASE_URL + '/user/delete/' + cellvalue + '" class="delete-action status-label" title="Delete User" href="javascript:void(0);" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
