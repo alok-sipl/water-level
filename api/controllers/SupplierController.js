@@ -572,7 +572,7 @@ module.exports = {
       db.ref('/suppliers/' + id)
         .remove()
         .then(function () {
-          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.update_successfully + '</div>');
           return res.json({'status': true, message: sails.config.flash.delete_successfully});
         })
         .catch(function (err) {

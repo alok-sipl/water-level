@@ -561,19 +561,27 @@ module.exports = {
  * @param  req
  */
   testFunction: function () {
-    firebaseAdmin.auth().getUser('hGdy6bYg8dQtscAlET3Mis1Hysm2')
-      .then(function (userRecord) {
-        firebaseAdmin.auth().updateUser('hGdy6bYg8dQtscAlET3Mis1Hysm2', {
-          password: 'sipl@1234',
-        }).then(function (userRecord) {
-          console.log('update Success');
-        })
-          .catch(function (error) {
-            console.log('update error', error);
-          });
-      }).catch(function (error) {
-      console.log('update error2', error);
+    db.ref('users/-L61jB9M3UtQ0_fYrgIE').update({
+      'is_online': '',
+      'demo': ''
+    }).then(function () {
+      console.log('Success');
+    }, function (errorObject) {
+      console.log('error-->', errorObject);
     });
+    // firebaseAdmin.auth().getUser('hGdy6bYg8dQtscAlET3Mis1Hysm2')
+    //   .then(function (userRecord) {
+    //     firebaseAdmin.auth().updateUser('hGdy6bYg8dQtscAlET3Mis1Hysm2', {
+    //       password: 'sipl@1234',
+    //     }).then(function (userRecord) {
+    //       console.log('update Success');
+    //     })
+    //       .catch(function (error) {
+    //         console.log('update error', error);
+    //       });
+    //   }).catch(function (error) {
+    //   console.log('update error2', error);
+    // });
   }
 };
 
