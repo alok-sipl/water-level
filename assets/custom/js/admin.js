@@ -511,7 +511,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View Admin" href="' + BASE_URL + '/admin/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit Admin" href="' + BASE_URL + '/admin/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a data-alert-message="Are you sure you want to delete this admin?" title="Delete Admin" href="' + BASE_URL + '/admin/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this admin?"  title="Delete Admin" data-url="' + BASE_URL + '/admin/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
