@@ -28,7 +28,6 @@ $(document).ready(function () {
         $('.notification-tab').html(response)
       }
     }, error: function (jqXHR, exception) {
-      alert(jqXHR);
       alert(exception);
     }
   });
@@ -91,7 +90,6 @@ $(document).ready(function () {
           $('button.clr-search-supplier').css("display", "block");
           $('div.supplier-block').html(response);
         }, error: function (jqXHR, exception) {
-          alert(jqXHR);
           alert(exception);
         }
       });

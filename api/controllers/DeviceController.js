@@ -39,10 +39,12 @@ module.exports = {
           val.device_key = device_key;
           tempBinRecords.push(val)
         });
+
         async.forEach(tempBinRecords, function (childSnap, callback) {
           var deviceList = ''
           var userName = '';
           var lastReading = 0;
+          var deviceName = '';
           if (childSnap.id != undefined && childSnap.user_id != undefined) {
             var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             ref.once("value", function (snapshot) {
@@ -58,7 +60,7 @@ module.exports = {
                     updateUser = childSnap;
                     updateUser.device_name = deviceName;
                     updateUser.user_name = userName;
-                    updateUser.last_reading = DateService.timeSince(lastReading);
+                    updateUser.last_reading = (lastReading != 0) ? DateService.timeSince(lastReading) : 'N/A';
                     devices.push(updateUser);
                     count++;
                   }else{
@@ -66,7 +68,8 @@ module.exports = {
                     updateUser = childSnap;
                     updateUser.device_name = deviceName;
                     updateUser.user_name = userName;
-                    updateUser.last_reading = DateService.timeSince(lastReading);
+                    updateUser.last_reading = (lastReading != 0) ? DateService.timeSince(lastReading) : 'N/A';
+                    console.log('**-->', deviceDetail, updateUser.last_reading, '<--**');
                     devices.push(updateUser);
                     count++;
                   }
@@ -83,7 +86,7 @@ module.exports = {
                 updateUser = childSnap;
                 updateUser.device_name = deviceName;
                 updateUser.user_name = userName;
-                updateUser.last_reading = DateService.timeSince(lastReading);
+                updateUser.last_reading = (lastReading != 0) ? DateService.timeSince(lastReading) : 'N/A';
                 devices.push(updateUser);
                 count++;
                 if (tempSnap.numChildren() == count) {

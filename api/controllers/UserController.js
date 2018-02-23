@@ -426,149 +426,128 @@ module.exports = {
     var status = req.body.is_active;
     if (id != '') {
       db.ref('users/' + id).once("value", function (snapshot) {
-          var userDetail = snapshot.val();
-          if (userDetail != null && userDetail.id != undefined) {
-            var userId = userDetail.id;
-            firebaseAdmin.auth().deleteUser(userId).then(function () {
-                db.ref('users/' + id).remove().then(function () {
+        var userDetail = snapshot.val();
+        if (userDetail != null && userDetail.id != undefined) {
+          var userId = userDetail.id;
+          firebaseAdmin.auth().deleteUser(userId).then(function () {
+            db.ref('users/' + id).remove().then(function () {
 
-                  // db.ref('users').orderByChild("is_superadmin").equalTo(true)
-                  //   .once("child_added", function (userSnapshot) {
-                  //     var superAdmin = userSnapshot.val();
-                  //     if (superAdmin != null && superAdmin.id != undefined) {
-                  //       db.ref('alerts/' + superAdmin.id).orderByChild("user_id").equalTo(userId).once('value', function (alertSnapshot) {
-                  //         alertSnapshot.ref.remove().then(function () {
-
-
-                            db.ref('devices/' + userId).remove().then(function () {
-                              db.ref('master_devices').orderByChild("user_id").equalTo(userId)
-                                .once('value', function (snapshot) {
-                                  var masterDeviceResult = snapshot.val();
-                                  if (masterDeviceResult != null) {
-                                    for (var key in masterDeviceResult) {
-                                      db.ref('master_devices/' + key).remove().then(function () {
-                                        }, function (errorObject) {
-                                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                          res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                        });
-                                    }
-                                    db.ref('tokens/' + userId).remove().then(function () {
-                                      db.ref('likes').orderByChild("user_id").equalTo(userId)
-                                        .once('value', function (likesSnapshot) {
-                                          var likeResult = likesSnapshot.val()
-                                          if (likeResult != null) {
-                                            for (var key in likeResult) {
-                                              db.ref('tokens/' + key).remove().then(function () {
-                                                }, function (errorObject) {
-                                                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                                  res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                                });
-                                            }
-                                            req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                            res.json({'status': false,message: sails.config.flash.delete_successfully});
-                                          } else {
-                                            db.ref('tokens/' + key).remove().then(function () {
-                                              }, function (errorObject) {
-                                                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                                res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                              });
-                                          }
-                                        }, function (errorObject) {
-                                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                          res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                        });
-                                    }, function (errorObject) {
-                                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                      res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                                    });
-                                  } else {
-                                    db.ref('tokens/' + userId).remove()
-                                      .then(function () {
-                                        db.ref('likes').orderByChild("user_id").equalTo(userId)
-                                          .once('value', function (likesSnapshot) {
-                                            var likeResult = likesSnapshot.val()
-                                            if (likeResult != null) {
-                                              for (var key in likeResult) {
-                                                db.ref('tokens/' + key).remove().then(function () {
-                                                  }, function (errorObject) {
-                                                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                                    res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                                  });
-                                              }
-                                              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                              res.json({'status': false,message: sails.config.flash.delete_successfully});
-                                            } else {
-                                              db.ref('tokens/' + key).remove().then(function () {
-                                                  req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                                res.json({'status': false,message: sails.config.flash.delete_successfully});
-                                                }, function (errorObject) {
-                                                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                                  res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                                });
-                                            }
-                                          }, function (errorObject) {
-                                            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                            res.json({'status': false,message: sails.config.flash.something_went_wronge});
-                                          });
-                                      }, function (errorObject) {
-                                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                        res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                                      });
-                                  }
-                                }, function (errorObject) {
-                                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                  res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                                });
-                            })
+              // db.ref('users').orderByChild("is_superadmin").equalTo(true)
+              //   .once("child_added", function (userSnapshot) {
+              //     var superAdmin = userSnapshot.val();
+              //     if (superAdmin != null && superAdmin.id != undefined) {
+              //       db.ref('alerts/' + superAdmin.id).orderByChild("user_id").equalTo(userId).once('value', function (alertSnapshot) {
+              //         alertSnapshot.ref.remove().then(function () {
 
 
+              db.ref('devices/' + userId).remove().then(function () {
+                db.ref('master_devices').orderByChild("user_id").equalTo(userId)
+                  .once('value', function (snapshot) {
+                    var masterDeviceResult = snapshot.val();
+                    if (masterDeviceResult != null) {
+                      for (var key in masterDeviceResult) {
+                        db.ref('master_devices/' + key).update({
+                          'user_id': '',
+                          'id': ''
+                        }).then(function () {
+                        }, function (errorObject) {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                          res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                        });
+                      }
+                      db.ref('tokens/' + userId).remove().then(function () {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                        res.json({'status': false, message: sails.config.flash.delete_successfully});
+                      }, function (errorObject) {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                        res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                      });
+                    } else {
+                      db.ref('tokens/' + userId).remove()
+                        .then(function () {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                          res.json({'status': false, message: sails.config.flash.delete_successfully});
 
 
+                          // db.ref('likes').orderByChild("user_id").equalTo(userId)
+                          //   .once('value', function (likesSnapshot) {
+                          //     var likeResult = likesSnapshot.val()
+                          //     if (likeResult != null) {
+                          //       for (var key in likeResult) {
+                          //         db.ref('tokens/' + key).remove().then(function () {
+                          //           }, function (errorObject) {
+                          //             req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                          //             res.json({'status': false,message: sails.config.flash.something_went_wronge});
+                          //           });
+                          //       }
+                          //       req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                          //       res.json({'status': false,message: sails.config.flash.delete_successfully});
+                          //     } else {
+                          //       db.ref('tokens/' + key).remove().then(function () {
+                          //           req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                          //         res.json({'status': false,message: sails.config.flash.delete_successfully});
+                          //         }, function (errorObject) {
+                          //           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                          //           res.json({'status': false,message: sails.config.flash.something_went_wronge});
+                          //         });
+                          //     }
+                          //   }, function (errorObject) {
+                          //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                          //     res.json({'status': false,message: sails.config.flash.something_went_wronge});
+                          //   });
 
-                    //       }, function (errorObject) {
-                    //         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //         res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    //       });
-                    //
-                    //     }, function (errorObject) {
-                    //       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //       res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    //     });
-                    //
-                    //   } else {
-                    //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //     res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    //   }
-                    // }, function (errorObject) {
-                    //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //   res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    // });
+
+                        }, function (errorObject) {
+                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                          res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                        });
+                    }
+                  }, function (errorObject) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                    res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                  });
+              })
 
 
+              //       }, function (errorObject) {
+              //         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              //         res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              //       });
+              //
+              //     }, function (errorObject) {
+              //       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              //       res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              //     });
+              //
+              //   } else {
+              //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              //     res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              //   }
+              // }, function (errorObject) {
+              //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              //   res.json({'status': false, message: sails.config.flash.something_went_wronge});
+              // });
 
 
-
-
-
-                }, function (errorObject) {
-                  console.log('Error in BBB');
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                  res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                });
-              }, function (errorObject) {
-              console.log('Error in CCC');
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                res.json({'status': false, message: sails.config.flash.something_went_wronge});
-              });
-          } else {
-            console.log('Error in 888888--->');
+            }, function (errorObject) {
+              console.log('Error in BBB');
+              req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+              res.json({'status': false, message: sails.config.flash.something_went_wronge});
+            });
+          }, function (errorObject) {
+            console.log('Error in CCC');
             req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-            return res.json({'status': false, message: sails.config.flash.something_went_wronge});
-          }
-        }, function (errorObject) {
+            res.json({'status': false, message: sails.config.flash.something_went_wronge});
+          });
+        } else {
+          console.log('Error in 888888--->');
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+        }
+      }, function (errorObject) {
         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
         res.json({'status': false, message: sails.config.flash.something_went_wronge});
-        });
+      });
     } else {
       console.log('Error in 88888888--->');
       req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
@@ -576,6 +555,11 @@ module.exports = {
     }
   },
 
+
+  /*
+ * Purpose: testing purpose
+ * @param  req
+ */
   testFunction: function () {
     firebaseAdmin.auth().getUser('hGdy6bYg8dQtscAlET3Mis1Hysm2')
       .then(function (userRecord) {

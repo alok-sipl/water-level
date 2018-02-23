@@ -24,7 +24,7 @@
     // Input
     $inputAttachTo = $(inputAttachTo);
     input = function(type) {
-      return $(`<input type = "${type}" class="control-label" accept="image/*" name="image" id="image" data-parsley-max-file-size="4194" data-parsley-filemimetypes="image/jpeg, image/png" />`);
+      return $(`<input type = "${type}" class="control-label hide" accept="image/*" name="image" id="image" data-parsley-max-file-size="4194" data-parsley-filemimetypes="image/jpeg, image/png" /><label for="image" class="btn btn-primary "><i class="fa fa-upload"></i> Select file</label>`);
     };
     div = function() {
       return $("<div/>");
