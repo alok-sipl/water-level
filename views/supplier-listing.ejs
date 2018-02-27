@@ -81,7 +81,7 @@
               <-% } %->
             </li>
             <li><a data-supplier="true" data-status="false"
-                   data-alert-message="Are you sure you want to delete this supplier"
+                   data-alert-message="Are you sure you want to delete this supplier?"
                    data-url="<%= sails.config.base_url %>supplier/delete/<-%= id %->"
                    class="status-label delete-action" data-id="<-%= id %->"
                    href="javascript:void(0);" data-original-title="Delete Supplier"><i class="fa fa-trash-o"></i>Delete Supplier
@@ -89,15 +89,9 @@
           </ul>
         </div>
         <-% if(is_deleted == 'true' || is_deleted == true){ %->
-        <a data-supplier="true" data-status="true"
-           data-url="<%= sails.config.base_url %>supplier/updateStatus/<-%= id %->"
-           class="label m-t-sm m-r-sm label-danger pull-right status-label" data-id="<-%= id %->"
-           href="javascript:void(0);" data-original-title="Make Supplier Active">In Active</a>
+        <span class="label m-t-sm m-r-sm label-danger pull-right status-label">In Active</span>
         <-% }else{ %->
-        <a data-supplier="true" data-status="false"
-           data-url="<%= sails.config.base_url %>supplier/updateStatus/<-%= id %->"
-           class="label m-t-sm m-r-sm label-success pull-right status-label " data-id="<-%= id %->"
-           href="javascript:void(0);" data-original-title="Make Supplier In Active">Active</a>
+        <span class="label m-t-sm m-r-sm label-success pull-right status-label">Active</span>
         <-% } %->
 
 

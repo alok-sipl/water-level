@@ -44,16 +44,20 @@ module.exports = {
           val.user_key = user_key;
           tempBinRecords.push(val)
         });
+        var deviceList = '';
         async.forEach(tempBinRecords, function (childSnap, callback) {
-          var deviceList = '';
+
           /*if (childSnap.id != undefined && childSnap.is_verified != undefined && childSnap.is_verified) { */
           if (childSnap.id != undefined) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var devices = snapshot.val();
+              console.log(devices);
               if (devices != null && Object.keys(devices).length) {
                 for (var key in devices) {
-                  deviceList += devices[key].device_name + ', ';
+                  if(devices[key].device_name != undefined){
+                    deviceList += devices[key].device_name + ', ';
+                  }
                 }
               }
             }).then(function (snapshot) {
@@ -129,6 +133,7 @@ module.exports = {
    */
   edit: function (req, res) {
     if (req.method == "POST") {
+      var status = (req.param('status') == "false" || req.param('status') == false || req.param('status') == undefined) ? false : true;
       errors = ValidationService.validate(req);
       if (Object.keys(errors).length) {
         var ref = db.ref("users/" + req.params.id);
@@ -175,7 +180,6 @@ module.exports = {
             });
           }
           if (uploadedFiles.length === 0) {
-            var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
             var ref = db.ref("users/" + req.params.id);
             ref.once("value", function (snapshot) {
               var user = snapshot.val();
@@ -262,7 +266,6 @@ module.exports = {
           } else {
             storageBucket.upload('assets/images/' + uploadedFiles[0].filename, function (err, file) {
               if (!err) {
-                var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
                 var ref = db.ref("users/" + req.params.id);
                 ref.once("value", function (snapshot) {
                   var user = snapshot.val();

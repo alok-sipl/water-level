@@ -336,30 +336,6 @@ var helper = {
   hideLoader: function () {
     $(".splash").hide();
   },
-  /*
-   * @method: deleteConfirmation
-   * @desc: Delete confirmation dialog
-   * @param fn: function execute after the cofirm
-   */
-  deleteConfirmation: function (fn) {
-    swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: "No, cancel please!",
-        closeOnCancel: true
-      },
-      function (isConfirm) {
-        if (isConfirm) {
-          fn();
-        }
-      });
-  }
-
-
 }
 
 /* Make activate/deactivate a record */
@@ -806,7 +782,7 @@ $(document).ready(function () {
           var action = '<div class="td-action">';
           action += '<span><a title="View User Detail" href="' + BASE_URL + '/user/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit User Detail" href="' + BASE_URL + '/user/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a data-id="' + cellvalue + '" data-alert-message="Are you sure you want to delete this user by deleting the user all associated device will be deleted" data-url="' + BASE_URL + '/user/delete/' + cellvalue + '" class="delete-action status-label" title="Delete User" href="javascript:void(0);" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a data-id="' + cellvalue + '" data-alert-message="Are you sure you want to delete this user? By deleting the user all associated device will be deleted" data-url="' + BASE_URL + '/user/delete/' + cellvalue + '" class="delete-action status-label" title="Delete User" href="javascript:void(0);" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
