@@ -41,6 +41,7 @@ module.exports = {
         });
 
         async.forEach(tempBinRecords, function (childSnap, callback) {
+          console.log(childSnap);
           var deviceList = ''
           var userName = '';
           var lastReading = 0;
@@ -164,10 +165,11 @@ module.exports = {
             updateUser.user_name = '';
             updateUser.last_reading = 'N/A';
             devices.push(updateUser);
+            count++;
             if (tempSnap.numChildren() == count) {
               return res.json({'rows': devices});
             }
-            count++;
+
           }
           callback();
         });
