@@ -8,10 +8,10 @@ var db = sails.config.globals.firebasedb();
 
 module.exports = {
     /*
-     * Name: supplierListing
+     * Name: getInactiveDevice
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
-     * Purpose: add new supplier
+     * Purpose: get inactive device alter at admin
      * @param  req
      */
     getInactiveDevice: function (req, res) {

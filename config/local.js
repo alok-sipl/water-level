@@ -156,9 +156,9 @@ module.exports = {
         city_list: 'City List',
         add_city: 'Add City',
         edit_city: 'Edit City',
-        location_list: 'Location List',
-        add_location: 'Add Location',
-        edit_location: 'Edit Location',
+        location_list: 'Area List',
+        add_location: 'Add Area',
+        edit_location: 'Edit Area',
         enquiry_list: 'Contact Enquiry List',
         view_enquiry: 'View Enquiry',
         notification_setting: 'Notification Setting',
@@ -200,10 +200,10 @@ module.exports = {
         city_add_error: "Error in adding city",
         city_edit_success: "City updated successfully",
         city_edit_error: "Error in updating city",
-        location_add_success: "Location added successfully",
-        location_add_error: "Error in adding location",
-        location_edit_success: "Location updated successfully",
-        location_edit_error: "Error in updating location",
+        location_add_success: "Area added successfully",
+        location_add_error: "Error in adding area",
+        location_edit_success: "Area updated successfully",
+        location_edit_error: "Error in updating area",
         user_edit_success: "User updated successfully",
         user_edit_error: "Error in updating user",
         profile_update_success: "Profile update successfully",
@@ -214,7 +214,7 @@ module.exports = {
         forgot_mail_send_success: "We have sent mail please check email and follow the steps",
         same_password_warning: "Current password and new password cannot be same",
         can_not_delete_city: "You can't delete this city because it is added with supplier",
-        can_not_delete_area: "You can't delete this location because it is added with supplier",
+        can_not_delete_area: "You can't delete this area because it is added with supplier",
 
     },
 
@@ -223,7 +223,8 @@ module.exports = {
         user_deactivated: "Your account has been deactivated by admin",
         device_activated: "Your device has been activated by admin",
         device_deactivated: "Your device has been deactivated by admin",
-        forgot_password: 'Forgot password link'
+        forgot_password: 'Forgot password link',
+        new_admin: "Your email is registerd for Qatrah admin"
     }
 
 };

@@ -100,33 +100,6 @@ module.exports = {
           });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             // var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             // ref.once("value", function (snapshot) {
             //   var deviceDetail = snapshot.val();
@@ -258,7 +231,7 @@ module.exports = {
      * Name: edit
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
-     * Purpose: add new supplier
+     * Purpose: edit device
      * @param  req
      */
   edit: function (req, res) {

@@ -62,56 +62,6 @@ module.exports = {
     });
   },
 
-
-  /*
-   * Name: moreSupplier
-   * Created By: A-SIPL
-   * Created Date: 27-dec-2017
-   * Purpose: show listing of the supplier
-   * @param  int  $id
-   */
-  moreSupplier: function (req, res) {
-    //var offset = parseInt(req.body.offset);
-    //var limit = parseInt(req.body.limit);
-    var text = req.body.text;
-    var ref = db.ref("suppliers");
-    if (text != '' && text != undefined) {
-      ref.orderByChild('company_name')
-        .startAt(text)
-        .endAt(text + "\uf8ff")
-        .once('value')
-        .then(function (snapshot) {
-          var suppliers = snapshot.val();
-          res.locals.layout = false;
-          return res.view('show-supplier', {
-            suppliers: suppliers
-          }).catch(function (err) {
-            var suppliers = snapshot.val();
-            res.locals.layout = false;
-            return res.view('show-supplier', {
-              suppliers: {}
-            });
-          });
-        });
-    } else {
-      ref.orderByChild('company_name')
-        .limitToFirst(limit)
-        .once("value", function (snapshot) {
-          var suppliers = snapshot.val();
-          res.locals.layout = false;
-          return res.view('show-supplier', {
-            suppliers: suppliers
-          });
-        }).catch(function (err) {
-        var suppliers = snapshot.val();
-        res.locals.layout = false;
-        return res.view('show-supplier', {
-          suppliers: {}
-        });
-      });
-    }
-  },
-
   /*
    * Name: add
    * Created By: A-SIPL
@@ -552,10 +502,6 @@ module.exports = {
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
 
-  },
-
-  date: function (req, res) {
-    return res.json({});
   },
 
   /*

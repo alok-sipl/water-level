@@ -40,8 +40,9 @@ module.exports = {
                         req.session.authenticated = true;
                         req.session.user = user;
                         req.session.userid = (Object.keys(adminDetail)[0]) ? Object.keys(adminDetail)[0] : '';
+                        req.session.isSuperAdmin = (adminDetail[userKey]['is_superadmin'] != undefined && adminDetail[userKey]['is_superadmin'] == true) ? true : false;
                         req.flash('disableBack', true);
-                        return res.redirect(sails.config.base_url + 'supplier');
+                        return res.redirect(sails.config.base_url + 'dashboard');
                       }else{
                         req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.account_inactive + '</div>');
                         return res.redirect(sails.config.base_url);
@@ -55,7 +56,8 @@ module.exports = {
                     return res.redirect(sails.config.base_url);
                   }
                 }, function (errorObject) {
-                  return res.serverError(errorObject.code);
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                  return res.redirect(sails.config.base_url);
                 });
               }else{
                 req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
@@ -63,6 +65,7 @@ module.exports = {
               }
 
             }).catch(function (error) {
+              console.log(error);
             if (error.code == "auth/invalid-email") {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + User.message.email_valid + '</div>');
             } else {
@@ -77,7 +80,7 @@ module.exports = {
         return res.view('login', {title: sails.config.title.login, errors: errors});
       }
     } else {
-      res.redirect('supplier');
+      res.redirect('dashboard');
     }
   },
 
@@ -325,7 +328,7 @@ module.exports = {
           return res.redirect(sails.config.base_url + 'login');
         });
     } else {
-      res.redirect('supplier');
+      res.redirect('dashboard');
     }
   },
 

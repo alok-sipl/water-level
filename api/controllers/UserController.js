@@ -44,15 +44,14 @@ module.exports = {
           val.user_key = user_key;
           tempBinRecords.push(val)
         });
-        var deviceList = '';
-        async.forEach(tempBinRecords, function (childSnap, callback) {
 
+        async.forEach(tempBinRecords, function (childSnap, callback) {
+          var deviceList = '';
           /*if (childSnap.id != undefined && childSnap.is_verified != undefined && childSnap.is_verified) { */
           if (childSnap.id != undefined) {
             var ref = db.ref('/devices/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var devices = snapshot.val();
-              console.log(devices);
               if (devices != null && Object.keys(devices).length) {
                 for (var key in devices) {
                   if(devices[key].device_name != undefined){
@@ -72,7 +71,7 @@ module.exports = {
               count++;
             }).catch(function (err) {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-              return res.redirect(sails.config.base_url + 'supplier');
+              return res.redirect(sails.config.base_url + 'dashboard');
             });
           } else {
             count++;
@@ -564,27 +563,19 @@ module.exports = {
  * @param  req
  */
   testFunction: function () {
-    db.ref('users/-L61jB9M3UtQ0_fYrgIE').update({
-      'is_online': '',
-      'demo': ''
-    }).then(function () {
-      console.log('Success');
-    }, function (errorObject) {
-      console.log('error-->', errorObject);
+    firebaseAdmin.auth().getUser('ggC1xEKesAewALK34z3lI3pKKy93')
+      .then(function (userRecord) {
+        firebaseAdmin.auth().updateUser('ggC1xEKesAewALK34z3lI3pKKy93', {
+          password: 'Aa@123456',
+        }).then(function (userRecord) {
+          console.log('update Success');
+        })
+          .catch(function (error) {
+            console.log('update error', error);
+          });
+      }).catch(function (error) {
+      console.log('update error2', error);
     });
-    // firebaseAdmin.auth().getUser('hGdy6bYg8dQtscAlET3Mis1Hysm2')
-    //   .then(function (userRecord) {
-    //     firebaseAdmin.auth().updateUser('hGdy6bYg8dQtscAlET3Mis1Hysm2', {
-    //       password: 'sipl@1234',
-    //     }).then(function (userRecord) {
-    //       console.log('update Success');
-    //     })
-    //       .catch(function (error) {
-    //         console.log('update error', error);
-    //       });
-    //   }).catch(function (error) {
-    //   console.log('update error2', error);
-    // });
   }
 };
 
@@ -624,8 +615,8 @@ function getUserList(snap) {
           }
           count++;
         }).catch(function (err) {
-          //req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-          //return res.redirect(sails.config.base_url + 'supplier');
+          req.flash('flashMessage', '<div class="alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.redirect(sails.config.base_url + 'dashboard');
         });
       }
     });

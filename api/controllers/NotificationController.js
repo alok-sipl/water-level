@@ -16,22 +16,26 @@ module.exports = {
    * @param  req
    */
   index: function (req, res) {
-    var adminId = (req.session.user != undefined) ? req.session.user.uid : '1';
-    db.ref('alerts/' + adminId).once('value')
-      .then(function (snapshot) {
-        var notificationList = snapshot.val();
-        return res.view('notification-listing', {title: sails.config.title.alert_list, alertList: DateService.reverseObject(notificationList)});
-      }).catch(function (err) {
-      return res.serverError(err);
-    });
+    if (req.session.isSuperAdmin == true) {
+      var adminId = (req.session.user != undefined) ? req.session.user.uid : '1';
+      db.ref('alerts/' + adminId).once('value')
+        .then(function (snapshot) {
+          var notificationList = snapshot.val();
+          return res.view('notification-listing', {title: sails.config.title.alert_list, alertList: DateService.reverseObject(notificationList)});
+        }).catch(function (err) {
+        return res.serverError(err);
+      });
+    } else {
+      return res.redirect(sails.config.base_url + 'dashboard');
+    }
   },
 
 
   /*
-   * Name: supplierListing
+   * Name: readingNotification
    * Created By: A-SIPL
    * Created Date: 8-dec-2017
-   * Purpose: add new supplier
+   * Purpose: reading notification
    * @param  req
    */
   readingNotification: function (req, res) {

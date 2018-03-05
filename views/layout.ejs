@@ -96,6 +96,10 @@
     </div>
     <div class="navbar-right">
       <ul class="nav navbar-nav no-borders col-md-12">
+        <li class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'index')) ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>dashboard" title="Dashboard"><span
+              class="nav-label"><i class="fa fa-home fa-2x"></i></span></a>
+        </li>
         <li class="<%= (req.options.controller == 'supplier') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>supplier" title="Manage Supplier"><span
               class="nav-label">Manage Supplier</span></a>
@@ -118,11 +122,11 @@
         <li class="<%= (req.options.controller == 'contact') ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>contact" title="View Enquiry"><span class="nav-label">View Enquiry</span></a>
         </li>
+        <% if((req.session.user != undefined) && req.session.isSuperAdmin == true){ %>
         <li
           class="<%= ((req.options.controller == 'dashboard') && (req.options.action == 'setting')) ? 'active' : '' %>">
           <a href="<%= sails.config.base_url %>dashboard/setting" title="Notification Setting"><span class="nav-label">Setting</span></a>
         </li>
-        <% if((req.session.user != undefined) && req.session.user.uid == 'ggC1xEKesAewALK34z3lI3pKKy93'){ %>
         <li class="dropdown notification-tab <%= ((req.options.controller == 'notification')) ? 'active' : '' %>">
 
         </li>

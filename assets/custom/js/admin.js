@@ -535,9 +535,9 @@ $(document).ready(function () {
         label: 'Action', name: 'city_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
-          action += '<span><a title="View Location" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
+          action += '<span><a title="View Area(Sub City)" href="' + BASE_URL + '/city/view/' + cellvalue + '" ><i class="fa fa-eye"></i></a></span>';
           action += '<span><a title="Edit City" href="' + BASE_URL + '/city/edit/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated location will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this city? By deleting the city all associated area(sub city) will be deleted" data-url="' + BASE_URL + '/city/delete/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }
@@ -683,7 +683,7 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Location', name: 'name', width: 300, search: true, classes: 'text-break'},
+      {label: 'Area(Sub City)', name: 'name', width: 300, search: true, classes: 'text-break'},
       {label: 'City', name: 'city_name', width: 150, classes: 'text-break'},
       {
         name: 'city_id', hidden: true,
@@ -707,8 +707,8 @@ $(document).ready(function () {
         label: 'Action', name: 'city_id', search: false, width: 150, align: "right",
         formatter: function (cellvalue) {
           var action = '<div class="td-action">';
-          action += '<span><a title="Edit Location" href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
-          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this location?" title="Delete Location" data-url="' + BASE_URL + '/city/deleteLocation/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
+          action += '<span><a title="Edit Area(Sub City)" href="' + BASE_URL + '/city/editLocation/' + cellvalue + '" ><i class="fa fa-edit"></i></a></span>';
+          action += '<span><a class="delete-action status-label" data-id="' + cellvalue + '" href="javascript:void(0);" data-alert-message="Are you sure you want to delete this area(sub city)?" title="Delete Area(Sub City)" data-url="' + BASE_URL + '/city/deleteLocation/' + cellvalue + '" ><i class="fa fa-trash-o"></i></a></span>';
           action += '</div>';
           return action;
         }

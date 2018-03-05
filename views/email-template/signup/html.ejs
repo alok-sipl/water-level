@@ -150,11 +150,10 @@
                     Your membership email is: <br/>
                     <span style="color:#337ab7;font-weight:bold;text-decoration:none;"><%= email %></span></p>
                   <p mc:edit
-                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    &nbsp;</p>
-                  <p mc:edit
                      style="font-size: 14px;margin: 5px 0 10px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    <b>If you forget your login password use the <b><em>Forgotten Password</em></b> <a href="<%= sails.config.base_url %>login/forgotPassword" title="Forgotten Password"> link</a>
+                  <% if(isAdmin == true){ %>
+                  <p>Please contact to Qatarh Team for get your credentail.</p>
+                  <% } %>
                   </p>
                   <p mc:edit
                      style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
@@ -164,11 +163,9 @@
                     &nbsp;</p>
                   <p mc:edit
                      style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    Enjoy!</p>
-                  <p mc:edit
-                     style="font-size: 14px;margin: 5px 0 5px 0;color: #5f5f5f;text-align: left;font-weight: normal;font-family: Helvetica, Arial, sans-serif;line-height: 18px;">
-                    warm regards<br/>
-                    <%= sails.config.app_name %> (Team)</p></td>
+                    Warm Regards<br/>
+                    Qatrah (Team)</p>
+                </td>
               </tr>
               </tbody>
             </table>
@@ -188,7 +185,7 @@
             <table class="BoxWrap" width="600" align="center" cellpadding="10" cellspacing="0">
               <tbody>
               <tr>
-                <td mc:edit class="hero" style="color: white;" align="center">© <%= new Date().getFullYear() %> Qatrah All Rights Reserved.
+                <td mc:edit class="hero" style="color: white;" align="center">© 2018 Qatrah All Rights Reserved.
                 </td>
               </tr>
               </tbody>
@@ -203,3 +200,24 @@
 </table>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

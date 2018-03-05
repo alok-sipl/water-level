@@ -4,14 +4,14 @@
       <div class="row">
         <div class="col-md-6">
           <h2 class="font-light m-b-xs">
-            <%= (type) ? 'Add City' : 'Add Location' %>
+            <%= (type) ? 'Add City' : 'Add Area' %>
           </h2>
           <div id="hbreadcrumb">
             <ol class="hbreadcrumb breadcrumb">
-              <li><a title="Dashboard" href="<%= sails.config.base_url %>supplier">Dashboard</a></li>
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
               <li><a title="City List" href="<%= sails.config.base_url %>city">City List</a></li>
               <li class="active">
-                <%= (type) ? 'Add City' : 'Add Location' %>
+                <%= (type) ? 'Add City' : 'Add Area' %>
               </li>
             </ol>
           </div>
@@ -99,14 +99,14 @@
             <input type="hidden" name="type" value="<%= type %>"/>
             <% if(!type){ %>
             <div class="form-group <%= (errors.area != undefined) ? " has-error" : "" %>">
-              <label for="is_active" class="col-md-4 control-label">Location*</label>
+              <label for="is_active" class="col-md-4 control-label">Area(Sub City)*</label>
               <div class="col-md-6">
                 <input type="text" name="area" class="form-control" required id="area"
                        value="<%= (req.param('area')) ? req.param('area') : '' %>"
                        maxlength="<%= sails.config.length.address %>"
                        data-parsley-required-message="<%= City.message.area_required %>"
                        data-parsley-maxlength-message="<%= City.message.area_maxlength %>"
-                       placeholder="Location"/>
+                       placeholder="Area(Sub City)"/>
                 <input type="hidden" name="latitude" id="latitude"
                        value="<%=  (req.param('latitude')) ? req.param('latitude') : '' %>"/>
                 <input type="hidden" name="longitude" id="longitude"
@@ -135,8 +135,8 @@
             </div>
             <div class="form-group">
               <div class="col-md-8 col-md-offset-4">
-                <button title="<%= (type) ? 'Add City' : 'Add Location' %>" type="submit" class="btn btn-primary">
-                  <%= (type) ? 'Add City' : 'Add Location' %>
+                <button title="<%= (type) ? 'Add City' : 'Add Area' %>" type="submit" class="btn btn-primary">
+                  <%= (type) ? 'Add City' : 'Add Area' %>
                 </button>
                 <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>city">Cancel</a>
               </div>

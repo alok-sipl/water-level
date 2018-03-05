@@ -12,7 +12,7 @@ module.exports = function firebaseNoAuth(req, res, next) {
     var firebaseAuth = sails.config.globals.firebaseAuth();
     firebaseAuth.auth().onAuthStateChanged(function (user) {
       if (user) {
-        return res.redirect(sails.config.base_url + 'supplier');
+        return res.redirect(sails.config.base_url + 'dashboard');
       } else {
         return next();
       }

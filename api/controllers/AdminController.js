@@ -18,11 +18,14 @@ module.exports = {
    * @param  req
    */
   index: function (req, res) {
-    return res.view('admin-listing', {
-      'title': sails.config.title.admin_list
-    });
+    if (req.session.isSuperAdmin == true) {
+      return res.view('admin-listing', {
+        'title': sails.config.title.admin_list
+      });
+    } else {
+      return res.redirect(sails.config.base_url + 'dashboard');
+    }
   },
-
 
 
   /*
@@ -51,79 +54,89 @@ module.exports = {
    * @param  req, res
    */
   add: function (req, res) {
-    var errors = {};
-    var user = {};
-    /* Checking validation if form post */
-    if (req.method == "POST") {
-      errors = ValidationService.validate(req);
-      if (Object.keys(errors).length) {
+    if (req.session.isSuperAdmin == true) {
+      var errors = {};
+      var user = {};
+      /* Checking validation if form post */
+      if (req.method == "POST") {
+        errors = ValidationService.validate(req);
+        if (Object.keys(errors).length) {
+          return res.view('add-update-admin', {
+            'isEdit': false,
+            'user': user,
+            'title': sails.config.title.add_admin,
+            'errors': errors
+          });
+        } else {
+          var ref = db.ref("users");
+          ref.orderByChild("email").equalTo(req.param('email')).once('value')
+            .then(function (snapshot) {
+              user = snapshot.val();
+              if (user) {
+                if (user.is_admin == true) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist_in_admin + '</div>');
+                  return res.redirect(sails.config.base_url + 'admin/add');
+                } else {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist_in_user + '</div>');
+                  return res.redirect(sails.config.base_url + 'admin/add');
+                }
+              } else {
+                firebase.auth().createUserWithEmailAndPassword(req.param('email').trim(), req.param('password').trim())
+                  .then(function () {
+                    user = firebase.auth().currentUser;
+                    //user.sendEmailVerification();
+                  })
+                  .then(function () {
+                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+                    var ref = db.ref("users");
+                    var data = {
+                      id: user.uid,
+                      name: req.param('name').trim(),
+                      email: req.param('email').trim(),
+                      password: req.param('password').trim(),
+                      phone: req.param('mobile_number').trim(),
+                      is_deleted: status,
+                      is_admin: true,
+                      is_device_notification_enable: true,
+                      is_user_notification_enable: true,
+                      created_at: Date.now(),
+                      modified_at: Date.now(),
+                    }
+                    ref.push(data).then(function () {
+                      MailerService.sendWelcomeMail({
+                        name: req.param('name').trim(),
+                        email: req.param('email').trim(),
+                        subject: sails.config.email_message.new_admin,
+                        isAdmin: true
+                      });
+                      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.admin_add_success + '</div>');
+                      return res.redirect(sails.config.base_url + 'admin');
+                    }, function (error) {
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.admin_add_error + '</div>');
+                      return res.redirect(sails.config.base_url + 'admin');
+                    });
+                  })
+                  .catch(function (error) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.admin_add_error + '</div>');
+                    return res.redirect(sails.config.base_url + 'admin');
+                  });
+              }
+            }).catch(function (err) {
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+            return res.redirect(sails.config.base_url + 'admin');
+          });
+        }
+      } else {
         return res.view('add-update-admin', {
           'isEdit': false,
           'user': user,
           'title': sails.config.title.add_admin,
           'errors': errors
         });
-      } else {
-        var ref = db.ref("users");
-        ref.orderByChild("email").equalTo(req.param('email')).once('value')
-          .then(function (snapshot) {
-            user = snapshot.val();
-            if (user) {
-              if (user.is_admin == true) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist_in_admin + '</div>');
-                return res.redirect(sails.config.base_url + 'admin/add');
-              } else {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('email') + sails.config.flash.email_already_exist_in_user + '</div>');
-                return res.redirect(sails.config.base_url + 'admin/add');
-              }
-            } else {
-              firebase.auth().createUserWithEmailAndPassword(req.param('email').trim(), req.param('password').trim())
-                .then(function () {
-                  user = firebase.auth().currentUser;
-                })
-                .then(function () {
-                  var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
-                  var ref = db.ref("users");
-                  var data = {
-                    id: user.uid,
-                    name: req.param('name').trim(),
-                    email: req.param('email').trim(),
-                    password: req.param('password').trim(),
-                    phone: req.param('mobile_number').trim(),
-                    is_deleted: status,
-                    is_admin: true,
-                    is_device_notification_enable: true,
-                    is_user_notification_enable: true,
-                    created_at: Date.now(),
-                    modified_at: Date.now(),
-                  }
-                  ref.push(data).then(function () {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.admin_add_success + '</div>');
-                    return res.redirect(sails.config.base_url + 'admin');
-                  }, function (error) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.admin_add_error + '</div>');
-                    return res.redirect(sails.config.base_url + 'admin');
-                  });
-                })
-                .catch(function (error) {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.admin_add_error + '</div>');
-                  return res.redirect(sails.config.base_url + 'admin');
-                });
-            }
-          }).catch(function (err) {
-          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-          return res.redirect(sails.config.base_url + 'admin');
-        });
       }
     } else {
-      return res.view('add-update-admin', {
-        'isEdit': false,
-        'user': user,
-        'title': sails.config.title.add_admin,
-        'errors': errors
-      });
+      return res.redirect(sails.config.base_url + 'dashboard');
     }
-
   },
 
 
@@ -135,24 +148,28 @@ module.exports = {
    * @param  req
    */
   view: function (req, res) {
-    /* user detail */
-    var errors = {};
-    var ref = db.ref("users/" + req.params.id);
-    ref.once("value", function (snapshot) {
-      var user = snapshot.val();
-      if(user != null){
-        return res.view('view-edit-admin', {
-          'title': sails.config.title.view_admin,
-          'user': user, errors: errors,
-          'isEdit': false,
-        });
-      }else {
-        req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-        return res.redirect(sails.config.base_url + 'admin');
-      }
-    }, function (errorObject) {
-      return res.serverError(errorObject.code);
-    });
+    if (req.session.isSuperAdmin == true) {
+      /* user detail */
+      var errors = {};
+      var ref = db.ref("users/" + req.params.id);
+      ref.once("value", function (snapshot) {
+        var user = snapshot.val();
+        if (user != null) {
+          return res.view('view-edit-admin', {
+            'title': sails.config.title.view_admin,
+            'user': user, errors: errors,
+            'isEdit': false,
+          });
+        } else {
+          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+          return res.redirect(sails.config.base_url + 'admin');
+        }
+      }, function (errorObject) {
+        return res.serverError(errorObject.code);
+      });
+    } else {
+      return res.redirect(sails.config.base_url + 'dashboard');
+    }
   },
 
 
@@ -164,14 +181,63 @@ module.exports = {
  * @param  req, res
  */
   edit: function (req, res) {
-    if (req.method == "POST") {
-      errors = ValidationService.validate(req);
-      if (Object.keys(errors).length) {
+    if (req.session.isSuperAdmin == true) {
+      if (req.method == "POST") {
+        errors = ValidationService.validate(req);
+        if (Object.keys(errors).length) {
+          var ref = db.ref("users/" + req.params.id);
+          ref.once("value", function (snapshot) {
+            var user = snapshot.val();
+            if (user != undefined) {
+              var countries = snapshot.val();
+              return res.view('add-update-admin', {
+                'title': sails.config.title.edit_admin,
+                'user': user,
+                'errors': errors,
+                'isEdit': true,
+              });
+            } else {
+              return res.serverError();
+            }
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
+          });
+        } else {
+          var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
+          var ref = db.ref("users/" + req.params.id);
+          ref.once("value", function (snapshot) {
+            var user = snapshot.val();
+            if (user != undefined) {
+              var ref = db.ref();
+              db.ref('users/' + req.params.id)
+                .update({
+                  'name': req.param('name').trim(),
+                  'phone': req.param('mobile_number').trim(),
+                  'is_deleted': status,
+                  'modified_at': Date.now(),
+                })
+                .then(function () {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
+                  return res.redirect(sails.config.base_url + 'admin');
+                })
+                .catch(function (err) {
+                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
+                  return res.redirect(sails.config.base_url + 'admin/edit/' + req.params.id);
+                });
+            } else {
+              return res.serverError();
+            }
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
+          });
+        }
+      } else {
+        /* user detail */
+        var errors = {};
         var ref = db.ref("users/" + req.params.id);
         ref.once("value", function (snapshot) {
           var user = snapshot.val();
-          if (user != undefined) {
-            var countries = snapshot.val();
+          if (user != null) {
             return res.view('add-update-admin', {
               'title': sails.config.title.edit_admin,
               'user': user,
@@ -179,60 +245,15 @@ module.exports = {
               'isEdit': true,
             });
           } else {
-            return res.serverError();
-          }
-        }, function (errorObject) {
-          return res.serverError(errorObject.code);
-        });
-      } else {
-        var status = (req.param('status') == "false" || req.param('status') == false) ? false : true
-        var ref = db.ref("users/" + req.params.id);
-        ref.once("value", function (snapshot) {
-          var user = snapshot.val();
-          if (user != undefined) {
-            var ref = db.ref();
-            db.ref('users/' + req.params.id)
-              .update({
-                'name': req.param('name').trim(),
-                'phone': req.param('mobile_number').trim(),
-                'is_deleted': status,
-                'modified_at': Date.now(),
-              })
-              .then(function () {
-                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.user_edit_success + '</div>');
-                return res.redirect(sails.config.base_url + 'admin');
-              })
-              .catch(function (err) {
-                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.user_edit_error + '</div>');
-                return res.redirect(sails.config.base_url + 'admin/edit/' + req.params.id);
-              });
-          } else {
-            return res.serverError();
+            req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+            return res.redirect(sails.config.base_url + 'admin');
           }
         }, function (errorObject) {
           return res.serverError(errorObject.code);
         });
       }
-    } else{
-      /* user detail */
-      var errors = {};
-      var ref = db.ref("users/" + req.params.id);
-      ref.once("value", function (snapshot) {
-        var user = snapshot.val();
-        if(user != null){
-          return res.view('add-update-admin', {
-            'title': sails.config.title.edit_admin,
-            'user': user,
-            'errors': errors,
-            'isEdit': true,
-          });
-        }else {
-          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-          return res.redirect(sails.config.base_url + 'admin');
-        }
-      }, function (errorObject) {
-        return res.serverError(errorObject.code);
-      });
+    } else {
+      return res.redirect(sails.config.base_url + 'dashboard');
     }
   },
 

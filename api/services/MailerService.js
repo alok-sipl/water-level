@@ -9,7 +9,7 @@ module.exports = {
      */
   sendWelcomeMail: function (obj) {
     sails.hooks.email.send(
-      "signup", {name: obj.name, email: obj.email, subject: obj.subject}, {
+      "signup", {name: obj.name, email: obj.email, subject: obj.subject, isAdmin : (obj.isAdmin != undefined) ? true : false }, {
         to: obj.email,
         subject: obj.subject
       },
