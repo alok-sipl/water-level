@@ -83,8 +83,8 @@ module.exports = {
     // environment: process.env.NODE_ENV || 'development'
 
     app_name: 'Qatrah',
-    base_url: 'https://water-level.herokuapp.com/',
-    base_url_js: 'https://water-level.herokuapp.com',
+    base_url: 'http://18.219.202.90:1337/',
+    base_url_js: 'http://18.219.202.90:1337',
     //base_url: 'http://localhost:1337/',
     //base_url_js: 'http://localhost:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
