@@ -7,7 +7,7 @@
 var db = sails.config.globals.firebasedb();
 
 module.exports = {
-	/*
+  /*
      * Name: supplierListing
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
@@ -15,11 +15,11 @@ module.exports = {
      * @param  req
      */
   supplierListing: function (req, res) {
-	  console.log('Supplier Post param-->', req.body);
-    if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.latitude != '' && req.body.latitude != undefined && req.body.longitude != '' && req.body.longitude != undefined) {
+    console.log('Supplier Post param-->', req.body);
+    if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
       var userId = req.body.userId;
-      var latitude = req.body.latitude;
-      var longitude = req.body.longitude;
+      var latitude = req.body.tankCity;
+      var longitude = req.body.tankArea;
       var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
       var jsonData = [];
       var favouritesSuppliresId = [];
@@ -34,47 +34,52 @@ module.exports = {
               favouritesSuppliresId.push(favouritesSupplires[key].supplier_id);
             }
           }
+        }, function (errorObject) {
+          console.log('aaaaa');
+          return res.serverError(errorObject.code);
         });
-      var refSuppliers = db.ref("suppliers");
+      var refSuppliers = db.ref("suppliers").orderByChild("area_id").equalTo(req.body.tankArea);
       refSuppliers.once("value", function (snapshot) {
-        var suppliers = snapshot.val();
-        for (key in suppliers) {
-          if (suppliers[key].tank_capacity != undefined && suppliers[key].tank_capacity >= tankCapacity) {
-            var supplierWithDistance = {};
-            distance = ValidationService.getDistanceFromLatLonInKm(latitude, longitude, suppliers[key].latitude, suppliers[key].longitude);
-            supplierWithDistance["supplier_id"] = key;
-            supplierWithDistance["distance_in_km"] = distance;
-            supplierWithDistance["account_number"] = suppliers[key].account_number;
-            supplierWithDistance["area"] = suppliers[key].area;
-            supplierWithDistance["city_id"] = suppliers[key].city_id;
-            supplierWithDistance["city_name"] = suppliers[key].city_name;
-            supplierWithDistance["company_name"] = suppliers[key].company_name;
-            supplierWithDistance["country_id"] = suppliers[key].country_id;
-            supplierWithDistance["country_name"] = suppliers[key].country_name;
-            supplierWithDistance["created_at"] = suppliers[key].created_at;
-            supplierWithDistance["email"] = suppliers[key].email;
-            supplierWithDistance["latitude"] = suppliers[key].latitude;
-            supplierWithDistance["longitude"] = suppliers[key].longitude;
-            supplierWithDistance["mobile_number"] = suppliers[key].mobile_number;
-            supplierWithDistance["name"] = suppliers[key].name;
-            supplierWithDistance["tank_capacity"] = suppliers[key].tank_capacity;
-            if (favouritesSuppliresId.indexOf(key)) {
-              supplierWithDistance["is_fav"] = 1;
-            } else {
-              supplierWithDistance["is_fav"] = 0;
-            }
-            if (distance && distance < sails.config.supplier_range) {
-              jsonData.push(supplierWithDistance);
+        if (snapshot.numChildren() > 0) {
+          var suppliers = snapshot.val();
+          for (key in suppliers) {
+            if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
+              var supplierList = {};
+              supplierList = suppliers[key];
+              supplierList["supplier_id"] = key;
+              if (favouritesSuppliresId.indexOf(key) >= 0) {
+                supplierList["is_fav"] = 1;
+              } else {
+                supplierList["is_fav"] = 0;
+              }
+              jsonData.push(supplierList);
             }
           }
+        } else {
+          var refSuppliers = db.ref("suppliers").orderByChild("city_id").equalTo(req.body.tankCity);
+          refSuppliers.once("value", function (snapshot) {
+            var suppliers = snapshot.val();
+            //console.log(suppliers);
+            for (key in suppliers) {
+              if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
+                var supplierList = {};
+                supplierList = suppliers[key];
+                supplierList["supplier_id"] = key;
+                if (favouritesSuppliresId.indexOf(key) >= 0) {
+                  supplierList["is_fav"] = 1;
+                } else {
+                  supplierList["is_fav"] = 0;
+                }
+                jsonData.push(supplierList);
+              }
+            }
+          }, function (errorObject) {
+            return res.serverError(errorObject.code);
+          });
         }
         array.push(jsonData);
         array[0].sort(function (x, y) {
-          var n = x.distance_in_km - y.distance_in_km;
-          if (n != 0) {
-            return n;
-          }
-          return x.is_fav - y.is_fav;
+          return y.is_fav - x.is_fav;
         });
         return res.json(array[0]);
       }, function (errorObject) {
@@ -86,4 +91,3 @@ module.exports = {
     }
   },
 };
-

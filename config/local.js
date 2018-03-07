@@ -60,7 +60,7 @@ module.exports = {
      * to 80 (http://) or 443 (https://) if you have an SSL certificate        *
      ***************************************************************************/
 
-     port: process.env.PORT || 80,
+     //port: process.env.PORT || 1337,
 
     /***************************************************************************
      * The runtime "environment" of your Sails app is either typically         *
@@ -83,8 +83,8 @@ module.exports = {
     // environment: process.env.NODE_ENV || 'development'
 
     app_name: 'Qatrah',
-    base_url: 'http://18.219.202.90:80/',
-    base_url_js: 'http://18.219.202.90:80',
+    base_url: 'https://water-level.herokuapp.com/',
+    base_url_js: 'https://water-level.herokuapp.com',
     //base_url: 'http://localhost:1337/',
     //base_url_js: 'http://localhost:1337',
     google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU",
