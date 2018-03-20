@@ -613,8 +613,7 @@ $(document).ready(function () {
     mtype: "GET",
     datatype: "json",
     colModel: [
-      {label: 'Device Id (Android)', name: 'device_id', width: 200, search: true},
-      {label: 'Device Id (IPhone)', name: 'device_id_iphone', width: 410, search: true},
+      {label: 'Device Id', name: 'device_id', width: 200, search: true},
       {
         label: 'Device Name', name: 'device_name', width: 150, search: true, classes: 'text-break',
         formatter: function (cellvalue) {

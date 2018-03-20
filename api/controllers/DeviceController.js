@@ -50,13 +50,13 @@ module.exports = {
             var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
             ref.once("value", function (snapshot) {
               var deviceDetail = snapshot.val();
-              if(deviceDetail != null && deviceDetail.device_name != undefined && deviceDetail.updated_at != undefined){
+              if (deviceDetail != null && deviceDetail.device_name != undefined && deviceDetail.updated_at != undefined) {
                 deviceName = deviceDetail.device_name
                 lastReading = deviceDetail.updated_at;
                 var ref = db.ref('users/');
                 ref.orderByChild("id").equalTo(childSnap.user_id).once("child_added", function (firstSnapshot) {
                   var userDetail = firstSnapshot.val();
-                  if(userDetail != null && userDetail.name != undefined){
+                  if (userDetail != null && userDetail.name != undefined) {
                     userName = userDetail.name;
                     updateUser = childSnap;
                     updateUser.device_name = deviceName;
@@ -64,7 +64,7 @@ module.exports = {
                     updateUser.last_reading = (lastReading != 0) ? DateService.timeSince(lastReading) : 'N/A';
                     devices.push(updateUser);
                     count++;
-                  }else{
+                  } else {
                     userName = '';
                     updateUser = childSnap;
                     updateUser.device_name = deviceName;
@@ -81,7 +81,7 @@ module.exports = {
                   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
                   return res.redirect(sails.config.base_url + 'device');
                 });
-              }else{
+              } else {
                 deviceName = '';
                 lastReading = 0;
                 updateUser = childSnap;
@@ -97,7 +97,7 @@ module.exports = {
             }, function (errorObject) {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
               return res.redirect(sails.config.base_url + 'device');
-          });
+            });
 
 
             // var ref = db.ref('/devices/' + childSnap.user_id + '/' + childSnap.id);
@@ -128,8 +128,6 @@ module.exports = {
             //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
             //   return res.redirect(sails.config.base_url + 'supplier');
             // });
-
-
 
 
           } else {
@@ -186,35 +184,25 @@ module.exports = {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/add');
             } else {
-              ref.orderByChild("device_id_iphone").equalTo(req.param('device_id_iphone')).once('value')
-                .then(function (snapshot) {
-                  devicedataiphone = snapshot.val();
-                  if (devicedataiphone) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id_iphone') + sails.config.flash.device_already_exist + '</div>');
-                    return res.redirect(sails.config.base_url + 'device/add');
-                  } else {
-                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
-                    var ref = db.ref().child("master_devices");
-                    var data = {
-                      device_id: req.param('device_id'),
-                      device_id_iphone: req.param('device_id_iphone'),
-                      is_deleted: status,
-                      created_at: Date.now(),
-                      modified_at: Date.now(),
-                    }
-                    ref.push(data).then(function () {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_add_success + '</div>');
-                      return res.redirect(sails.config.base_url + 'device');
-                    }, function (error) {
-                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.device_add_error + '</div>');
-                      return res.redirect(sails.config.base_url + 'device/add');
-                    });
-                  }
-                })
-                .catch(function (error) {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                  return res.redirect(sails.config.base_url + 'device/add');
-                })
+
+
+              var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+              var ref = db.ref().child("master_devices");
+              var data = {
+                device_id: req.param('device_id'),
+                is_deleted: status,
+                created_at: Date.now(),
+                modified_at: Date.now(),
+              }
+              ref.push(data).then(function () {
+                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_add_success + '</div>');
+                return res.redirect(sails.config.base_url + 'device');
+              }, function (error) {
+                req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.device_add_error + '</div>');
+                return res.redirect(sails.config.base_url + 'device/add');
+              });
+
+
             }
           })
           .catch(function (error) {
@@ -259,41 +247,31 @@ module.exports = {
               req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id') + sails.config.flash.device_already_exist + '</div>');
               return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
             } else {
-              ref.orderByChild("device_id_iphone").equalTo(req.param('device_id_iphone')).once('value')
-                .then(function (snapshot) {
-                  devicedataiphone = snapshot.val();
-                  if (devicedataiphone && Object.keys(devicedataiphone)[0] != undefined && req.params.id != Object.keys(devicedataiphone)[0]) {
-                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + req.param('device_id_iphone') + sails.config.flash.device_already_exist + '</div>');
+
+
+              var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
+              var ref = db.ref("master_devices/" + req.params.id);
+              ref.once("value", function (snapshot) {
+                var device = snapshot.val();
+                if (device != undefined) {
+                  db.ref('master_devices/' + req.params.id)
+                    .update({
+                      device_id: req.param('device_id'),
+                      is_deleted: status,
+                      modified_at: Date.now(),
+                    }).then(function () {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_edit_success + '</div>');
+                    return res.redirect(sails.config.base_url + 'device');
+                  }, function (error) {
+                    req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.device_edit_error + '</div>');
                     return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
-                  } else {
-                    var status = (req.param('status') == "false" || req.param('status') == false) ? false : true;
-                    var ref = db.ref("master_devices/" + req.params.id);
-                    ref.once("value", function (snapshot) {
-                      var device = snapshot.val();
-                      if (device != undefined) {
-                        db.ref('master_devices/' + req.params.id)
-                          .update({
-                            device_id: req.param('device_id'),
-                            device_id_iphone: req.param('device_id_iphone'),
-                            is_deleted: status,
-                            modified_at: Date.now(),
-                          }).then(function () {
-                          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.device_edit_success + '</div>');
-                          return res.redirect(sails.config.base_url + 'device');
-                        }, function (error) {
-                          req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.device_edit_error + '</div>');
-                          return res.redirect(sails.config.base_url + 'device/edit/' + req.params.id);
-                        });
-                      } else {
-                        return res.serverError();
-                      }
-                    });
-                  }
-                })
-                .catch(function (error) {
-                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                  return res.redirect(sails.config.base_url + 'device/add');
-                })
+                  });
+                } else {
+                  return res.serverError();
+                }
+              });
+
+
             }
           })
           .catch(function (error) {
@@ -315,12 +293,12 @@ module.exports = {
                 var ref = db.ref('users').orderByChild("id").equalTo(device.user_id)
                   .once("child_added", function (snapshot) {
                     var userDetail = snapshot.val();
-                    if(userDetail != null && userDetail.name != undefined){
+                    if (userDetail != null && userDetail.name != undefined) {
                       device.user_name = userDetail.name;
                       return res.view('view-edit-device', {
                         title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: true,
                       });
-                    }else{
+                    } else {
                       return res.view('view-edit-device', {
                         title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: true,
                       });
@@ -370,12 +348,12 @@ module.exports = {
               var ref = db.ref('users').orderByChild("id").equalTo(device.user_id)
                 .once("child_added", function (snapshot) {
                   var userDetail = snapshot.val();
-                  if(userDetail != null && userDetail.name != undefined){
+                  if (userDetail != null && userDetail.name != undefined) {
                     device.user_name = userDetail.name;
                     return res.view('view-edit-device', {
                       title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
                     });
-                  }else{
+                  } else {
                     return res.view('view-edit-device', {
                       title: sails.config.title.view_device, 'device': device, errors: errors, isEdit: false,
                     });
@@ -383,7 +361,7 @@ module.exports = {
                 }, function (errorObject) {
                   return res.serverError(errorObject.code);
                 });
-          }, function (errorObject) {
+            }, function (errorObject) {
               return res.serverError(errorObject.code);
             });
 
@@ -457,46 +435,46 @@ module.exports = {
             db.ref('master_devices/' + id).remove()
               .then(function () {
                 console.log('masterDeviceResult.user_id-->', masterDeviceResult.user_id, deviceId);
-                if(masterDeviceResult.user_id != undefined && masterDeviceResult.user_id != ''){
+                if (masterDeviceResult.user_id != undefined && masterDeviceResult.user_id != '') {
                   // db.ref('users/' + masterDeviceResult.user_id)
                   //   .once("value", function (snapshot) {
                   //     var userResult = snapshot.val();
                   //     if (userResult != null && userResult.id != undefined) {
-                        db.ref('devices/' + masterDeviceResult.user_id).orderByChild("device_id").equalTo(deviceId)
-                          .once('value', function (snapshot) {
-                            var deviceReading = snapshot.val();
-                            console.log('deviceReading-->', deviceReading);
-                            if(deviceReading != null){
-                              for (var key in deviceReading) {
-                                db.ref('devices/' + masterDeviceResult.user_id + '/' +  key)
-                                  .remove()
-                                  .then(function () {
-                                  }).catch(function (err) {
-                                  req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                                  return res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                                });
-                                req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                                return res.json({'status': true, message: sails.config.flash.delete_successfully});
-                              }
-                              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                              return res.json({'status': true, message: sails.config.flash.delete_successfully});
-                            }else{
-                              req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
-                              return res.json({'status': true, message: sails.config.flash.delete_successfully});
-                            }
-                          }, function (errorObject) {
+                  db.ref('devices/' + masterDeviceResult.user_id).orderByChild("device_id").equalTo(deviceId)
+                    .once('value', function (snapshot) {
+                      var deviceReading = snapshot.val();
+                      console.log('deviceReading-->', deviceReading);
+                      if (deviceReading != null) {
+                        for (var key in deviceReading) {
+                          db.ref('devices/' + masterDeviceResult.user_id + '/' + key)
+                            .remove()
+                            .then(function () {
+                            }).catch(function (err) {
                             req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
                             return res.json({'status': false, message: sails.config.flash.something_went_wronge});
                           });
-                    //   } else {
-                    //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //     return res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    //   }
-                    // }, function (errorObject) {
-                    //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
-                    //   return res.json({'status': false, message: sails.config.flash.something_went_wronge});
-                    // });
-                }else{
+                          req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                          return res.json({'status': true, message: sails.config.flash.delete_successfully});
+                        }
+                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                        return res.json({'status': true, message: sails.config.flash.delete_successfully});
+                      } else {
+                        req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
+                        return res.json({'status': true, message: sails.config.flash.delete_successfully});
+                      }
+                    }, function (errorObject) {
+                      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                      return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                    });
+                  //   } else {
+                  //     req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                  //     return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                  //   }
+                  // }, function (errorObject) {
+                  //   req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
+                  //   return res.json({'status': false, message: sails.config.flash.something_went_wronge});
+                  // });
+                } else {
                   req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.delete_successfully + '</div>');
                   return res.json({'status': true, message: sails.config.flash.delete_successfully});
                 }

@@ -6,6 +6,9 @@
  */
 
 var db = sails.config.globals.firebasedb();
+var fs = require('fs');
+var parse = require('csv-parse');
+var async = require('async');
 const googleStorage = require('@google-cloud/storage');
 module.exports = {
   /**
@@ -176,15 +179,67 @@ module.exports = {
   * @param  type
   */
   addCountry: function (req, res) {
-    var ref = db.ref();
-    var cities = ref.child("countries");
-    var newCities = cities.push();
-    newCities.set({
-      name: 'Saudi Arabia',
-      is_deleted: false,
-      code: 'SA'
-    });
+    // var ref = db.ref();
+    // var cities = ref.child("countries");
+    // var newCities = cities.push();
+    // newCities.set({
+    //   name: 'Saudi Arabia',
+    //   is_deleted: false,
+    //   code: 'SA'
+    // });
+    // var parser = parse({delimiter: ','}, function (err, data) {
+    //   data.forEach(function(line) {
+    //     // create country object out of parsed fields
+    //     var country = { "code" : line[1],
+    //       "name" : line[2],
+    //       "is_deleted" : false,
+    //
+    //     };
+    //     console.log('Rows--->',JSON.stringify(country));
+    //     var cities = db.ref().child("countries");
+    //     var newCities = cities.push();
+    //     newCities.set(country);
+    //   });
+    // });
+    // fs.createReadStream('countries.csv').pipe(parser);
   },
+
+  /*
+* Name: addCity
+* Created By: A-SIPL
+* Created Date: 9-dec-2017
+* Purpose: add new city location
+* @param  type
+*/
+  addCity: function (req, res) {
+    // var ref = db.ref();
+    // var cities = ref.child("countries");
+    // var newCities = cities.push();
+    // newCities.set({
+    //   name: 'Saudi Arabia',
+    //   is_deleted: false,
+    //   code: 'SA'
+    // });
+    // var parser = parse({delimiter: ','}, function (err, data) {
+    //   data.forEach(function(line) {
+    //     // create country object out of parsed fields
+    //     var country = {
+    //       'country_id': '-L81ZMEAR0WpgLtk59xa',
+    //       'created_at': Date.now(),
+    //       'modified_at': Date.now(),
+    //       "name" : line[1].substring( 0, 1 ).toUpperCase() + line[1].substring( 1 ),
+    //       "is_deleted" : false,
+    //
+    //     };
+    //     console.log('Rows--->',JSON.stringify(country));
+    //     var cities = db.ref().child("cities");
+    //     var newCities = cities.push();
+    //     newCities.set(country);
+    //   });
+    // });
+    // // fs.createReadStream('cities.csv').pipe(parser);
+  },
+
 
   /*
   * Name: getCityByCountry
