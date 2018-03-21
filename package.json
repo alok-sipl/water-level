@@ -8,6 +8,7 @@
     "@google-cloud/storage": "^1.5.2",
     "async": "^2.6.0",
     "async-waterfall": "^0.1.5",
+    "csv-parse": "^2.0.4",
     "ejs": "2.3.4",
     "fcm-push": "^1.1.3",
     "firebase": "^4.7.0",
