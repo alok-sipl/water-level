@@ -128,15 +128,20 @@ module.exports = {
                 var imagename = Date.now() + '.png';
                 var imagePath = "assets/images/" + imagename;
                 require("fs").writeFile(imagePath, base64Data, 'base64', function (err) {
+                  console.log('In file write');
                   if (err == null) {
+                    console.log('Not in file write error');
                     storageBucket.upload(imagePath, function (err, file) {
+                      console.log('In storage bucket');
                       if (!err) {
+                        console.log('Not in storage bucket error');
                         var ref = db.ref();
                         const file = storageBucket.file(imagename);
                         return file.getSignedUrl({
                           action: 'read',
                           expires: '03-09-2491'
                         }).then(function (signedUrls) {
+                          console.log('Final upload then');
                           var ref = db.ref("locations");
                           ref.orderByChild("city_id").equalTo(req.param('city'))
                             .once("child_added", function (snapshot) {
