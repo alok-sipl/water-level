@@ -115,8 +115,10 @@ module.exports = {
       } else {
         console.log('In process');
         var ref = db.ref("suppliers");
+        console.log('In process1');
         ref.orderByChild("email").equalTo(req.param('email')).once('value')
           .then(function (snapshot) {
+            console.log('In process2');
             supplierdata = snapshot.val();
             console.log('Old supplier detail--->',supplierdata);
             if (supplierdata == null) {
@@ -247,6 +249,7 @@ module.exports = {
           req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.something_went_wronge + '</div>');
           return res.redirect(sails.config.base_url + 'supplier');
         });
+        console.log('In process3');
       }
     } else {
       /* country listing*/
