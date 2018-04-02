@@ -126,23 +126,9 @@ function getCity(coutryId) {
         $('#city').empty();
         $('#city').append('<option value="">Select City</option>');
         $.each(result, function (i, obj) {
-          $('#city').append('<option value="' + i + '">' + obj.name + '</option>');
+          $('#city').append('<option value="' + obj.key + '">' + obj.name + '</option>');
         });
         $('#country_name').val($("#country option:selected").text());
-
-        /* get country code*/
-        $.ajax({
-          url: BASE_URL + '/city/getCountryCode',
-          data: {id: coutryId},
-          type: 'POST',
-          success: function (result) {
-            $('#country_code').val(result);
-          },
-          error: function (textStatus, errorThrown) {
-            alert('Something went wronge');
-            location.reload();
-          }
-        });
       },
       error: function (textStatus, errorThrown) {
         alert('Something went wronge');
@@ -165,7 +151,7 @@ function getSubCity(cityId) {
         $('#area').empty();
         $('#area').append('<option value="">Select Area</option>');
         $.each(result, function (i, obj) {
-          $('#area').append('<option value="' + i + '">' + obj.name + '</option>');
+          $('#area').append('<option value="' + obj.name + '">' + obj.name + '</option>');
         });
         $('#city_name').val($("#city option:selected").text());
       },

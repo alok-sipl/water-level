@@ -298,10 +298,15 @@ module.exports = {
         .equalTo(req.body.id)
         .once("value", function (snapshot) {
           areaList = snapshot.val();
+          var returnArr = [];
           if (areaList != null && Object.keys(areaList).length) {
             for (var key in areaList) {
               if (areaList[key]['is_deleted'] != undefined && (areaList[key]['is_deleted'] == 'true' || areaList[key]['is_deleted'] == true)) {
                 delete areaList[key];
+              }else{
+                var item = areaList[key];
+                item.key = key;
+                returnArr.push(item);
               }
             }
             return res.json(areaList);
