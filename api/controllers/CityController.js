@@ -179,14 +179,14 @@ module.exports = {
   * @param  type
   */
   addCountry: function (req, res) {
-    // var ref = db.ref();
-    // var cities = ref.child("countries");
-    // var newCities = cities.push();
-    // newCities.set({
-    //   name: 'Saudi Arabia',
-    //   is_deleted: false,
-    //   code: 'SA'
-    // });
+    var ref = db.ref();
+    var cities = ref.child("countries");
+    var newCities = cities.push();
+    newCities.set({
+      name: 'Saudi Arabia',
+      is_deleted: false,
+      code: 'SA'
+    });
     // var parser = parse({delimiter: ','}, function (err, data) {
     //   data.forEach(function(line) {
     //     // create country object out of parsed fields
@@ -255,13 +255,23 @@ module.exports = {
         .equalTo(req.body.id)
         .once("value", function (snapshot) {
           cityList = snapshot.val();
+          var returnArr = [];
           if (cityList != null && Object.keys(cityList).length) {
             for (var key in cityList) {
               if (cityList[key]['is_deleted'] != undefined && (cityList[key]['is_deleted'] == 'true' || cityList[key]['is_deleted'] == true)) {
                 delete cityList[key];
+              }else{
+                var item = cityList[key];
+                item.key = key;
+                returnArr.push(item);
               }
             }
-            return res.json(cityList);
+            returnArr = returnArr.sort(function(a, b) {
+              var textA = a.name.toUpperCase();
+              var textB = b.name.toUpperCase();
+              return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            })
+            return res.json(returnArr);
           } else {
             return res.json(cityList);
           }
