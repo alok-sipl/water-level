@@ -211,7 +211,7 @@ module.exports = {
 * Purpose: add new city location
 * @param  type
 */
-  addCity: function (req, res) {
+  //addCity: function (req, res) {
     // var ref = db.ref();
     // var cities = ref.child("countries");
     // var newCities = cities.push();
@@ -238,7 +238,7 @@ module.exports = {
     //   });
     // });
     // // fs.createReadStream('cities.csv').pipe(parser);
-  },
+  //},
 
 
   /*
@@ -819,6 +819,81 @@ module.exports = {
       return res.json({'status': false, message: sails.config.flash.something_went_wronge});
     }
   },
+
+
+  /*
+* Name: addUserReading
+* Created By: A-SIPL
+* Created Date: 9-dec-2017
+* Purpose: add new city location
+* @param  type
+*/
+  addUserReading: function (req, res) {
+    var ref = db.ref('devices/IXGV0gHIa5bFl0gb8mNFdo9hZdE2');
+    ref.push({
+      created_at: Date.now(),
+      device_id:"00:15:AA:AA:AA:AA",
+      device_name: "Demo",
+      is_deleted: false,
+      is_plugged:true,
+      tank_area:"-L6KyqSrP5LaV-jY8DLM",
+      tank_city:"-L6KyJavAYObSyCqRp-J",
+      tank_depth:"",
+      tank_height:10,
+      tank_location:"demo",
+      tank_name:"Demo",
+      tank_status:{
+        percentage:0,
+        time:Date.now()
+      },
+      tank_type:"vertical",
+      tank_width:10,
+      updated_at:Date.now(),
+      userId:'IXGV0gHIa5bFl0gb8mNFdo9hZdE2'
+    }).then(function () {
+      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.city_add_success + '</div>');
+      return res.json({'msg': 'Added success'});
+    }, function (error) {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.city_add_error + '</div>');
+      return res.redirect('city');
+    });
+  },
+
+
+  /*
+* Name: addReading
+* Created By: A-SIPL
+* Created Date: 9-dec-2017
+* Purpose: add new city location
+* @param  type
+*/
+  addReading: function (req, res) {
+    var ref = db.ref('device_reading/IXGV0gHIa5bFl0gb8mNFdo9hZdE2');
+    ref.push({
+      alert_level: 20,
+      created_at: (Date.now() + 691200000),
+      device_battery_level: 100,
+      device_id:"00:15:AA:AA:AA:AA",
+      device_name: "Demo",
+      interval_in_minutes: 60,
+      is_deleted: false,
+      mobile_battery_level: 100,
+      repeat:false,
+      repeat_duration: "",
+      tank_height:10,
+      tank_reading:30,
+      updated_at:(Date.now()),
+      user_id:'IXGV0gHIa5bFl0gb8mNFdo9hZdE2'
+    }).then(function () {
+      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.city_add_success + '</div>');
+      return res.json({'msg': 'Added success'});
+    }, function (error) {
+      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.city_add_error + '</div>');
+      return res.redirect('city');
+    });
+  },
+
+
 };
 
 
