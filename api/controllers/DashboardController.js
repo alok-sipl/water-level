@@ -25,7 +25,7 @@ module.exports = {
       if (userDetail != null) {
         totalUser = snapshot.numChildren();
         for (var id in userDetail) {
-          if (userDetail[id]['is_verified'] != undefined && userDetail[id]['is_verified'] === true && userDetail[id]['is_deleted'] != undefined && userDetail[id]['is_deleted'] === false) {
+          if (userDetail[id]['is_deleted'] != undefined && userDetail[id]['is_deleted'] === false) {
             activeUser = activeUser + 1
           }
         }
