@@ -7,87 +7,90 @@
 var db = sails.config.globals.firebasedb();
 
 module.exports = {
-  /*
+    /*
      * Name: supplierListing
      * Created By: A-SIPL
      * Created Date: 8-dec-2017
      * Purpose: add new supplier
      * @param  req
      */
-  supplierListing: function (req, res) {
-    console.log('Supplier Post param-->', req.body);
-    if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
-      var userId = req.body.userId;
-      var latitude = req.body.tankCity;
-      var longitude = req.body.tankArea;
-      var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
-      var jsonData = [];
-      var favouritesSuppliresId = [];
-      var array = [];
-      var favouritesSupplires = "";
-      var reflikedSuppliers = db.ref("likes");
-      reflikedSuppliers.orderByChild('user_id').equalTo(userId).once("value",
-        function (snapshot) {
-          favouritesSupplires = snapshot.val();
-          for (key in favouritesSupplires) {
-            if (favouritesSuppliresId.indexOf(favouritesSupplires[key].supplier_id) === -1) {
-              favouritesSuppliresId.push(favouritesSupplires[key].supplier_id);
-            }
-          }
-        }, function (errorObject) {
-          console.log('aaaaa');
-          return res.serverError(errorObject.code);
-        });
-      var refSuppliers = db.ref("suppliers").orderByChild("area_id").equalTo(req.body.tankArea);
-      refSuppliers.once("value", function (snapshot) {
-        if (snapshot.numChildren() > 0) {
-          var suppliers = snapshot.val();
-          for (key in suppliers) {
-            if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
-              var supplierList = {};
-              supplierList = suppliers[key];
-              supplierList["supplier_id"] = key;
-              if (favouritesSuppliresId.indexOf(key) >= 0) {
-                supplierList["is_fav"] = 1;
-              } else {
-                supplierList["is_fav"] = 0;
-              }
-              jsonData.push(supplierList);
-            }
-          }
-        } else {
-          var refSuppliers = db.ref("suppliers").orderByChild("city_id").equalTo(req.body.tankCity);
-          refSuppliers.once("value", function (snapshot) {
-            var suppliers = snapshot.val();
-            //console.log(suppliers);
-            for (key in suppliers) {
-              if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
-                var supplierList = {};
-                supplierList = suppliers[key];
-                supplierList["supplier_id"] = key;
-                if (favouritesSuppliresId.indexOf(key) >= 0) {
-                  supplierList["is_fav"] = 1;
-                } else {
-                  supplierList["is_fav"] = 0;
+    supplierListing: function (req, res) {
+        console.log('Supplier Post param-->', req.body);
+        if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
+            var userId = req.body.userId;
+            var latitude = req.body.tankCity;
+            var longitude = req.body.tankArea;
+            var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
+            var jsonData = [];
+            var favouritesSuppliresId = [];
+            var array = [];
+            var favouritesSupplires = "";
+            var reflikedSuppliers = db.ref("likes");
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+            res.header('Access-Control-Allow-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept');
+            reflikedSuppliers.orderByChild('user_id').equalTo(userId).once("value",
+                function (snapshot) {
+                    favouritesSupplires = snapshot.val();
+                    for (key in favouritesSupplires) {
+                        if (favouritesSuppliresId.indexOf(favouritesSupplires[key].supplier_id) === -1) {
+                            favouritesSuppliresId.push(favouritesSupplires[key].supplier_id);
+                        }
+                    }
+                }, function (errorObject) {
+                    console.log('aaaaa');
+                    return res.serverError(errorObject.code);
+                });
+            var refSuppliers = db.ref("suppliers").orderByChild("area_id").equalTo(req.body.tankArea);
+            refSuppliers.once("value", function (snapshot) {
+                if(snapshot.numChildren()> 0){
+                    var suppliers = snapshot.val();
+                    for (key in suppliers) {
+                        if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
+                            var supplierList = {};
+                            supplierList = suppliers[key];
+                            supplierList["supplier_id"] = key;
+                            if (favouritesSuppliresId.indexOf(key) >= 0) {
+                                supplierList["is_fav"] = 1;
+                            } else {
+                                supplierList["is_fav"] = 0;
+                            }
+                            jsonData.push(supplierList);
+                        }
+                    }
+                }else{
+                    var refSuppliers = db.ref("suppliers").orderByChild("city_id").equalTo(req.body.tankCity);
+                    refSuppliers.once("value", function (snapshot) {
+                        var suppliers = snapshot.val();
+                        //console.log(suppliers);
+                        for (key in suppliers) {
+                            if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
+                                var supplierList = {};
+                                supplierList = suppliers[key];
+                                supplierList["supplier_id"] = key;
+                                if (favouritesSuppliresId.indexOf(key) >= 0) {
+                                    supplierList["is_fav"] = 1;
+                                } else {
+                                    supplierList["is_fav"] = 0;
+                                }
+                                jsonData.push(supplierList);
+                            }
+                        }
+                    }, function (errorObject) {
+                        return res.serverError(errorObject.code);
+                    });
                 }
-                jsonData.push(supplierList);
-              }
-            }
-          }, function (errorObject) {
-            return res.serverError(errorObject.code);
-          });
+                array.push(jsonData);
+                array[0].sort(function (x, y) {
+                    return y.is_fav - x.is_fav;
+                });
+                return res.json(array[0]);
+            }, function (errorObject) {
+                return res.serverError(errorObject.code);
+            });
+        } else {
+            res.status(422);
+            res.send(sails.config.flash.paramter_missing);
         }
-        array.push(jsonData);
-        array[0].sort(function (x, y) {
-          return y.is_fav - x.is_fav;
-        });
-        return res.json(array[0]);
-      }, function (errorObject) {
-        return res.serverError(errorObject.code);
-      });
-    } else {
-      res.status(422);
-      res.send(sails.config.flash.paramter_missing);
-    }
-  },
+    },
 };
