@@ -47,7 +47,7 @@ module.exports = {
                     console.log('444');
                     var suppliers = snapshot.val();
                     for (key in suppliers) {
-                        if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
+                        //if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
                             var supplierList = {};
                             supplierList = suppliers[key];
                             supplierList["supplier_id"] = key;
@@ -57,7 +57,7 @@ module.exports = {
                                 supplierList["is_fav"] = 0;
                             }
                             jsonData.push(supplierList);
-                        }
+                        //}
                     }
                 }else{
                     console.log('55555');
