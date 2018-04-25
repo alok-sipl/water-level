@@ -17,7 +17,8 @@ module.exports = {
     supplierListing: function (req, res) {
         console.log('Supplier Post param-->', req.body);
         if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
-            var userId = req.body.userId;
+
+            console.log('111');var userId = req.body.userId;
             var latitude = req.body.tankCity;
             var longitude = req.body.tankArea;
             var tankCapacity = (req.body.tankCapacity && req.body.tankCapacity != undefined) ? req.body.tankCapacity : 0;
@@ -26,11 +27,9 @@ module.exports = {
             var array = [];
             var favouritesSupplires = "";
             var reflikedSuppliers = db.ref("likes");
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-            res.header('Access-Control-Allow-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept');
             reflikedSuppliers.orderByChild('user_id').equalTo(userId).once("value",
                 function (snapshot) {
+                    console.log('2222');
                     favouritesSupplires = snapshot.val();
                     for (key in favouritesSupplires) {
                         if (favouritesSuppliresId.indexOf(favouritesSupplires[key].supplier_id) === -1) {
@@ -43,7 +42,9 @@ module.exports = {
                 });
             var refSuppliers = db.ref("suppliers").orderByChild("area_id").equalTo(req.body.tankArea);
             refSuppliers.once("value", function (snapshot) {
+                console.log('333');
                 if(snapshot.numChildren()> 0){
+                    console.log('444');
                     var suppliers = snapshot.val();
                     for (key in suppliers) {
                         if (suppliers[key].is_deleted == false && suppliers[key].tank_size != undefined && ((tankCapacity[0] == true && tankCapacity[1] == true && tankCapacity[2] == true && tankCapacity[3] == true) || ((tankCapacity[0] == true && suppliers[key].tank_size.indexOf('1') > 0) || (tankCapacity[1] == true && suppliers[key].tank_size.indexOf('2') > 0) || (tankCapacity[2] == true && suppliers[key].tank_size.indexOf('3') > 0) || (tankCapacity[3] == true && suppliers[key].tank_size.indexOf('4') > 0)))) {
@@ -59,6 +60,7 @@ module.exports = {
                         }
                     }
                 }else{
+                    console.log('55555');
                     var refSuppliers = db.ref("suppliers").orderByChild("city_id").equalTo(req.body.tankCity);
                     refSuppliers.once("value", function (snapshot) {
                         var suppliers = snapshot.val();
@@ -85,6 +87,7 @@ module.exports = {
                     return y.is_fav - x.is_fav;
                 });
                 return res.json(array[0]);
+                console.log('6666');
             }, function (errorObject) {
                 return res.serverError(errorObject.code);
             });
