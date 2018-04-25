@@ -15,6 +15,9 @@ module.exports = {
      * @param  req
      */
     supplierListing: function (req, res) {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Headers: X-Requested-With');
+        header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
         console.log('Supplier Post param-->', req.body);
         if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
 
