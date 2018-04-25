@@ -16,7 +16,6 @@ module.exports = {
      */
     supplierListing: function (req, res) {
         console.log('Supplier Post param-->', req.body);
-        return res.json({'Alok': 'Bichhwe'});
         if (req.body != undefined && req.body.userId != '' && req.body.userId != undefined && req.body.tankCity != '' && req.body.tankCity != undefined && req.body.tankArea != '' && req.body.tankArea != undefined) {
             var userId = req.body.userId;
             var latitude = req.body.tankCity;
