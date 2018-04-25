@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+<body>
+
+	<div class= "obutton feature2" data-id="<?php echo $bookID;?>">
+    <button class="reserve-button">Reserve Book</button>
+</div>
+	<script>
+$('.reserve-button').click(function(){
+
+    var book_id = $(this).parent().data('id');
+
+    $.ajax
+    ({ 
+        url: 'https://water-level.herokuapp.com/v1/webservices/supplier/supplierListing',
+        data: {
+						userId: 'giF6OITWzeQnHTXq8f4fj4topu82',
+						tankCapacity: [true, true, true, true],
+						tankCity: '-L6KyJavAYObSyCqRp-J',
+						tankArea: '-L6KyqSrP5LaV-jY8DLM'
+					},
+        type: 'post',
+        success: function(result)
+        {alert(result);
+            $('.modal-box').text(result).fadeIn(700, function() 
+            {
+                setTimeout(function() 
+                {
+                    $('.modal-box').fadeOut();
+                }, 2000);
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>
