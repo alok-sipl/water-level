@@ -82,12 +82,14 @@ module.exports = {
                         return res.serverError(errorObject.code);
                     });
                 }
+                console.log('6666');
                 array.push(jsonData);
                 array[0].sort(function (x, y) {
                     return y.is_fav - x.is_fav;
                 });
+                console.log(array[0]);
                 return res.json(array[0]);
-                console.log('6666');
+                console.log('7777777');
             }, function (errorObject) {
                 return res.serverError(errorObject.code);
             });
