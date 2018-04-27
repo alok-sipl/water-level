@@ -124,7 +124,7 @@ module.exports = {
               displayName: req.param('name')
             });
             req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.profile_update_success + '</div>');
-            return res.redirect(sails.config.base_url + 'dashboard/profile');
+            return res.redirect(sails.config.base_url + 'dashboard');
           })
           .catch(function (err) {
             req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.profile_update_error + '</div>');
