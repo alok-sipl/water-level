@@ -20,7 +20,6 @@ module.exports = {
      */
     tankReading: function (req, res) {
         console.log('Tank Reading Post param-->', req.body);
-        return res.json({'Alok': 'Bichhwe'});
         if (req.body != undefined && req.body.deviceId != undefined && req.body.timeFilter != undefined && req.body.type != undefined && req.body.userId != undefined && req.body.deviceId != '' && req.body.timeFilter != '' && req.body.type != '' && req.body.userId != '') {
             var deviceId = req.body.deviceId;
             var timeFilter = req.body.timeFilter;
