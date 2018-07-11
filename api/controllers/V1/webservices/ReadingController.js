@@ -32,6 +32,7 @@ module.exports = {
                 var refDeviceReading = db.ref("device_reading/" + req.body.userId);
                 refDeviceReading.orderByChild('device_id').equalTo(req.body.deviceId).once("value", function (snapshot) {
                     deviceReadings = snapshot.val();
+                    console.log("device_reading/" + req.body.userId, "Outer",deviceReadings, "Outer");
                     if (deviceReadings != null && deviceReadings != undefined && Object.keys(deviceReadings).length) {
                         var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fifthReading = fifthCounter = sixthReading = sixthCounter = sevenReading = sevenCounter = eigthReading = eigthCounter = nineReading = nineCounter = tenReading = tenCounter = elevenReading = elevenCounter = twelveReading = twelveCounter = 0;
                         console.log("Here",deviceReadings, "here");
