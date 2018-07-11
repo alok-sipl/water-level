@@ -240,7 +240,7 @@ module.exports = {
                     today.setHours(0);
                     sevenDate = new Date(today.toUTCString());
 
-                    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    var days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
                     var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fifthReading = fifthCounter = sixthReading = sixthCounter = sevenReading = sevenCounter = 0;
                     if (deviceReadings != undefined && deviceReadings != '' && Object.keys(deviceReadings).length) {
