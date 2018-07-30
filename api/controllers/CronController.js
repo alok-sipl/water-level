@@ -36,7 +36,8 @@ module.exports = {
                           var data = {
                             message: 'Device ' + deviceDetail[key].device_name + ' (' + deviceDetail[key].device_id + ') is not working properly. Please check',
                             type: 'device_issue',
-                            device_id:deviceId
+                            device_id:deviceId,
+                            date: Date.now()
                           }
                           var ref = db.ref("alerts/" + adminId);
                           ref.push(data).then(function () {
