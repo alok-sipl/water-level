@@ -34,6 +34,7 @@ module.exports = {
                     deviceReadings = snapshot.val();
                     if (deviceReadings != null && deviceReadings != undefined && Object.keys(deviceReadings).length) {
                         var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fifthReading = fifthCounter = sixthReading = sixthCounter = sevenReading = sevenCounter = eigthReading = eigthCounter = nineReading = nineCounter = tenReading = tenCounter = elevenReading = elevenCounter = twelveReading = twelveCounter = 0;
+
                         var date = new Date();
                         var fromDate = date.setHours(0);
                         var fromDate = date.setMinutes(0);
@@ -329,7 +330,6 @@ module.exports = {
                     deviceReadings = snapshot.val();
                     var today = new Date();
                     var getDayNumber = today.getDay();
-                    console.log(new Date(today.getFullYear(), today.getMonth(), 0, 1, 0, 0));
                     var startDate = new Date(today.getFullYear(), today.getMonth(), 0, 1, 0, 0).getTime();
                     var startingDate = new Date(today.getFullYear(), today.getMonth(), 0, 1, 0, 0);
                     var lastDay = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
@@ -359,7 +359,6 @@ module.exports = {
                     thirdWeekTime = secondWeekTime + (168 * 60 * 60 * 1000);
                     fourthWeekTime = thirdWeekTime + (168 * 60 * 60 * 1000);
                     fifthWeekTime = fourthWeekTime + (168 * 60 * 60 * 1000);
-                    //console.log(new Date(startDate), new Date(deviceDate), new Date(endDate));
                     if (deviceReadings != undefined && Object.keys(deviceReadings).length && deviceReadings != '') {
                         for (key in deviceReadings) {
                             var readingDataObject = {};
@@ -709,21 +708,19 @@ module.exports = {
                 loopCount++;
                 console.log('222');
                 _.map(val, function (val2, device_key) {
-                    console.log('333');
+                    //return res.json(val2);
                     if (val2.tank_status != undefined && val2.settings != undefined && val2.settings.from_date != undefined) {
                         console.log('444');
                         var fromDate = new Date(val2.settings.from_date);
-                        console.log('in if condition', val2);
-                        console.log(currentDateObj.getTime(), fromDate.getTime());
                         var lastNotificationSendMinutesAgo = Math.floor((currentDate - val2.settings.last_notification_time) / 1000);
-                        if (val2 != undefined && val2 != null && Object.keys(val2).length && currentDateObj.getTime() > fromDate.getTime() && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && val2.settings.repeat_duration != undefined &&  lastNotificationSendMinutesAgo >= val2.settings.repeat_duration) {
+                        console.log('lastNotificationSendMinutesAgo:---', lastNotificationSendMinutesAgo);
+                        if (val2 != undefined && val2 != null && Object.keys(val2).length && currentDateObj.getTime() > fromDate.getTime() && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && val2.settings.repeat_duration != undefined &&  val2.settings.repeat_duration != '' &&  (lastNotificationSendMinutesAgo  == NaN || lastNotificationSendMinutesAgo >= parseInt(val2.settings.repeat_duration))) {
                             // Already working code with pass user_key.
                             var ref = db.ref("users");
                             ref.orderByChild("id").equalTo(user_key).once("child_added",
                                 function (snapshot) {
                                     console.log('666');
                                     var userInfo = snapshot.val();
-                                    //console.log('User infor...', userInfo);
                                     if (userInfo != undefined && userInfo != null) {
                                         console.log('7777');
                                         var userKey = snapshot.key;
@@ -746,7 +743,6 @@ module.exports = {
                                                     for (var key in deviceDetail) {
                                                         console.log('bbb');
                                                         info.token = deviceDetail[key].device_token;
-                                                        console.log('Notification--->', info);
                                                         NotificationService.sendNotification(info);
                                                     }
                                                     console.log('ccc');
@@ -764,6 +760,7 @@ module.exports = {
                                                         percentage: 0,
                                                         message: info.body,
                                                         type: 'update_device_setting',
+                                                        date: Date.now()
                                                     }
                                                     ref.push(data).then(function () {
                                                         console.log('fff');
@@ -835,6 +832,7 @@ module.exports = {
                                         percentage: 0,
                                         message: info.body,
                                         type: 'bluetooth_disconnect',
+                                        date: Date.now()
                                     }
                                     ref.push(data).then(function () {
                                     }, function (errorObject) {
@@ -914,6 +912,7 @@ module.exports = {
                                         percentage: 0,
                                         message: info.body,
                                         type: 'update_device_setting',
+                                        date: Date.now()
                                     }
                                     ref.push(data).then(function () {
                                     }, function (errorObject) {
@@ -984,6 +983,7 @@ module.exports = {
                                             percentage: 0,
                                             message: info.body,
                                             type: 'low_mobile_battery',
+                                            date: Date.now()
                                         }
                                         ref.push(data).then(function () {
                                         }, function (errorObject) {
@@ -1006,6 +1006,7 @@ module.exports = {
                                             percentage: 0,
                                             message: info.body,
                                             type: 'low_device_battery',
+                                            date: Date.now()
                                         }
                                         ref.push(data).then(function () {
                                         }, function (errorObject) {
@@ -1028,6 +1029,7 @@ module.exports = {
                                             percentage: req.body.tankReading,
                                             message: info.body,
                                             type: 'low_tank_level',
+                                            date: Date.now()
                                         }
                                         ref.push(data).then(function () {
                                         }, function (errorObject) {
