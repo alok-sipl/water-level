@@ -58,6 +58,7 @@ module.exports = {
                       type: 'low_mobile_battery',
                       title: 'Mobile battery is low',
                       body: 'Your  ' + req.body.deviceName + ' mobile/ipad battery at minimum level. Please charge your mobile.',
+                      date: Date.now()
                     }
                     for (var key in deviceDetail) {
                       info.token = deviceDetail[key].device_token;
@@ -68,6 +69,7 @@ module.exports = {
                       percentage: 0,
                       message: info.body,
                       type: 'low_mobile_battery',
+                      date: Date.now()
                     }
                     ref.push(data).then(function () {
                     });
@@ -88,6 +90,7 @@ module.exports = {
                       percentage: 0,
                       message: info.body,
                       type: 'low_device_battery',
+                      date: Date.now()
                     }
                     ref.push(data).then(function () {
                     });
@@ -108,6 +111,7 @@ module.exports = {
                       percentage: req.body.tankReading,
                       message: info.body,
                       type: 'low_tank_level',
+                      date: Date.now()
                     }
                     ref.push(data).then(function () {
                     });
