@@ -216,30 +216,37 @@ module.exports = {
                     var today = new Date();
                     today.setHours(-144);
                     firstDate = new Date(today.toUTCString());
+                    firstDate = Date.parse(firstDate)
 
                     var today = new Date();
                     today.setHours(-120);
                     secondDate = new Date(today.toUTCString());
+                    secondDate = Date.parse(secondDate)
 
                     var today = new Date();
                     today.setHours(-96);
                     thirdDate = new Date(today.toUTCString());
+                    thirdDate = Date.parse(thirdDate)
 
                     var today = new Date();
                     today.setHours(-72);
                     fourthDate = new Date(today.toUTCString());
+                    fourthDate = Date.parse(fourthDate)
 
                     var today = new Date();
                     today.setHours(-48);
                     fifthDate = new Date(today.toUTCString());
+                    fifthDate = Date.parse(fifthDate)
 
                     var today = new Date();
                     today.setHours(-24);
                     sixthDate = new Date(today.toUTCString());
+                    sixthDate = Date.parse(sixthDate)
 
                     var today = new Date();
                     today.setHours(0);
                     sevenDate = new Date(today.toUTCString());
+                    sevenDate = Date.parse(sevenDate)
 
                     var days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
@@ -248,32 +255,32 @@ module.exports = {
                         for (key in deviceReadings) {
                             var readingDataObject = {};
                             if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at <= currentdate) {
-                                if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at <= secondDate) {
+                                if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at < secondDate) {
                                     firstReading += parseInt(deviceReadings[key].tank_reading);
                                     firstCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= secondDate && deviceReadings[key].created_at <= thirdDate) {
+                                } else if (deviceReadings[key].created_at >= secondDate && deviceReadings[key].created_at < thirdDate) {
                                     secondReading += parseInt(deviceReadings[key].tank_reading);
                                     secondCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= thirdDate && deviceReadings[key].created_at <= fourthDate) {
+                                } else if (deviceReadings[key].created_at >= thirdDate && deviceReadings[key].created_at < fourthDate) {
                                     thirdReading += parseInt(deviceReadings[key].tank_reading);
                                     thirdCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= fourthDate && deviceReadings[key].created_at <= fifthDate) {
+                                } else if (deviceReadings[key].created_at >= fourthDate && deviceReadings[key].created_at < fifthDate) {
                                     fourthReading += parseInt(deviceReadings[key].tank_reading);
                                     fourthCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= fifthDate && deviceReadings[key].created_at <= sixthDate) {
+                                } else if (deviceReadings[key].created_at >= fifthDate && deviceReadings[key].created_at < sixthDate) {
                                     fifthReading += parseInt(deviceReadings[key].tank_reading);
                                     fifthCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= sixthDate && deviceReadings[key].created_at <= sevenDate) {
+                                } else if (deviceReadings[key].created_at >= sixthDate && deviceReadings[key].created_at < sevenDate) {
                                     sixthReading += parseInt(deviceReadings[key].tank_reading);
                                     sixthCounter++;
                                     flag = true;
-                                } else if (deviceReadings[key].created_at >= sevenDate) {
-                                    sevenReading += parseInt(deviceReadings[key].tank_reading);
+                                } else if (deviceReadings[key].created_at >= sevenDate) {                                    
+                                    sevenReading += parseInt(deviceReadings[key].tank_reading);                                    
                                     sevenCounter++;
                                     flag = true;
                                 }
