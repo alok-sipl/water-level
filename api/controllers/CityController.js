@@ -868,27 +868,25 @@ module.exports = {
 * @param  type
 */
   addReading: function (req, res) {
-    var ref = db.ref('device_reading/IXGV0gHIa5bFl0gb8mNFdo9hZdE2');
+    var ref = db.ref('device_reading/pd7ADDV27MQmssnm7qIv64dkmd62');
     ref.push({
       alert_level: 20,
-      created_at: (Date.now() + 691200000),
-      device_battery_level: 100,
-      device_id:"00:15:AA:AA:AA:AA",
-      device_name: "Demo",
-      interval_in_minutes: 60,
+      created_at: Date.now(),
+      device_battery_level: 00,
+      device_id:"00:15:83:00:94:9C",
+      device_name: "sipl",
+      interval_in_minutes: 1,
       is_deleted: false,
       mobile_battery_level: 100,
-      repeat:false,
-      repeat_duration: "",
-      tank_height:10,
+      repeat:true,
+      repeat_duration: "1",
+      tank_height:1,
       tank_reading:30,
-      updated_at:(Date.now()),
-      user_id:'IXGV0gHIa5bFl0gb8mNFdo9hZdE2'
+      updated_at:Date.now(),
+      user_id:'pd7ADDV27MQmssnm7qIv64dkmd62'
     }).then(function () {
-      req.flash('flashMessage', '<div class="flash-message alert alert-success">' + sails.config.flash.city_add_success + '</div>');
       return res.json({'msg': 'Added success'});
     }, function (error) {
-      req.flash('flashMessage', '<div class="flash-message alert alert-danger">' + sails.config.flash.city_add_error + '</div>');
       return res.redirect('city');
     });
   },

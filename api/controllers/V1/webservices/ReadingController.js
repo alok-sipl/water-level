@@ -252,10 +252,8 @@ module.exports = {
                     var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fifthReading = fifthCounter = sixthReading = sixthCounter = sevenReading = sevenCounter = 0;
                     if (deviceReadings != undefined && deviceReadings != '' && Object.keys(deviceReadings).length) {
                         for (key in deviceReadings) {
-                            console.log(deviceReadings[key].created_at, firstDate, currentdate)
                             var readingDataObject = {};
                             if (deviceReadings[key].created_at > firstDate && deviceReadings[key].created_at < currentdate) {
-                                console.log('Next inner')
                                 if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at < secondDate) {
                                     firstReading += parseInt(deviceReadings[key].tank_reading);
                                     firstCounter++;
@@ -337,30 +335,29 @@ module.exports = {
                 refDeviceReading.orderByChild('device_id').equalTo(req.body.deviceId).once("value", function (snapshot) {
                     deviceReadings = snapshot.val();
                     var today = new Date();
-                    var getDayNumber = today.getDay();
-                    var startDate = new Date(today.getFullYear(), today.getMonth(), 0, 1, 0, 0).getTime();
-                    var startingDate = new Date(today.getFullYear(), today.getMonth(), 0, 1, 0, 0);
-                    var lastDay = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-                    var endDate = new Date(today.getFullYear(), today.getMonth(), lastDay, 59, 59, 59).getTime();
+                    
+                    var startDate = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+                    var startingDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    var endDate = new Date(today.getFullYear(), today.getMonth() +1, 0).getTime();
                     var date = new Date();
                     var currentDate = date.getDate();
 
                     var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fiveReading = fiveCounter = 0;
-
-                    var date = new Date(today.getFullYear(), today.getMonth(), 1, 5, 30, 59);
-                    if (getDayNumber == 0 && endDate > date.getTime() + (168 * 60 * 60 * 1000)) {
+                    var getDayNumber = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+                    var date = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+                    if (getDayNumber == 0 && endDate > date + (168 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(168);
-                    } else if (getDayNumber == 1 && endDate > date.getTime() + (144 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 1 && endDate > date + (144 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(144);
-                    } else if (getDayNumber == 2 && endDate > date.getTime() + (120 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 2 && endDate > date + (120 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(120);
-                    } else if (getDayNumber == 3 && endDate > date.getTime() + (96 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 3 && endDate > date + (96 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(96);
-                    } else if (getDayNumber == 4 && endDate > date.getTime() + (72 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 4 && endDate > date + (72 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(72);
-                    } else if (getDayNumber == 5 && endDate > date.getTime() + (48 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 5 && endDate > date + (48 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(48);
-                    } else if (getDayNumber == 6 && endDate > date.getTime() + (24 * 60 * 60 * 1000)) {
+                    } else if (getDayNumber == 6 && endDate > date + (24 * 60 * 60 * 1000)) {
                         var fisrtWeekTime = startingDate.setHours(24);
                     }
                     secondWeekTime = fisrtWeekTime + (168 * 60 * 60 * 1000);
