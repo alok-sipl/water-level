@@ -211,8 +211,7 @@ module.exports = {
                 refDeviceReading.orderByChild('device_id').equalTo(req.body.deviceId).once("value", function (snapshot) {
                     deviceReadings = snapshot.val();
 
-                    var currentdate = new Date().setMinutes(-1);
-
+                    var currentdate = new Date().getTime();
                     var today = new Date();
                     today.setHours(-144);
                     firstDate = new Date(today.toUTCString());
@@ -253,8 +252,10 @@ module.exports = {
                     var firstReading = firstCounter = secondReading = secondCounter = thirdReading = thirdCounter = fourthReading = fourthCounter = fifthReading = fifthCounter = sixthReading = sixthCounter = sevenReading = sevenCounter = 0;
                     if (deviceReadings != undefined && deviceReadings != '' && Object.keys(deviceReadings).length) {
                         for (key in deviceReadings) {
+                            console.log(deviceReadings[key].created_at, firstDate, currentdate)
                             var readingDataObject = {};
-                            if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at <= currentdate) {
+                            if (deviceReadings[key].created_at > firstDate && deviceReadings[key].created_at < currentdate) {
+                                console.log('Next inner')
                                 if (deviceReadings[key].created_at >= firstDate && deviceReadings[key].created_at < secondDate) {
                                     firstReading += parseInt(deviceReadings[key].tank_reading);
                                     firstCounter++;
