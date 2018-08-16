@@ -708,18 +708,16 @@ module.exports = {
         ref.once("value", function (snapshotWards) {
             var counteNumber = snapshotWards.numChildren();
             console.log('111');
-
             _.map(snapshotWards.val(), function (val, user_key) {
                 loopCount++;
                 console.log('222');
                 _.map(val, function (val2, device_key) {
                     //return res.json(val2);
-                    if (val2.tank_status != undefined && val2.settings != undefined && val2.settings.from_date != undefined) {
+                    if (val2.tank_status != undefined && val2.settings != undefined) {
                         console.log('444');
-                        var fromDate = new Date(val2.settings.from_date);
                         var lastNotificationSendMinutesAgo = Math.floor((currentDate - val2.settings.last_notification_time) / 1000);
                         console.log('lastNotificationSendMinutesAgo:---', lastNotificationSendMinutesAgo);
-                        if (val2 != undefined && val2 != null && Object.keys(val2).length && currentDateObj.getTime() > fromDate.getTime() && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && val2.settings.repeat_duration != undefined &&  val2.settings.repeat_duration != '' &&  (lastNotificationSendMinutesAgo  == NaN || lastNotificationSendMinutesAgo >= parseInt(val2.settings.repeat_duration))) {
+                        if (val2 != undefined && val2 != null && Object.keys(val2).length && val2.settings.repeat == true && val2.tank_status.percentage <= parseFloat(val2.settings.alert_level_change) && val2.settings.repeat_duration != undefined &&  val2.settings.repeat_duration != '' &&  (lastNotificationSendMinutesAgo  == NaN || lastNotificationSendMinutesAgo >= parseInt(val2.settings.repeat_duration))) {
                             // Already working code with pass user_key.
                             var ref = db.ref("users");
                             ref.orderByChild("id").equalTo(user_key).once("child_added",
